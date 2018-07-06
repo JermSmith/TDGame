@@ -32,7 +32,7 @@ namespace gui
 	}
 
 	StackMenu::StackMenu(StackMenu&& other)
-		: m_widgets(std::move(other.m_widgets))\
+		: m_widgets(std::move(other.m_widgets))
 		, m_background(std::move(other.m_background))
 		, m_basePosition(other.m_basePosition)
 		, m_baseSize(other.m_baseSize)
