@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "States\StatePlaying.h"
+#include "States\StateMainMenu.h"
 
 #include <iostream>
 
@@ -7,7 +7,7 @@ Game::Game() : m_window({ 1280, 720 }, "Game Name")
 {
 	m_window.setPosition({ m_window.getPosition().x, 0 });
 	m_window.setFramerateLimit(60);
-	pushState<StatePlaying>(*this);
+	pushState<StateMainMenu>(*this);
 }
 
 //Runs the main loop
