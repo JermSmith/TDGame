@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-Game::Game() : m_window({ 1280, 720 }, "Game Name")
+Game::Game() : m_window({ 1280, 720 }, "Prime TD")
 {
 	m_window.setPosition({ m_window.getPosition().x, 0 });
 	m_window.setFramerateLimit(60);
