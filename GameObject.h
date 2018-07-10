@@ -15,7 +15,7 @@ public:
 	void setPosition(sf::Vector2f& position);
 	void setSize(sf::Vector2f& size);
 
-	bool interferesWithPath(Path& path, float tol);
+	bool interferesWithPath(Path& path);
 
 	virtual void update() = 0;
 	virtual void render(sf::RenderTarget& renderer) = 0;

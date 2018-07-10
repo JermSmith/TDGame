@@ -1,9 +1,7 @@
 #pragma once
 
 #include "ResourceManager\ResourceHolder.h"
-//#include "Vertex.h"
 #include <vector>
-
 
 class Path// : public GameObject
 {
@@ -12,6 +10,7 @@ public:
 	Path();
 
 	void createRandomPath(int numInternalVertices = 5);
+	void createOrthoPath(int numInternalVertices = 5);
 	void createCustomPath(std::vector<sf::Vector2f>& vertices);
 
 	std::vector<sf::Vector2f>& getVertices();
@@ -32,8 +31,8 @@ private:
 	// number of vertices in path, not including start and end point
 	int m_numVertices;
 
-	sf::Vector2f m_firstVertex = { 480, 0 };
-	sf::Vector2f m_lastVertex = { 0, 480 };
+	sf::Vector2f m_firstVertex = { 0, 480 };
+	sf::Vector2f m_lastVertex = { 480, 0 };
 
 	bool isVertexOnPath(sf::Vector2f& vertex);
 
