@@ -3,6 +3,7 @@
 #include "StateBase.h"
 #include "GUI\StackMenu.h"
 #include "GameObjects\Path.h"
+#include "GameObjects\Tower.h"
 
 //Game state for the main part of the game
 
@@ -21,5 +22,6 @@ private:
 	gui::StackMenu m_playingMenu;
 	sf::RectangleShape m_banner;
 	Path m_path;
+	Tower m_tower;
 
 };

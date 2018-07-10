@@ -5,6 +5,8 @@
 #include "GUI\Textbox.h"
 #include "Game.h"
 
+#include "GameObjects\Tower.h"
+
 #include <iostream>
 
 std::string test;
@@ -31,7 +33,12 @@ StatePlaying::StatePlaying(Game& game)
 	});
 	m_playingMenu.addWidget(std::move(btn2));
 
-	m_path.createRandomPath(4);
+	m_path.createOrthoPath(9);
+
+	//Tower tower;
+	bool b_ = m_tower.interferesWithPath(m_path);
+	std::cout << "interferes with path?"   << std::to_string(b_) << std::endl;
+
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -58,5 +65,6 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 {
 	m_playingMenu.render(renderer);
 	m_path.render(renderer);
+	m_tower.render(renderer);
 	//renderer.draw(m_banner);
 }
