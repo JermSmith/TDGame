@@ -59,7 +59,7 @@ namespace gui
 			break;
 		}
 	}
-
+	
 	void Button::render(sf::RenderTarget& renderer)
 	{
 		renderer.draw(m_button);

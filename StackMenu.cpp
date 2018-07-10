@@ -22,13 +22,12 @@ namespace gui
 		m_titleText.setCharacterSize(30);
 	}
 
-	StackMenu::StackMenu(const sf::Vector2f& position)
-		: m_basePosition(position)
-		, m_baseSize(300, 20)
+	StackMenu::StackMenu(const sf::Vector2f& position, const sf::Vector2f& baseSize)
+		: m_basePosition(position), m_baseSize(baseSize)
 	{
 		m_background.setFillColor({ 100, 100, 100, 128 });
 		m_background.setSize(m_baseSize);
-		m_background.setPosition(position);
+		m_background.setPosition(m_basePosition.x - m_baseSize.x / 2, m_basePosition.y - 25);
 	}
 
 	StackMenu::StackMenu(StackMenu&& other)

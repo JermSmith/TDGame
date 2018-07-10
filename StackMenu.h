@@ -13,7 +13,7 @@ namespace gui
 	{
 	public:
 		StackMenu(const sf::RenderWindow& window, float baseY);
-		StackMenu(const sf::Vector2f& position);
+		StackMenu(const sf::Vector2f& position, const sf::Vector2f& baseSize);
 
 		StackMenu(StackMenu&& other);
 		StackMenu& operator =(StackMenu&& other);
