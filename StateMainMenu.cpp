@@ -7,7 +7,8 @@
 
 #include <iostream>
 
-StateMainMenu::StateMainMenu(Game& game) : StateBase(game), m_mainMenu(game.getWindow(), 50)
+StateMainMenu::StateMainMenu(Game& game)
+	: StateBase(game), m_mainMenu(game.getWindow(), 50)
 {
 	m_banner.setSize(sf::Vector2f((float)128, (float)8));
 	m_banner.setPosition(sf::Vector2f(128, 64));

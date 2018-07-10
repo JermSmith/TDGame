@@ -9,13 +9,16 @@
 
 std::string test;
 
-StatePlaying::StatePlaying(Game& game) : StateBase(game), m_playingMenu(game.getWindow(), 50)
+StatePlaying::StatePlaying(Game& game)
+	: StateBase(game)
+	, m_playingMenu(sf::Vector2f((float)game.getWindow().getSize().x - 200, 100),
+		sf::Vector2f(300, 50))
 {
-	auto btn1 = std::make_unique<gui::Button>();
+	auto btn1 = gui::makeButton();
 	btn1->setText("Button 1");
 	btn1->setFunction([&]()
 	{
-		std::cout << "Button 1 clicked!" << '\n';
+		std::cout << "Button 1 clicked!" << std::endl;
 	});
 	m_playingMenu.addWidget(std::move(btn1));
 
@@ -27,6 +30,8 @@ StatePlaying::StatePlaying(Game& game) : StateBase(game), m_playingMenu(game.get
 		game.pushState<StateMainMenu>(game);
 	});
 	m_playingMenu.addWidget(std::move(btn2));
+
+	m_path.createRandomPath(4);
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -52,5 +57,6 @@ void StatePlaying::fixedUpdate(sf::Time deltaTime)
 void StatePlaying::render(sf::RenderTarget& renderer)
 {
 	m_playingMenu.render(renderer);
+	m_path.render(renderer);
 	//renderer.draw(m_banner);
 }
