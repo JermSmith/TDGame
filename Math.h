@@ -14,3 +14,7 @@ T toDegrees(T radians)
 {
 	return (radians * 180) / PI;
 }
+
+/*
+template <typename T>
+T getReferenceAngle(T )*/
