@@ -4,7 +4,6 @@
 
 #include "Path.h"
 #include "ResourceManager\ResourceHolder.h"
-#include "Util\Math.h"
 
 class GameObject
 {

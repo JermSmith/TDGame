@@ -1,4 +1,6 @@
 #include "GameObject.h"
+#include "Util\Math.h"
+
 #include <iostream>
 
 
@@ -39,43 +41,7 @@ bool GameObject::interferesWithPath(Path& path)
 		sf::Vector2f il = sf::Vector2f(vi.x + t_*cos(theta) + t_*sin(theta), vi.y - t_*cos(theta) + t_*sin(theta));
 		sf::Vector2f ir = sf::Vector2f(vi.x + t_*cos(theta) - t_*sin(theta), vi.y + t_*cos(theta) + t_*sin(theta));
 
-		float m_; // slope of path segment
-		
-		/*
-		if (theta == 0 || theta == PI || theta == -PI)
-		{
-			if (cos(theta) * m_position.y >= cos(theta) * ol.y &&
-				cos(theta) * m_position.y <= cos(theta) * ir.y &&
-				cos(theta) * m_position.x >= cos(theta) * ol.x &&
-				cos(theta) * m_position.x <= cos(theta) * ir.x)
-			{
-				return true; // m_position is inside the path space
-			}
-		}
-
-		else if (theta == PI / 2 || theta == -PI / 2)
-		{
-			if (sin(theta) * m_position.y >= sin(theta) * ol.y &&
-				sin(theta) * m_position.y <= sin(theta) * ir.y &&
-				sin(theta) * m_position.x <= sin(theta) * ol.x &&
-				sin(theta) * m_position.x >= sin(theta) * ir.x)
-			{
-				return true; // m_position is inside the path space
-			}
-		}
-
-		else // theta != 0, pi/2, pi, -pi/2, -pi
-		{
-			m_ = (vi.y - vo.y) / (vi.x - vo.x); // slope of path segment
-
-			if (cos(theta) * (m_position.y - m_*m_position.x) > cos(theta) * (ol.y - m_*ol.x) &&
-				cos(theta) * (m_position.y - m_*m_position.x) < cos(theta) * (ir.y - m_*ir.x) &&
-				sin(theta) * (m_position.y + (1 / m_)*m_position.x) > sin(theta) * (ol.y + (1 / m_)*ol.x) &&
-				sin(theta) * (m_position.y + (1 / m_)*m_position.x) < sin(theta) * (ir.y + (1 / m_)*ir.x))
-			{
-				return true; // m_position is inside the path space
-			}
-		}*/
+		float m_; // slope of path segment ("down-right" is positive, "up-right" is negative)
 
 		for (sf::Vector2f& corner : corners)
 		{

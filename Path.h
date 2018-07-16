@@ -3,14 +3,14 @@
 #include "ResourceManager\ResourceHolder.h"
 #include <vector>
 
-class Path// : public GameObject
+class Path
 {
 public:
 
 	Path();
 
-	void createRandomPath(int numInternalVertices = 5);
-	void createOrthoPath(int numInternalVertices = 5);
+	void createRandomPath(int numInternalVertices);
+	void createOrthoPath(int numInternalVertices);
 	void createCustomPath(std::vector<sf::Vector2f>& vertices);
 
 	std::vector<sf::Vector2f>& getVertices();
@@ -23,25 +23,29 @@ public:
 	void render(sf::RenderTarget& target);
 
 private:
+
+	bool vertexInterferesWithPath(sf::Vector2f& vertex);
+	void generateSprites();
+	float Path::getDistanceBetweenPoints(sf::Vector2f& v0, sf::Vector2f& v1);
+	void clear();
+
+	sf::Vector2f m_firstVertex;
+	sf::Vector2f m_lastVertex;
+
 	float m_pathLength;
-	float m_width;
+
+	float m_PATH_WIDTH;
+	float m_VERTEX_RADIUS;
+	float m_TOP_BORDER;
+	float m_LEFT_BORDER;
 
 	std::vector<sf::Vector2f> m_vertices;
 	
-	// number of vertices in path, not including start and end point
-	int m_numVertices;
+	int m_numVertices; // number of vertices in path, not including start and end point
 
-	sf::Vector2f m_firstVertex = { 0, 480 };
-	sf::Vector2f m_lastVertex = { 480, 0 };
+	sf::Texture m_pathTexture;
+	sf::Texture m_vertexTexture;
 
-	bool isVertexOnPath(sf::Vector2f& vertex);
-
-	sf::Sprite m_sprite;
-
-	//testing
-	std::vector<sf::RectangleShape> m_rectPath;
-
-	std::vector<sf::Sprite> m_spritePath;
-	void generateSpritePath();
-
+	std::vector<sf::Sprite> m_pathRectangles;
+	std::vector<sf::CircleShape> m_vertexCircles;
 };

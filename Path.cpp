@@ -1,159 +1,441 @@
 #include "Path.h"
 
-#include "Util\Random.h"
-#include "Util\Math.h"
-#include <cmath>
-#include <iostream>
-#include <string>
+#include "Util\Random.h" // random number generator
+#include "Util\Math.h" // toDegrees in generateSprites function
+#include <iostream> // getLength function
+#include <string> // getLength function
 
 Path::Path()
 {
-	m_sprite.setTexture(ResourceHolder::get().textures.get("grass"));
-	m_sprite.setTextureRect({ 0, 0, 32, 32});
-	m_width = 40.;
+	m_LEFT_BORDER = 16;
+	m_TOP_BORDER = 16;
+
+	m_firstVertex = {m_LEFT_BORDER, m_TOP_BORDER };
+	m_lastVertex = { 480, m_TOP_BORDER };
+
+	m_PATH_WIDTH = 9.;
+	m_VERTEX_RADIUS = m_PATH_WIDTH * 2;
+
+	m_pathTexture = ResourceHolder::get().textures.get("grass");
+	m_pathTexture.setRepeated(true);
+
+	m_vertexTexture = ResourceHolder::get().textures.get("wood");
+	m_vertexTexture.setRepeated(true);
 }
 
 void Path::createRandomPath(int numInternalVertices)
 {
-	// define "isVertexOnPath" function
-	// make it so that if numInternalVertices is even, the path leaves on the same side as it came in. if is odd, path leaves on other side.
-
 	m_numVertices = numInternalVertices;
 	static Random<> rand;
+	clear();
+	int rand50 = rand.getIntInRange(0, 1);
+	float randX;
+	float randY;
+	int maxNumLoops = 15;
 
-	m_vertices.clear();
-	m_vertices.push_back(m_firstVertex);
+	if (numInternalVertices == 0) { m_numVertices = rand.getIntInRange(3, 7); }
 
-	int randX;
-	int randY;
-	for (int v = 0; v < m_numVertices; v++)
+	// generate first vertex
+	switch (rand50)
 	{
-		if (v != m_numVertices - 1)
+	case 0:
+		randX = rand.getFloatInRange(128, 720);
+		m_firstVertex = sf::Vector2f(randX, m_TOP_BORDER);
+		break;
+
+	case 1:
+		randY = rand.getFloatInRange(128, 640);
+		m_firstVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+		break;
+
+	default:
+		randY = rand.getFloatInRange(128, 640);
+		m_firstVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+		break;
+	}
+	m_vertices.push_back(m_firstVertex); // first vertex added
+
+	for (int v = 1; v <= m_numVertices + 1; v++) // +1 to numVertices to account for last vertex
+	{
+		if (v != m_numVertices + 1) // deal with all vertices except the last vertex
 		{
-			randX = rand.getIntInRange(64, 640);
-			randY = rand.getIntInRange(64, 640);
-			m_vertices.push_back(sf::Vector2f((float)randX, (float)randY));
+			int tries = 0;
+			do
+			{
+				randX = rand.getFloatInRange(128, 720);
+				randY = rand.getFloatInRange(128, 640);
+				
+				tries++;
+				// if loops "maxNumLoops" times, then let pass
+			} while (vertexInterferesWithPath(sf::Vector2f(randX, randY)) && tries < maxNumLoops);
+
+			m_vertices.push_back(sf::Vector2f(randX, randY));
 		}
-		else if (v == m_numVertices - 1)
+
+
+		else if (v == m_numVertices + 1) // add the last vertex
 		{
+			int tries = 0;
+			do
+			{
+				rand50 = rand.getIntInRange(0, 1);
+
+				switch (rand50)
+				{
+				case 0:
+					randX = rand.getFloatInRange(128, 720);
+					m_lastVertex = sf::Vector2f(randX, m_TOP_BORDER);
+					break;
+
+				case 1:
+					randY = rand.getFloatInRange(128, 640);
+					m_lastVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+					break;
+
+				default:
+					randY = rand.getFloatInRange(128, 640);
+					m_lastVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+					break;
+				}
+
+				tries++;
+				// if loops "maxNumLoops" times, then let pass
+			} while (vertexInterferesWithPath(m_lastVertex) && tries < maxNumLoops);
+
 			m_vertices.push_back(m_lastVertex);
 		}
 	}
-
-	generateSpritePath();
-
-	std::cout << "The randomly-generated list of vertices is: " << std::endl;
-	for (unsigned int counter = 0; counter < m_vertices.size(); counter++)
-	{
-		std::cout << std::to_string(m_vertices.at(counter).x) + ", " + std::to_string(m_vertices.at(counter).y) << std::endl;
-	}
+	
+	generateSprites();
 
 }
 
+// TODO: add functionality for numInternalVertices =1 (very simple to program)
 void Path::createOrthoPath(int numInternalVertices)
 {
 	m_numVertices = numInternalVertices;
 	static Random<> rand;
-
-	m_vertices.clear();
-	m_vertices.push_back(m_firstVertex);
-
-	enum class varToHold { x_, y_, other };
-	varToHold varToHold;
-
-	if (m_firstVertex.x == 0) { varToHold = varToHold::y_; }
-	else if (m_firstVertex.y == 0) { varToHold = varToHold::x_; }
-	else { varToHold = varToHold::other; }
-
+	clear();
+	int rand50 = rand.getIntInRange(0, 1);
+	float randX;
+	float randY;
+	int maxNumLoops = 15;
+	sf::Vector2f newVertex;
 	
-	int randomCoord;
-	for (int v = 0; v < m_numVertices; v++)
+	if (numInternalVertices == 0) { m_numVertices = rand.getIntInRange(3, 7); }
+
+	// generate first vertex
+	switch (rand50)
 	{
-		if (v != m_numVertices - 1)
+	case 0:
+		randX = rand.getFloatInRange(128, 720);
+		m_firstVertex = sf::Vector2f(randX, m_TOP_BORDER);
+		break;
+
+	case 1:
+		randY = rand.getFloatInRange(128, 640);
+		m_firstVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+		break;
+
+	default:
+		randY = rand.getFloatInRange(128, 640);
+		m_firstVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+		break;
+	}
+	m_vertices.push_back(m_firstVertex); // first vertex added
+
+	if (numInternalVertices == 1)
+	{
+		if (m_firstVertex.y == m_TOP_BORDER)
 		{
-			randomCoord = rand.getIntInRange(64, 640);
-			while ((abs(m_vertices.at(v).y - randomCoord) < 48 && varToHold == varToHold::x_)
-				|| ((abs(m_vertices.at(v).x - randomCoord) < 48 && varToHold == varToHold::y_)))
-			{
-				randomCoord = rand.getIntInRange(64, 640);
-			}
-
-			switch (varToHold)
-			{
-			case(varToHold::x_):
-				m_vertices.push_back({ (float)m_vertices.at(v).x, (float)randomCoord });
-				varToHold = varToHold::y_;
-				break;
-
-			case(varToHold::y_):
-				m_vertices.push_back({ (float)randomCoord, (float)m_vertices.at(v).y });
-				varToHold = varToHold::x_;
-				break;
-
-			default:
-				break;
-			}
+			randY = rand.getFloatInRange(128, 640);
+			m_vertices.push_back(sf::Vector2f(m_firstVertex.x, randY));
+			m_vertices.push_back(sf::Vector2f(m_LEFT_BORDER, randY));
+		}
+		else if (m_firstVertex.x == m_LEFT_BORDER)
+		{
+			randX = rand.getFloatInRange(128, 720);
+			m_vertices.push_back(sf::Vector2f(randX, m_firstVertex.y));
+			m_vertices.push_back(sf::Vector2f(randX, m_TOP_BORDER));
 		}
 
-		else
-		{ // placing the (second)-last vertex, so must align path with m_lastVertex
-			if (m_lastVertex.x == 0)
-			{
-				if (abs(m_vertices.back().y - m_lastVertex.y) < 48)
-				{
-					if (m_vertices.back().y > m_lastVertex.y) { m_lastVertex.y -= 48; }
-					else { m_lastVertex.y = m_lastVertex.y += 48; }
-				}
-				m_vertices.push_back({ m_vertices.back().x, m_lastVertex.y });
-			}
-			else if (m_lastVertex.y == 0)
-			{
-				if (abs(m_vertices.back().x - m_lastVertex.x) < 48)
-				{
-					if (m_vertices.back().x > m_lastVertex.x) { m_lastVertex.x -= 48; }
-					else { m_lastVertex.x += 48; }
-				}
-				m_vertices.push_back({ m_lastVertex.x, m_vertices.back().y });
-			}
-
-			m_vertices.push_back(m_lastVertex);
-		}
+		generateSprites();
+		return; // leave the function early
 	}
 
-	generateSpritePath();
 
-	std::cout << "The randomly-generated list of vertices is: " << std::endl;
-	for (unsigned int counter = 0; counter < m_vertices.size(); counter++)
+	for (int v = 0; v <= m_numVertices - 1; v++)
 	{
-		std::cout << std::to_string(m_vertices.at(counter).x) + ", " + std::to_string(m_vertices.at(counter).y) << std::endl;
+		if (v != m_numVertices - 1) // deal with all vertices except the last two vertices (last internal vertex, and lastVertex itself)
+		{
+			
+			if (m_vertices.size() == 1) // only first vertex exists (happens with v=0) - add the first internal vertex
+			{
+				if (m_firstVertex.x == m_LEFT_BORDER)
+				{
+					randX = rand.getFloatInRange(128, 720);
+					newVertex = sf::Vector2f(randX, m_firstVertex.y);
+
+					m_vertices.push_back(newVertex);
+				}
+				else if (m_firstVertex.y == m_TOP_BORDER)
+				{
+					randY = rand.getFloatInRange(128, 640);
+					newVertex = sf::Vector2f(m_firstVertex.x, randY);
+					
+					m_vertices.push_back(newVertex);
+				}
+			}
+			
+			else if (m_vertices.size() > 1) // happens with v=1 for 1st internal vertex, up to v=n-1 for (n-1)st internal vertex
+			// add more internal vertices (but not last internal vertex because of wrapping if-statement)
+			{
+				if (m_vertices.at(v).x == m_vertices.at(v - 1).x) // last move was vertical
+				{
+					int tries = 0;
+					do
+					{
+						randX = rand.getFloatInRange(128, 720);
+						newVertex = sf::Vector2f(randX, m_vertices.at(v).y);
+						tries++;
+						// if loops "maxNumLoops" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries < maxNumLoops); 
+						
+					m_vertices.push_back(newVertex);
+				}
+				else if (m_vertices.at(v).y == m_vertices.at(v - 1).y) // last move was horizontal
+				{
+					int tries = 0;
+					do
+					{
+						randY = rand.getFloatInRange(128, 640);
+						newVertex = sf::Vector2f(m_vertices.at(v).x, randY);
+						tries++;
+						// if loops "maxNumLoops" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries < maxNumLoops);
+
+					m_vertices.push_back(newVertex);
+				}
+			}
+		}
+
+		else if (v == m_numVertices - 1) // deal with last internal vertex AND last vertex
+		{
+			if (m_vertices.at(v).x == m_vertices.at(v - 1).x) // last move was vertical
+			{
+				int tries2 = 0;
+				do
+				{
+					// if redirected here because lastVertex interferes with path, then remove newVertex (added below)
+					if (m_vertices.size() == m_numVertices + 1) // final size of m_vertices is numVertices + 2 (first + # internal + last)
+					{
+						m_vertices.pop_back(); // remove last element, which is newVertex
+					}
+
+					int tries1 = 0;
+					do
+					{
+						randX = rand.getFloatInRange(128, 720);
+						newVertex = sf::Vector2f(randX, m_vertices.at(v).y);
+						m_lastVertex = sf::Vector2f(randX, m_TOP_BORDER);
+
+						tries1++;
+						// if loops "maxNumLoops" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries1 < maxNumLoops);
+					
+					m_vertices.push_back(newVertex);
+					// the interference check for lastVertex only works correctly after newVertex has been added
+					tries2++;
+					// if loops "maxNumLoops" times, then let pass
+				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < maxNumLoops);
+
+				m_vertices.push_back(m_lastVertex);
+
+			}
+			else if (m_vertices.at(v).y == m_vertices.at(v - 1).y) // last move was horizontal
+			{
+				int tries2 = 0;
+				do
+				{
+					// if redirected here because lastVertex interferes with path, then remove newVertex (added below)
+					if (m_vertices.size() == m_numVertices + 1) // final size of m_vertices is numVertices + 2 (first + # internal + last)
+					{
+						m_vertices.pop_back(); // remove last element, which is newVertex
+					}
+
+					int tries1 = 0;
+					do
+					{
+						randY = rand.getFloatInRange(128, 640);
+						newVertex = sf::Vector2f(m_vertices.at(v).x, randY);
+						m_lastVertex = sf::Vector2f(m_LEFT_BORDER, randY);
+
+						tries1++;
+						// if loops "maxNumLoops" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries1 < maxNumLoops);
+
+					m_vertices.push_back(newVertex);
+					// the interference check for lastVertex only works correctly after newVertex has been added
+					tries2++;
+					// if loops "maxNumLoops" times, then let pass
+				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < maxNumLoops);
+				
+				m_vertices.push_back(m_lastVertex);
+			}
+		}
 	}
+
+	generateSprites();
 
 }
 
 void Path::createCustomPath(std::vector<sf::Vector2f>& vertices)
 {
 	m_vertices.clear();
-	
-	m_vertices.push_back(m_firstVertex);
 
 	for (unsigned int v = 0; v < vertices.size(); v++)
 	{
 		m_vertices.push_back(vertices.at(v));
 	}
 
-	m_vertices.push_back(m_lastVertex);
-
-	generateSpritePath();
+	generateSprites();
 }
 
-bool Path::isVertexOnPath(sf::Vector2f& vertex)
+bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 {
+	float dr = 8; // resolution to check for interference
+	float dx;
+	float dy;
+	float theta;
+	float tolerance = 3 * m_VERTEX_RADIUS + m_PATH_WIDTH;
+
+	sf::Vector2f p0;
+	sf::Vector2f p1;
+	
+	/* the only differences between the two for-loops below are the assignment of p0 and p1,
+		and points/vertices used to check for intersection */
+
+	// check if new path is too close to an existing vertex
+	for (unsigned int v = 1; v < m_vertices.size(); v++)
+	{
+		p0 = m_vertices.back(); // soon-to-be second-last vertex
+		p1 = vertex; // vertex to be placed
+		
+		theta = atan2f(p1.y - p0.y, p1.x - p0.x);
+
+		dx = dr * cosf(theta);
+		dy = dr * sinf(theta);
+
+		while (cosf(theta) * p0.x <= cosf(theta) * p1.x
+			&& sinf(theta) * p0.y <= sinf(theta) * p1.y)
+		{
+			// check intersection
+			if (getDistanceBetweenPoints(p0, m_vertices.at(v-1)) <= tolerance)
+			{
+				return true; // new path segment is too close to an existing vertex
+			}
+
+			else
+			{
+				p0.x = p0.x + dx;
+				p0.y = p0.y + dy;
+			}
+		}
+	}
+
+	// check if new vertex is too close to existing path
+	for (unsigned int v = 1; v < m_vertices.size(); v++)
+	{
+		p0 = m_vertices.at(v - 1);
+		p1 = m_vertices.at(v);
+		
+		theta = atan2f(p1.y - p0.y, p1.x - p0.x);
+
+		dx = dr * cosf(theta);
+		dy = dr * sinf(theta);
+
+		while (cosf(theta) * p0.x <= cosf(theta) * p1.x
+			&& sinf(theta) * p0.y <= sinf(theta) * p1.y)
+		{
+			// check intersection
+			if (getDistanceBetweenPoints(p0, vertex) <= tolerance)
+			{
+				return true; // vertex (provided in argument) is too close to an existing path
+			}
+
+			else
+			{
+				p0.x = p0.x + dx;
+				p0.y = p0.y + dy;
+			}
+		}
+	}
+
 	return false;
 }
 
-std::vector<sf::Vector2f>& Path::getVertices()
+float Path::getDistanceBetweenPoints(sf::Vector2f& v0, sf::Vector2f& v1)
 {
-	return m_vertices;
+	return sqrtf((v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y));
+}
+
+void Path::generateSprites()
+{
+	sf::Sprite pathRectangle;
+	pathRectangle.setTexture(m_pathTexture);
+	pathRectangle.setOrigin(m_PATH_WIDTH, m_PATH_WIDTH);
+
+	sf::CircleShape vertexCircle;
+	vertexCircle.setTexture(&m_vertexTexture);
+	vertexCircle.setRadius(m_VERTEX_RADIUS);
+	vertexCircle.setOrigin(sf::Vector2f(vertexCircle.getRadius(), vertexCircle.getRadius()));
+
+	for (unsigned int v = 1; v < m_vertices.size(); v++)
+	{
+		pathRectangle.setTextureRect(sf::IntRect(0, 0, (int)(sqrtf((m_vertices.at(v).x - m_vertices.at(v - 1).x) * (m_vertices.at(v).x - m_vertices.at(v - 1).x)
+			+ (m_vertices.at(v).y - m_vertices.at(v - 1).y) * (m_vertices.at(v).y - m_vertices.at(v - 1).y)) + 2 * m_PATH_WIDTH), (int)(2 * m_PATH_WIDTH)));
+
+		pathRectangle.setPosition(m_vertices.at(v - 1).x, m_vertices.at(v - 1).y);
+
+		pathRectangle.setRotation(toDegrees(atan2f(m_vertices.at(v).y - m_vertices.at(v - 1).y, m_vertices.at(v).x - m_vertices.at(v - 1).x)));
+
+		m_pathRectangles.push_back(pathRectangle);
+		
+
+		if (v != m_vertices.size() - 1)
+		{
+			vertexCircle.setPosition(m_vertices.at(v - 1));
+			m_vertexCircles.push_back(vertexCircle);
+		}
+		else
+		{
+			vertexCircle.setPosition(m_vertices.at(v - 1));
+			m_vertexCircles.push_back(vertexCircle);
+
+			vertexCircle.setPosition(m_vertices.at(v));
+			m_vertexCircles.push_back(vertexCircle);
+		}
+		
+	}
+}
+
+void Path::update()
+{
+
+}
+
+void Path::render(sf::RenderTarget& renderer)
+{
+	for (auto& rect : m_pathRectangles) { renderer.draw(rect); }
+
+	for (auto& circ : m_vertexCircles) { renderer.draw(circ); }
+}
+
+void Path::clear()
+{
+	m_vertices.clear();
+	m_pathRectangles.clear();
+	m_vertexCircles.clear();
 }
 
 float Path::getLength()
@@ -163,138 +445,16 @@ float Path::getLength()
 	for (unsigned int i = 1; i < m_vertices.size(); i++)
 	{
 		m_pathLength = m_pathLength
-			+ sqrtf((m_vertices.at(i).x - m_vertices.at(i - 1).x) * (m_vertices.at(i).x - m_vertices.at(i - 1).x)
-			+ (m_vertices.at(i).y - m_vertices.at(i - 1).y) * (m_vertices.at(i).y - m_vertices.at(i - 1).y));
+			+ sqrt((m_vertices.at(i).x - m_vertices.at(i - 1).x) * (m_vertices.at(i).x - m_vertices.at(i - 1).x)
+				+ (m_vertices.at(i).y - m_vertices.at(i - 1).y) * (m_vertices.at(i).y - m_vertices.at(i - 1).y));
 	}
 
 	std::cout << "PATH LENGTH IS: " << std::to_string(m_pathLength) << std::endl;
 	return m_pathLength;
 }
 
-void Path::setWidth(float width)
-{
-	m_width = width;
-}
+std::vector<sf::Vector2f>& Path::getVertices() { return m_vertices; }
 
-float Path::getWidth() const
-{
-	return m_width;
-}
+void Path::setWidth(float width) { m_PATH_WIDTH = width; }
 
-void Path::generateSpritePath()
-{
-	/*
-	int dy = m_sprite.getTextureRect().height;
-	int dx = m_sprite.getTextureRect().width;
-	
-	//sf::Sprite& firstSprite(m_sprite);
-	//firstSprite.setPosition(m_vertices.at(0));
-	//m_spritePath.push_back(firstSprite);
-
-	float pos;
-	for (unsigned int v = 1; v < m_vertices.size(); v++)
-	{
-		if (m_vertices.at(v).x == m_vertices.at(v - 1).x && m_vertices.at(v).y > m_vertices.at(v-1).y)
-		{
-			pos = m_vertices.at(v - 1).y;
-
-			while (pos < m_vertices.at(v).y)
-			{
-				sf::Sprite& sprite(m_sprite);
-
-				sprite.setPosition(m_vertices.at(v).x, pos);
-				m_spritePath.push_back(sprite);
-
-				pos = pos + dy;
-			}
-		}
-		else if (m_vertices.at(v).x == m_vertices.at(v - 1).x && m_vertices.at(v).y < m_vertices.at(v - 1).y)
-		{
-			pos = m_vertices.at(v - 1).y;
-
-			while (pos > m_vertices.at(v).y)
-			{
-				sf::Sprite& sprite(m_sprite);
-
-				sprite.setPosition(m_vertices.at(v).x, pos);
-				m_spritePath.push_back(sprite);
-
-				pos = pos - dy;
-			}
-		}
-		else if (m_vertices.at(v).y == m_vertices.at(v - 1).y && m_vertices.at(v).x > m_vertices.at(v - 1).x)
-		{
-			pos = m_vertices.at(v - 1).x;
-
-			while (pos < m_vertices.at(v).x)
-			{
-				sf::Sprite& sprite(m_sprite);
-
-				sprite.setPosition(pos, m_vertices.at(v).y);
-				m_spritePath.push_back(sprite);
-
-				pos = pos + dx;
-			}
-		}
-		else if (m_vertices.at(v).y == m_vertices.at(v - 1).y && m_vertices.at(v).x < m_vertices.at(v - 1).x)
-		{
-			pos = m_vertices.at(v - 1).x;
-
-			while (pos > m_vertices.at(v).x)
-			{
-				sf::Sprite& sprite(m_sprite);
-
-				sprite.setPosition(pos, m_vertices.at(v).y);
-				m_spritePath.push_back(sprite);
-
-				pos = pos - dx;
-			}
-		}
-	}*/
-	for (unsigned int v = 1; v < m_vertices.size(); v++)
-	{
-		//sf::Sprite rectangle;
-		sf::RectangleShape rectangle;
-
-		rectangle.setTexture(&ResourceHolder::get().textures.get("grass_circle"));
-		
-		/*rectangle.setTextureRect(sf::IntRect(0, 0, sqrtf((m_vertices.at(v).x - m_vertices.at(v - 1).x) * (m_vertices.at(v).x - m_vertices.at(v - 1).x)
-			+ (m_vertices.at(v).y - m_vertices.at(v - 1).y) * (m_vertices.at(v).y - m_vertices.at(v - 1).y)) + 2 * tol, 2 * tol));*/
-
-		rectangle.setSize(sf::Vector2f(sqrtf((m_vertices.at(v).x - m_vertices.at(v - 1).x) * (m_vertices.at(v).x - m_vertices.at(v - 1).x)
-			+ (m_vertices.at(v).y - m_vertices.at(v - 1).y) * (m_vertices.at(v).y - m_vertices.at(v - 1).y)) + 2 * m_width, 2 * m_width));
-
-		rectangle.setOrigin(m_width, m_width);
-
-		rectangle.setPosition(m_vertices.at(v - 1).x, m_vertices.at(v - 1).y);
-
-		rectangle.setRotation(toDegrees(atan2f(m_vertices.at(v).y - m_vertices.at(v - 1).y, m_vertices.at(v).x - m_vertices.at(v - 1).x)));
-
-		m_rectPath.push_back(rectangle);
-	}
-
-
-
-}
-
-
-
-void Path::update()
-{
-
-}
-
-void Path::render(sf::RenderTarget& renderer)
-{
-	/*
-	for (auto& sprite : m_spritePath)
-	{
-		renderer.draw(sprite);
-	}*/
-
-	
-	for (auto& rect : m_rectPath)
-	{
-		renderer.draw(rect);
-	}
-}
+float Path::getWidth() const { return m_PATH_WIDTH; }
