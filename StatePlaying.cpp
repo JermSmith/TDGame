@@ -16,28 +16,32 @@ StatePlaying::StatePlaying(Game& game)
 	, m_playingMenu(sf::Vector2f((float)game.getWindow().getSize().x - 200, 100),
 		sf::Vector2f(300, 50))
 {
-	auto btn1 = gui::makeButton();
-	btn1->setText("Button 1");
-	btn1->setFunction([&]()
+	auto btnRandPath = gui::makeButton();
+	btnRandPath->setText("Make Random Path");
+	btnRandPath->setFunction([&]()
 	{
-		std::cout << "Button 1 clicked!" << std::endl;
+		m_path.createRandomPath(1);
+		//b_ = m_tower.interferesWithPath(m_path);
+		//std::cout << "interferes with path? " << std::to_string(b_) << std::endl;
 	});
-	m_playingMenu.addWidget(std::move(btn1));
 
-	auto btn2 = gui::makeButton();
-	btn2->setText("Main Menu");
-	btn2->setFunction([&]()
+	auto btnOrthoPath = gui::makeButton();
+	btnOrthoPath->setText("Make Ortho Path");
+	btnOrthoPath->setFunction([&]()
 	{
-		std::cout << "Main Menu Button clicked!" << std::endl;
+		m_path.createOrthoPath(1);
+	});
+
+	auto btnMainMenu = gui::makeButton();
+	btnMainMenu->setText("Main Menu");
+	btnMainMenu->setFunction([&]()
+	{
 		game.pushState<StateMainMenu>(game);
 	});
-	m_playingMenu.addWidget(std::move(btn2));
 
-	m_path.createOrthoPath(9);
-
-	//Tower tower;
-	bool b_ = m_tower.interferesWithPath(m_path);
-	std::cout << "interferes with path?"   << std::to_string(b_) << std::endl;
+	m_playingMenu.addWidget(std::move(btnRandPath));
+	m_playingMenu.addWidget(std::move(btnOrthoPath));
+	m_playingMenu.addWidget(std::move(btnMainMenu));
 
 }
 

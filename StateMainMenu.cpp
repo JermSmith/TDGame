@@ -5,7 +5,7 @@
 #include "GUI\Textbox.h"
 #include "Game.h"
 
-#include <iostream>
+//#include <iostream>
 
 StateMainMenu::StateMainMenu(Game& game)
 	: StateBase(game), m_mainMenu(game.getWindow(), 50)
@@ -14,31 +14,30 @@ StateMainMenu::StateMainMenu(Game& game)
 	m_banner.setPosition(sf::Vector2f(128, 64));
 	m_banner.setFillColor(sf::Color::White);
 
-	auto playBtn = gui::makeButton();
-	playBtn->setText("Play");
-	playBtn->setFunction([&]()
+	auto btnPlay = gui::makeButton();
+	btnPlay->setText("Play");
+	btnPlay->setFunction([&]()
 	{
-		std::cout << "Play Button clicked!" << std::endl;
 		game.pushState<StatePlaying>(game);
 	});
-	m_mainMenu.addWidget(std::move(playBtn));
 	
 	auto btn2 = gui::makeButton();
 	btn2->setText("Button 2");
 	btn2->setFunction([&]()
 	{
-		std::cout << "Button 2 clicked!" << std::endl;
+		
 	});
-	m_mainMenu.addWidget(std::move(btn2));
 
-	auto exitBtn = gui::makeButton();
-	exitBtn->setText("Exit");
-	exitBtn->setFunction([&]()
+	auto btnExit = gui::makeButton();
+	btnExit->setText("Exit");
+	btnExit->setFunction([&]()
 	{
-		std::cout << "Exit Button clicked!" << std::endl;
 		game.exitGame();
 	});
-	m_mainMenu.addWidget(std::move(exitBtn));
+
+	m_mainMenu.addWidget(std::move(btnPlay));
+	m_mainMenu.addWidget(std::move(btn2));
+	m_mainMenu.addWidget(std::move(btnExit));
 }
 
 void StateMainMenu::handleEvent(sf::Event e)
