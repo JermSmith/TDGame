@@ -12,7 +12,7 @@ public:
 	ResourceManager(const std::string& folder, const std::string& extension)
 		: m_folder("res/" + folder + "/"), m_extension("." + extension) { }
 
-	const Resource& get(const std::string& name)
+	Resource& get(const std::string& name)
 	{
 		if (!exists(name))
 		{
