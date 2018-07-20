@@ -6,27 +6,37 @@
 
 const sf::Vector2f& GameObject::getPosition() const { return m_position; }
 
-const sf::Vector2f& GameObject::getSize() const { return m_size; }
-		
-
 void GameObject::setPosition(sf::Vector2f& position) { m_position = position; }
+
+
+const sf::Vector2f& GameObject::getSize() const { return m_size; }
 
 void GameObject::setSize(sf::Vector2f& size) { m_size = size; }
 
 
 bool GameObject::interferesWithPath(Path& path)
 {
-	// if this function is either computationally expensive or its data can be stored in a relatively simple structure, then
-	// consider storing some of this information in the path object. but would need to ensure this data is stored and that it
-	// is stored in a function/process that makes sense, not hidden away in another procedure
-	float t_ = path.getWidth();
+	float t_ = path.getWidth() / 2; // t_ is half width
 
 	// lines directly below assume m_position takes top-left corner of object, and object is aligned with axes
 	std::vector<sf::Vector2f> corners = {};
-	corners.push_back(m_position);
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y));
-	corners.push_back(sf::Vector2f(m_position.x, m_position.y + m_size.y));
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y + m_size.y));
+	//corners.push_back(m_position); // top left
+	//corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y)); // top right
+	//corners.push_back(sf::Vector2f(m_position.x, m_position.y + m_size.y)); // bottom left
+	//corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y + m_size.y)); // bottom right
+	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y + m_size.y / 2)); // centre
+
+	corners.push_back(sf::Vector2f(m_position.x + (m_size.x - sqrtf(2)) / 2, m_position.y + (m_size.y - sqrtf(2)) / 2)); // top left of circle
+	corners.push_back(sf::Vector2f(m_position.x + (m_size.x + sqrtf(2)) / 2, m_position.y + (m_size.y - sqrtf(2)) / 2)); // top right of circle
+	corners.push_back(sf::Vector2f(m_position.x + (m_size.x - sqrtf(2)) / 2, m_position.y + (m_size.y + sqrtf(2)) / 2)); // bottom left of circle
+	corners.push_back(sf::Vector2f(m_position.x + (m_size.x + sqrtf(2)) / 2, m_position.y + (m_size.y + sqrtf(2)) / 2)); // bottom right of circle
+
+	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y)); // top middle
+	corners.push_back(sf::Vector2f(m_position.x, m_position.y + m_size.y / 2)); // left middle
+	corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y + m_size.y / 2)); // right middle
+	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y + m_size.y)); // bottom middle
+
+	// should specify different "corners" for a circle, diamond, etc.
 
 	for (unsigned int i = 1; i < path.getVertices().size(); i++)
 	{
@@ -45,6 +55,29 @@ bool GameObject::interferesWithPath(Path& path)
 
 		for (sf::Vector2f& corner : corners)
 		{
+			// check vertex interference
+
+			if (i != path.getVertices().size() - 1) // NOT last vertex
+			{
+				if (distanceBetweenPoints(corner.x, corner.y, vo.x, vo.y) <= path.getVertexWidth() / sqrtf(2))
+				{
+					return true; // a "corner" interferes with a vertex
+				}
+			}
+			else // 
+			{
+				if (distanceBetweenPoints(corner.x, corner.y, vo.x, vo.y) <= path.getVertexWidth() / sqrtf(2))
+				{
+					return true; // a "corner" interferes with second-last vertex
+				}
+				if (distanceBetweenPoints(corner.x, corner.y, vi.x, vi.y) <= path.getVertexWidth() / sqrtf(2))
+				{
+					return true; // a "corner" interferes with last vertex
+				}
+			}
+
+			// check straight section interference
+
 			if (theta == 0 || theta == PI || theta == -PI)
 			{
 				if (cos(theta) * corner.y >= cos(theta) * ol.y &&
@@ -52,7 +85,7 @@ bool GameObject::interferesWithPath(Path& path)
 					cos(theta) * corner.x >= cos(theta) * ol.x &&
 					cos(theta) * corner.x <= cos(theta) * ir.x)
 				{
-					return true; // m_position is inside the path space
+					return true; // a "corner" is inside the path space
 				}
 			}
 
@@ -63,7 +96,7 @@ bool GameObject::interferesWithPath(Path& path)
 					sin(theta) * corner.x <= sin(theta) * ol.x &&
 					sin(theta) * corner.x >= sin(theta) * ir.x)
 				{
-					return true; // m_position is inside the path space
+					return true; // a "corner" is inside the path space
 				}
 			}
 
@@ -76,7 +109,7 @@ bool GameObject::interferesWithPath(Path& path)
 					sin(theta) * (corner.y + (1 / m_)*corner.x) > sin(theta) * (ol.y + (1 / m_)*ol.x) &&
 					sin(theta) * (corner.y + (1 / m_)*corner.x) < sin(theta) * (ir.y + (1 / m_)*ir.x))
 				{
-					return true; // m_position is inside the path space
+					return true; // a "corner" is inside the path space
 				}
 			}
 		}

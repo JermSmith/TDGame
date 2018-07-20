@@ -7,14 +7,18 @@
 
 Path::Path()
 {
-	m_LEFT_BORDER = 16;
-	m_TOP_BORDER = 16;
-
 	m_firstVertex = {m_LEFT_BORDER, m_TOP_BORDER };
 	m_lastVertex = { 480, m_TOP_BORDER };
 
-	m_PATH_WIDTH = 9.;
-	m_VERTEX_RADIUS = m_PATH_WIDTH * 2;
+	m_PATH_WIDTH = 32;
+	//m_VERTEX_RADIUS = m_PATH_WIDTH * (float)1.28;
+	m_STAR_WIDTH = m_PATH_WIDTH * (float)1.28; // side length of square or diamond in the star
+
+	m_TOLERANCE = m_STAR_WIDTH + m_PATH_WIDTH;
+	m_MAX_NUM_LOOPS = 20;
+
+	m_LEFT_BORDER = m_PATH_WIDTH;
+	m_TOP_BORDER = m_PATH_WIDTH;
 
 	m_pathTexture = ResourceHolder::get().textures.get("grass");
 	m_pathTexture.setRepeated(true);
@@ -31,7 +35,6 @@ void Path::createRandomPath(int numInternalVertices)
 	int rand50 = rand.getIntInRange(0, 1);
 	float randX;
 	float randY;
-	int maxNumLoops = 15;
 
 	if (numInternalVertices == 0) { m_numVertices = rand.getIntInRange(3, 7); }
 
@@ -66,8 +69,8 @@ void Path::createRandomPath(int numInternalVertices)
 				randY = rand.getFloatInRange(128, 640);
 				
 				tries++;
-				// if loops "maxNumLoops" times, then let pass
-			} while (vertexInterferesWithPath(sf::Vector2f(randX, randY)) && tries < maxNumLoops);
+				// if loops "m_MAX_NUM_LOOPS" times, then let pass
+			} while (vertexInterferesWithPath(sf::Vector2f(randX, randY)) && tries < m_MAX_NUM_LOOPS);
 
 			m_vertices.push_back(sf::Vector2f(randX, randY));
 		}
@@ -99,8 +102,8 @@ void Path::createRandomPath(int numInternalVertices)
 				}
 
 				tries++;
-				// if loops "maxNumLoops" times, then let pass
-			} while (vertexInterferesWithPath(m_lastVertex) && tries < maxNumLoops);
+				// if loops "m_MAX_NUM_LOOPS" times, then let pass
+			} while (vertexInterferesWithPath(m_lastVertex) && tries < m_MAX_NUM_LOOPS);
 
 			m_vertices.push_back(m_lastVertex);
 		}
@@ -110,7 +113,6 @@ void Path::createRandomPath(int numInternalVertices)
 
 }
 
-// TODO: add functionality for numInternalVertices =1 (very simple to program)
 void Path::createOrthoPath(int numInternalVertices)
 {
 	m_numVertices = numInternalVertices;
@@ -119,7 +121,6 @@ void Path::createOrthoPath(int numInternalVertices)
 	int rand50 = rand.getIntInRange(0, 1);
 	float randX;
 	float randY;
-	int maxNumLoops = 15;
 	sf::Vector2f newVertex;
 	
 	if (numInternalVertices == 0) { m_numVertices = rand.getIntInRange(3, 7); }
@@ -198,8 +199,8 @@ void Path::createOrthoPath(int numInternalVertices)
 						randX = rand.getFloatInRange(128, 720);
 						newVertex = sf::Vector2f(randX, m_vertices.at(v).y);
 						tries++;
-						// if loops "maxNumLoops" times, then let pass
-					} while (vertexInterferesWithPath(newVertex) && tries < maxNumLoops); 
+						// if loops "m_MAX_NUM_LOOPS" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries < m_MAX_NUM_LOOPS);
 						
 					m_vertices.push_back(newVertex);
 				}
@@ -211,8 +212,8 @@ void Path::createOrthoPath(int numInternalVertices)
 						randY = rand.getFloatInRange(128, 640);
 						newVertex = sf::Vector2f(m_vertices.at(v).x, randY);
 						tries++;
-						// if loops "maxNumLoops" times, then let pass
-					} while (vertexInterferesWithPath(newVertex) && tries < maxNumLoops);
+						// if loops "m_MAX_NUM_LOOPS" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries < m_MAX_NUM_LOOPS);
 
 					m_vertices.push_back(newVertex);
 				}
@@ -240,14 +241,14 @@ void Path::createOrthoPath(int numInternalVertices)
 						m_lastVertex = sf::Vector2f(randX, m_TOP_BORDER);
 
 						tries1++;
-						// if loops "maxNumLoops" times, then let pass
-					} while (vertexInterferesWithPath(newVertex) && tries1 < maxNumLoops);
+						// if loops "m_MAX_NUM_LOOPS" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries1 < m_MAX_NUM_LOOPS);
 					
 					m_vertices.push_back(newVertex);
 					// the interference check for lastVertex only works correctly after newVertex has been added
 					tries2++;
-					// if loops "maxNumLoops" times, then let pass
-				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < maxNumLoops);
+					// if loops "m_MAX_NUM_LOOPS" times, then let pass
+				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < m_MAX_NUM_LOOPS);
 
 				m_vertices.push_back(m_lastVertex);
 
@@ -271,14 +272,14 @@ void Path::createOrthoPath(int numInternalVertices)
 						m_lastVertex = sf::Vector2f(m_LEFT_BORDER, randY);
 
 						tries1++;
-						// if loops "maxNumLoops" times, then let pass
-					} while (vertexInterferesWithPath(newVertex) && tries1 < maxNumLoops);
+						// if loops "m_MAX_NUM_LOOPS" times, then let pass
+					} while (vertexInterferesWithPath(newVertex) && tries1 < m_MAX_NUM_LOOPS);
 
 					m_vertices.push_back(newVertex);
 					// the interference check for lastVertex only works correctly after newVertex has been added
 					tries2++;
-					// if loops "maxNumLoops" times, then let pass
-				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < maxNumLoops);
+					// if loops "m_MAX_NUM_LOOPS" times, then let pass
+				} while (vertexInterferesWithPath(m_lastVertex) && tries2 < m_MAX_NUM_LOOPS);
 				
 				m_vertices.push_back(m_lastVertex);
 			}
@@ -307,7 +308,6 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 	float dx;
 	float dy;
 	float theta;
-	float tolerance = 3 * m_VERTEX_RADIUS + m_PATH_WIDTH;
 
 	sf::Vector2f p0;
 	sf::Vector2f p1;
@@ -330,7 +330,8 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 			&& sinf(theta) * p0.y <= sinf(theta) * p1.y)
 		{
 			// check intersection
-			if (getDistanceBetweenPoints(p0, m_vertices.at(v-1)) <= tolerance)
+			//if (getDistanceBetweenPoints(p0, m_vertices.at(v-1)) <= m_TOLERANCE)
+			if (distanceBetweenPoints(p0.x, p0.y, m_vertices.at(v-1).x, m_vertices.at(v-1).y) <= m_TOLERANCE)
 			{
 				return true; // new path segment is too close to an existing vertex
 			}
@@ -358,7 +359,8 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 			&& sinf(theta) * p0.y <= sinf(theta) * p1.y)
 		{
 			// check intersection
-			if (getDistanceBetweenPoints(p0, vertex) <= tolerance)
+			//if (getDistanceBetweenPoints(p0, vertex) <= m_TOLERANCE)
+			if (distanceBetweenPoints(p0.x, p0.y, vertex.x, vertex.y) <= m_TOLERANCE)
 			{
 				return true; // vertex (provided in argument) is too close to an existing path
 			}
@@ -373,27 +375,39 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 
 	return false;
 }
-
+/*
 float Path::getDistanceBetweenPoints(sf::Vector2f& v0, sf::Vector2f& v1)
 {
 	return sqrtf((v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y));
-}
+}*/
 
 void Path::generateSprites()
 {
 	sf::Sprite pathRectangle;
 	pathRectangle.setTexture(m_pathTexture);
-	pathRectangle.setOrigin(m_PATH_WIDTH, m_PATH_WIDTH);
+	pathRectangle.setOrigin(m_PATH_WIDTH / 2, m_PATH_WIDTH / 2);
 
+	sf::Sprite vertexDiamond;
+	vertexDiamond.setTexture(m_vertexTexture);
+	vertexDiamond.setTextureRect(sf::IntRect(0, 0, (int)m_STAR_WIDTH, (int)m_STAR_WIDTH));
+	vertexDiamond.setOrigin(m_STAR_WIDTH / 2, m_STAR_WIDTH / 2);
+	vertexDiamond.setRotation(45);
+	
+	sf::Sprite vertexSquare;
+	vertexSquare.setTexture(m_vertexTexture);
+	vertexSquare.setTextureRect(sf::IntRect(0, 0, (int)m_STAR_WIDTH, (int)m_STAR_WIDTH));
+	vertexSquare.setOrigin(m_STAR_WIDTH / 2, m_STAR_WIDTH / 2);
+
+	/*
 	sf::CircleShape vertexCircle;
 	vertexCircle.setTexture(&m_vertexTexture);
 	vertexCircle.setRadius(m_VERTEX_RADIUS);
 	vertexCircle.setOrigin(sf::Vector2f(vertexCircle.getRadius(), vertexCircle.getRadius()));
-
+	*/
 	for (unsigned int v = 1; v < m_vertices.size(); v++)
 	{
 		pathRectangle.setTextureRect(sf::IntRect(0, 0, (int)(sqrtf((m_vertices.at(v).x - m_vertices.at(v - 1).x) * (m_vertices.at(v).x - m_vertices.at(v - 1).x)
-			+ (m_vertices.at(v).y - m_vertices.at(v - 1).y) * (m_vertices.at(v).y - m_vertices.at(v - 1).y)) + 2 * m_PATH_WIDTH), (int)(2 * m_PATH_WIDTH)));
+			+ (m_vertices.at(v).y - m_vertices.at(v - 1).y) * (m_vertices.at(v).y - m_vertices.at(v - 1).y)) + m_PATH_WIDTH), (int)(m_PATH_WIDTH)));
 
 		pathRectangle.setPosition(m_vertices.at(v - 1).x, m_vertices.at(v - 1).y);
 
@@ -404,16 +418,31 @@ void Path::generateSprites()
 
 		if (v != m_vertices.size() - 1)
 		{
-			vertexCircle.setPosition(m_vertices.at(v - 1));
-			m_vertexCircles.push_back(vertexCircle);
+			//vertexCircle.setPosition(m_vertices.at(v - 1));
+			//m_vertexCircles.push_back(vertexCircle);
+
+			vertexSquare.setPosition(m_vertices.at(v - 1));
+			vertexDiamond.setPosition(m_vertices.at(v - 1));
+			m_vertexStars.push_back(vertexSquare);
+			m_vertexStars.push_back(vertexDiamond);
 		}
 		else
 		{
-			vertexCircle.setPosition(m_vertices.at(v - 1));
-			m_vertexCircles.push_back(vertexCircle);
+			//vertexCircle.setPosition(m_vertices.at(v - 1));
+			//m_vertexCircles.push_back(vertexCircle);
 
-			vertexCircle.setPosition(m_vertices.at(v));
-			m_vertexCircles.push_back(vertexCircle);
+			//vertexCircle.setPosition(m_vertices.at(v));
+			//m_vertexCircles.push_back(vertexCircle);
+
+			vertexSquare.setPosition(m_vertices.at(v - 1));
+			vertexDiamond.setPosition(m_vertices.at(v - 1));
+			m_vertexStars.push_back(vertexSquare);
+			m_vertexStars.push_back(vertexDiamond);
+
+			vertexSquare.setPosition(m_vertices.at(v));
+			vertexDiamond.setPosition(m_vertices.at(v));
+			m_vertexStars.push_back(vertexSquare);
+			m_vertexStars.push_back(vertexDiamond);
 		}
 		
 	}
@@ -428,14 +457,17 @@ void Path::render(sf::RenderTarget& renderer)
 {
 	for (auto& rect : m_pathRectangles) { renderer.draw(rect); }
 
-	for (auto& circ : m_vertexCircles) { renderer.draw(circ); }
+	//for (auto& circ : m_vertexCircles) { renderer.draw(circ); }
+
+	for (auto& diam : m_vertexStars) { renderer.draw(diam); }
 }
 
 void Path::clear()
 {
 	m_vertices.clear();
 	m_pathRectangles.clear();
-	m_vertexCircles.clear();
+	//m_vertexCircles.clear();
+	m_vertexStars.clear();
 }
 
 float Path::getLength()
@@ -458,3 +490,5 @@ std::vector<sf::Vector2f>& Path::getVertices() { return m_vertices; }
 void Path::setWidth(float width) { m_PATH_WIDTH = width; }
 
 float Path::getWidth() const { return m_PATH_WIDTH; }
+
+float Path::getVertexWidth() const { return m_STAR_WIDTH; }
