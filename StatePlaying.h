@@ -4,6 +4,7 @@
 #include "GUI\StackMenu.h"
 #include "GameObjects\Path.h"
 #include "GameObjects\Tower.h"
+#include "GameObjects\Enemy.h"
 
 //Game state for the main part of the game
 
@@ -22,6 +23,10 @@ private:
 	gui::StackMenu m_playingMenu;
 	sf::RectangleShape m_banner;
 	Path m_path;
-	Tower m_tower;
+
+	//void addGameObject(std::unique_ptr<GameObject> object);
+
+	void clearGameObjects();
+	std::vector<GameObject*> m_gameObjects;
 
 };
