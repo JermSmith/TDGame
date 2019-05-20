@@ -15,8 +15,8 @@ public:
 	std::vector<sf::Vector2f> getVertices();
 	void setVertices(std::vector<sf::Vector2f> vertices);
 
-	int getSpeed();
-	void setSpeed(int speed);
+	float getSpeed();
+	void setSpeed(float speed);
 
 	sf::Vector2f getDirection();
 	void setDirection(sf::Vector2f startPos, sf::Vector2f endPos);
@@ -30,13 +30,18 @@ public:
 private:
 	int m_health = 24;
 
-	int m_speed = 4; // pixels per second
+	float m_speed = (float)2; // pixels per second
+
+	void updatePosition();
 
 	std::vector<sf::Vector2f> m_vertices;
+	
+	unsigned int m_nextVertex = 1; // 1 is for its first destination vertex, and increases after arriving at each vertex
 
-	sf::Vector2f m_direction;
+	sf::Vector2f m_direction; // unit vector describing direction of motion of enemy
 
 	// m_position, m_size inherited from GameObject
 
-	sf::Sprite m_sprite;
+	/*sf::Sprite m_sprite;*/
+	sf::CircleShape m_circle;
 };
