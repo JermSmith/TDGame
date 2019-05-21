@@ -18,25 +18,21 @@ bool GameObject::interferesWithPath(Path& path)
 {
 	float t_ = path.getWidth() / 2; // t_ is half width
 
-	// lines directly below assume m_position takes top-left corner of object, and object is aligned with axes
-	std::vector<sf::Vector2f> corners = {};
-	//corners.push_back(m_position); // top left
-	//corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y)); // top right
-	//corners.push_back(sf::Vector2f(m_position.x, m_position.y + m_size.y)); // bottom left
-	//corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y + m_size.y)); // bottom right
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y + m_size.y / 2)); // centre
+	std::vector<sf::Vector2f> corners = {}; // vector containing all points to check for potential collision
 
-	corners.push_back(sf::Vector2f(m_position.x + (m_size.x - sqrtf(2)) / 2, m_position.y + (m_size.y - sqrtf(2)) / 2)); // top left of circle
-	corners.push_back(sf::Vector2f(m_position.x + (m_size.x + sqrtf(2)) / 2, m_position.y + (m_size.y - sqrtf(2)) / 2)); // top right of circle
-	corners.push_back(sf::Vector2f(m_position.x + (m_size.x - sqrtf(2)) / 2, m_position.y + (m_size.y + sqrtf(2)) / 2)); // bottom left of circle
-	corners.push_back(sf::Vector2f(m_position.x + (m_size.x + sqrtf(2)) / 2, m_position.y + (m_size.y + sqrtf(2)) / 2)); // bottom right of circle
+	/* the following assignment assumes m_position takes centre of circle (and that circle is aligned with axes, although doesn't matter for circles) */
 
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y)); // top middle
-	corners.push_back(sf::Vector2f(m_position.x, m_position.y + m_size.y / 2)); // left middle
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x, m_position.y + m_size.y / 2)); // right middle
-	corners.push_back(sf::Vector2f(m_position.x + m_size.x / 2, m_position.y + m_size.y)); // bottom middle
+	corners.push_back(sf::Vector2f(m_position.x, m_position.y)); // centre
 
-	// should specify different "corners" for a circle, diamond, etc.
+	int numOfPointsOnCircle = 16; // number of points on circle to check for possible collisions; power of 2 allows top and bottom of circle to be included
+	for (int angle = (-numOfPointsOnCircle / 2 + 1); angle <= numOfPointsOnCircle; angle++)
+	{
+		corners.push_back(sf::Vector2f(
+			m_position.x + cos(angle * PI * 2 / numOfPointsOnCircle) * (m_size.x / 2),
+			m_position.y + sin(angle * PI * 2 / numOfPointsOnCircle) * (m_size.y / 2))); // e.g. for increments of PI/4, # of divisions is 8
+	}
+
+	/* could specify different "corners" for a square, diamond, etc. */
 
 	for (unsigned int i = 1; i < path.getVertices().size(); i++)
 	{

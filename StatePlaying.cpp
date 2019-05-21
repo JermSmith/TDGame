@@ -98,7 +98,7 @@ void StatePlaying::handleEvent(sf::Event e)
 		/*
 		std::unique_ptr<GameObject> tempObject = m_gameObjects.back();
 		
-		if (m_world.interferencePathAndObj(m_path, tempObject) || m_path.getLength() == 0)
+		if (m_world.interferencePathAndObj(m_path, tempObject))
 		{
 			m_gameObjects.pop_back();
 		}*/
