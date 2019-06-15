@@ -66,8 +66,14 @@ void Enemy::updatePosition()
 	m_position.x = m_position.x + m_direction.x * m_speed;
 	m_position.y = m_position.y + m_direction.y * m_speed;
 
-	if (m_direction.x * m_position.x >= m_direction.x * m_vertices.at(m_nextVertex).x &&
+	if ((m_direction.x * m_position.x >= m_direction.x * m_vertices.at(m_nextVertex).x &&
 		m_direction.y * m_position.y >= m_direction.y * m_vertices.at(m_nextVertex).y)
+		||
+		(abs(m_direction.x) < sin(PI / 9) &&    //moving vertically at an angle > 70 degrees, so only check that x-component has passed vertex
+		m_direction.y * m_position.y > m_direction.y * m_vertices.at(m_nextVertex).y)
+		||
+		(abs(m_direction.y) < sin(PI / 9) &&    //moving horizontally at an angle < 20 degrees, so only check that y-component has passed vertex
+		m_direction.x * m_position.x > m_direction.x * m_vertices.at(m_nextVertex).x))
 		// note 1: multiply by m_direction.x or y to change direction of inequality for motion in a negative direction
 		// note 2: >= means that for ortho path, x-component may always be equal (so true) but y-component will change from 
 		//			false to true at some point (or vice versa). equal sign not necessary for path of arbitrary directions
