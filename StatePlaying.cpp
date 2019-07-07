@@ -5,9 +5,6 @@
 #include "GUI\Textbox.h"
 #include "Game.h"
 
-#include "GameObjects\World.h"
-//#include "GameObjects\Tower.h"
-
 #include <iostream>
 
 StatePlaying::StatePlaying(Game& game)
@@ -17,27 +14,27 @@ StatePlaying::StatePlaying(Game& game)
 {
 	auto btnRandPath = gui::makeButton();
 	btnRandPath->setText("Make Random Path");
-	//btnRandPath->setFunction([&]() { m_path.createRandomPath(4); });
+	btnRandPath->setFunction([&]() { m_world.createRandomPath(); });
 
 	auto btnOrthoPath = gui::makeButton();
 	btnOrthoPath->setText("Make Ortho Path");
-	//btnOrthoPath->setFunction([&]() { m_path.createOrthoPath(4); });
+	btnOrthoPath->setFunction([&]() { m_world.createOrthoPath(); });
 
 	auto btnClearLevel = gui::makeButton();
 	btnClearLevel->setText("Clear Level");
 	btnClearLevel->setFunction([&]()
 	{
-		//m_path.clear();
-		//m_gameObjects.clear();
+		m_world.clearScene();
 	});
 
-	auto btnStartLevel = gui::makeButton();
-	btnStartLevel->setText("Start Level");
-	btnStartLevel->setFunction([&]()
+	auto btnStartWave = gui::makeButton();
+	btnStartWave->setText("Start Next Wave");
+	btnStartWave->setFunction([&]()
 	{
-		//if (m_path.getVertices().size() == 0) { m_path.createRandomPath(4); }
+		// tell the enemies to start coming
 
-		//m_gameObjects.push_back(std::make_unique<Enemy>(m_path.getVertices(), 100)); // instantiate an enemy
+		m_world.allowInstantiatingEnemies();
+
 	});
 
 	auto btnMainMenu = gui::makeButton();
@@ -55,10 +52,12 @@ StatePlaying::StatePlaying(Game& game)
 		else { m_world.setBoolTowerBeingPlaced(true); }
 	});
 
+
+
 	m_playingMenu.addWidget(std::move(btnRandPath));
 	m_playingMenu.addWidget(std::move(btnOrthoPath));
 	m_playingMenu.addWidget(std::move(btnClearLevel));
-	m_playingMenu.addWidget(std::move(btnStartLevel));
+	m_playingMenu.addWidget(std::move(btnStartWave));
 	m_playingMenu.addWidget(std::move(btnMainMenu));
 	m_playingMenu.addWidget(std::move(btnPlaceTower));
 	

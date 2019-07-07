@@ -1,7 +1,6 @@
 #include "GameObject.h"
 #include "Util\Math.h"
 
-#include <iostream>
 
 const sf::Vector2f& GameObject::getPosition() const { return m_position; }
 void GameObject::setPosition(sf::Vector2f& position) { m_position = position; }

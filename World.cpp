@@ -1,14 +1,13 @@
 #include "Util\Math.h"
 
 #include "World.h"
-#include "Path.h"
-#include "Tower.h"
-#include "Enemy.h"
+#include "GameObjects\Path.h"
+#include "GameObjects\Tower.h"
+#include "GameObjects\Enemy.h"
 
 World::World()
 {
-	m_path.createRandomPath(4);
-	m_gameObjects.push_back(std::make_unique<Enemy>(m_path.getVertices(), 100)); // instantiate an enemy
+	
 }
 
 void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
@@ -37,6 +36,22 @@ bool World::getBoolTowerBeingPlaced() { return m_bTowerBeingPlaced; }
 void World::setBoolTowerBeingPlaced(bool b)
 {
 	m_bTowerBeingPlaced = b;
+}
+
+void World::createOrthoPath() { m_path.createOrthoPath(4); }
+void World::createRandomPath() { m_path.createRandomPath(4); }
+void World::clearScene()
+{
+	m_path.clear();
+	m_gameObjects.clear();
+}
+
+void World::instantiateEnemies()
+{
+	if (m_path.getLength() > 0)
+	{
+		m_gameObjects.push_back(std::make_unique<Enemy>(m_path.getVertices(), 100)); // instantiate an enemy
+	}
 }
 
 void World::handleInput()

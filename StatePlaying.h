@@ -2,7 +2,7 @@
 
 #include "StateBase.h"
 #include "GUI\StackMenu.h"
-#include "GameObjects\World.h"
+#include "Util\World.h"
 
 //Game state for the main part of the game
 

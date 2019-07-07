@@ -481,7 +481,7 @@ float Path::getLength()
 				+ (m_vertices.at(i).y - m_vertices.at(i - 1).y) * (m_vertices.at(i).y - m_vertices.at(i - 1).y));
 	}
 
-	std::cout << "PATH LENGTH IS: " << std::to_string(m_pathLength) << std::endl;
+	//std::cout << "PATH LENGTH IS: " << std::to_string(m_pathLength) << std::endl;
 	return m_pathLength;
 }
 

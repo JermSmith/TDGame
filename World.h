@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.h"
+#include "GameObjects\GameObject.h"
 #include "GUI\Cursor.h"
 #include <memory>
 
@@ -13,8 +13,14 @@ public:
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	void handleInput();
 	void update(sf::Time deltaTime, const sf::RenderWindow& window);
-	//void fixedUpdate(sf::Time deltaTime);
+	void fixedUpdate(sf::Time deltaTime);
 	void render(sf::RenderTarget& renderer);
+
+	void createOrthoPath();
+	void createRandomPath();
+	void clearScene();
+
+	void instantiateEnemies();
 
 	void setBoolTowerBeingPlaced(bool tf);
 	bool getBoolTowerBeingPlaced();
