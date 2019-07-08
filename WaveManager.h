@@ -1,5 +1,6 @@
 #pragma once
-#include "GameObjects\GameObject.h"
+//#include "GameObjects\GameObject.h"
+#include "GameObjects\Enemy.h"
 #include "GameObjects\Path.h"
 #include <memory>
 
@@ -9,7 +10,8 @@ class WaveManager
 public:
 	void reset();
 
-	void instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *gameobjects, std::vector<sf::Vector2f> *vertices);
+	//void instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *gameobjects, std::vector<sf::Vector2f> *vertices);
+	void instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices);
 
 	bool getbCanInstantiateEnemies();
 	void setbCanInstantiateEnemies(bool);

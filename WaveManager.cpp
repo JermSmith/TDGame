@@ -11,7 +11,8 @@ void WaveManager::reset()
 
 }
 
-void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *gameobjects, std::vector<sf::Vector2f> *vertices)
+//void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *gameobjects, std::vector<sf::Vector2f> *vertices)
+void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices) // NEW
 {
 	//trigger for next wave to begin (and wavenumber to increase) is a click on "start wave", which makes bCanInstantiateEnemies true
 	//this function only gets entered when bCanInstantiateEnemies is true
@@ -25,7 +26,8 @@ void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *g
 		// such as types of enemies, speed, health (already included), random possibilities. These characteristics for a given wave
 		// could be read from a/multiple private vectors belonging to WaveManager, so that World.cpp doesn't need to concern itself
 		// with the types of waves being sent, only with sending the next wave when it is called for
-		gameobjects->push_back(std::make_unique<Enemy>(*vertices, 100)); // instantiate an enemy
+		//gameobjects->push_back(std::make_unique<Enemy>(*vertices, 100)); // instantiate an enemy
+		enemies->push_back(std::make_unique<Enemy>(*vertices, 100)); // instantiate an enemy // NEW
 		m_numOfEnemiesStarted++;
 
 		std::cout << "Enemy started for wave # " << m_waveNumber << std::endl;

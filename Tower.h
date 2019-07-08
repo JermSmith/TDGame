@@ -12,11 +12,17 @@ public:
 	void update() override;
 	void render(sf::RenderTarget& renderer) override;
 
+	int getRange();
+	void setRange(int);
 
 private:
+	
+	int m_range;
 
 
+
+	
 	sf::CircleShape m_circle;
-
+	
 
 };

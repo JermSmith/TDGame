@@ -51,3 +51,7 @@ void Tower::render(sf::RenderTarget& renderer)
 
 }
 
+
+int Tower::getRange() { return m_range; }
+void Tower::setRange(int range) { m_range = range; }
+
