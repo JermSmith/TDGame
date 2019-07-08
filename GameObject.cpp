@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "Util\Math.h"
 
 
 const sf::Vector2f& GameObject::getPosition() const { return m_position; }

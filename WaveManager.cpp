@@ -11,8 +11,7 @@ void WaveManager::reset()
 
 }
 
-//void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<GameObject>> *gameobjects, std::vector<sf::Vector2f> *vertices)
-void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices) // NEW
+void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices)
 {
 	//trigger for next wave to begin (and wavenumber to increase) is a click on "start wave", which makes bCanInstantiateEnemies true
 	//this function only gets entered when bCanInstantiateEnemies is true
