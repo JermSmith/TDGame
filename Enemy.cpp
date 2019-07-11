@@ -1,40 +1,25 @@
 #include "Enemy.h"
 #include "Util\Math.h"
 #include <iostream>
-
-// constructors
+#include "ResourceManager\ResourceHolder.h"
 
 Enemy::Enemy()
 {
-	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
-	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
-}
-Enemy::Enemy(int health)
-{
-	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
-	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
 	
-	m_health = health;
 }
-Enemy::Enemy(std::vector<sf::Vector2f> vertices)
-{
-	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
-	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
-	
-	m_vertices = vertices;
 
-	m_position = vertices.at(0); // assumes path has at least 1 vertex
-	setDirection(vertices.at(0), vertices.at(1)); // sets m_direction
-}
 Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health)
 {
 	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
 	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
 
+	// m_healthString.setFont(ResourceHolder::get().fonts.get("stkaiti"));
+	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
+	m_healthString.setFillColor(sf::Color::Yellow);
+
 	m_circle.setRadius(16.);
 	m_circle.setFillColor(sf::Color::Red);
 	m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
-
 
 	m_vertices = vertices;
 	m_health = health;
@@ -86,6 +71,7 @@ void Enemy::updatePosition()
 			// this means enemy has arrived at final vertex
 			//this->setPosition(sf::Vector2f(0, 0));
 			this->setSpeed(0);
+			this->m_circle.setFillColor(sf::Color::Transparent);
 			m_nextVertex = 0;
 		}
 		else { setDirection(m_vertices.at(m_nextVertex - 1), m_vertices.at(m_nextVertex)); }
@@ -95,9 +81,10 @@ void Enemy::updatePosition()
 
 void Enemy::update()
 {
-	// need to incorporate destinations for switching direction
-	
 	updatePosition();
+
+	m_healthString.setString(std::to_string(m_health));
+	m_healthString.setPosition(m_position);
 
 }
 
@@ -108,6 +95,7 @@ void Enemy::render(sf::RenderTarget& renderer)
 
 	m_circle.setPosition(m_position);
 	renderer.draw(m_circle);
+	renderer.draw(m_healthString);
 
 }
 

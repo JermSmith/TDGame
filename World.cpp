@@ -23,8 +23,7 @@ void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
 		{
 			//no interference found with new object and path, so can place object
 			m_testNewTower.pop_back();
-			m_towers.push_back(std::make_unique<Tower>(window)); // "move" the test tower to the vector of towers
-			//TODO: this construction of a tower can include more arguments than the checking tower - it should include range and type of attack
+			m_towers.push_back(std::make_unique<Tower>(window, attackType::cuberoot, 1, 128, 1000)); // "move" the test tower to the vector of towers
 			m_bTowerBeingPlaced = false;
 		}
 		else
@@ -66,7 +65,7 @@ void World::update(sf::Time deltaTime, const sf::RenderWindow& window)
 {
 	for (unsigned int i = 0; i < m_towers.size(); i++)
 	{
-		m_towers.at(i)->update();
+		m_towers.at(i)->update(m_enemies);
 	}
 	for (unsigned int i = 0; i < m_enemies.size(); i++)
 	{

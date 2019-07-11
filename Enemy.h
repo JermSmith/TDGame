@@ -5,8 +5,6 @@ class Enemy : public GameObject
 {
 public:
 	Enemy();
-	Enemy(int health);
-	Enemy(std::vector<sf::Vector2f> path);
 	Enemy(std::vector<sf::Vector2f> path, int health);
 	
 	int getHealth();
@@ -21,14 +19,15 @@ public:
 	sf::Vector2f getDirection();
 	void setDirection(sf::Vector2f startPos, sf::Vector2f endPos);
 
-	void update() override;
+	void update();
 	void render(sf::RenderTarget& renderer) override;
 
 
 
 
 private:
-	int m_health = 24;
+	int m_health;
+	sf::Text m_healthString;
 
 	float m_speed = (float)2; // pixels per second
 

@@ -1,17 +1,11 @@
 #include "Tower.h"
-#include "Util\Random.h"
 #include "Util\Math.h"
-
-static Random<> rand2;
+#include "ResourceManager\ResourceHolder.h"
+#include <algorithm>
 
 Tower::Tower()
 {
 
-}
-
-Tower::Tower(sf::Vector2i position)
-{
-	//m_position = sf::Vector2f(position);
 }
 
 Tower::Tower(const sf::RenderWindow& window)
@@ -26,6 +20,61 @@ Tower::Tower(const sf::RenderWindow& window)
 	m_circle.setFillColor(sf::Color::Cyan);
 }
 
+// (1)window, (2)attack type, (3)strength, (4)range, (5)rate[in ms]
+Tower::Tower(const sf::RenderWindow& window, attackType type, int strength, int range, int rate)
+{
+	m_size = sf::Vector2f(64, 64);
+	m_position = sf::Vector2f(sf::Mouse::getPosition(window)); //position where the mouse is clicked; want this to be centre of circle
+
+	// m_strengthString.setFontResourceHolder::get().fonts.get("stkaiti"));
+	m_strengthString.setFont(ResourceHolder::get().fonts.get("arial"));
+	m_strengthString.setPosition(m_position);
+	m_strengthString.setFillColor(sf::Color::Red);
+
+	m_circle.setRadius(m_size.x / 2);
+	m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
+	//origin is relative to the top left corner of the circle's surrounding "box"; in this case, set to be the centre of circle
+	m_circle.setPosition(sf::Vector2f(m_position.x, m_position.y)); //origin of the circle goes to this position, which is location of click
+	m_circle.setFillColor(sf::Color::Cyan);
+
+	m_attackType = type;
+
+	switch (m_attackType)
+	{
+	case attackType::divide:
+	{
+		m_strength = strength;
+		m_strengthString.setString("/ " + std::to_string(m_strength));
+		break;
+	}
+	case attackType::subtract:
+	{
+		m_strength = strength;
+		m_strengthString.setString("- " + std::to_string(m_strength));
+		break;
+	}
+	case attackType::squareroot:
+	{
+		m_strength = 1; //meaningless
+		m_strengthString.setString("Sqrt");
+		break;
+	}
+	case attackType::cuberoot:
+	{
+		m_strength = 1; //meaningless
+		m_strengthString.setString("Cbrt");
+		break;
+	}
+	default:
+	{
+
+		break;
+	}
+	}
+
+	m_range = range;
+	m_rate = rate;
+}
 
 
 void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
@@ -40,24 +89,100 @@ void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	}
 }
 
-void Tower::update()
+void Tower::update(std::vector<std::unique_ptr<Enemy>>& enemies)
 {
-	//TODO: loop through the list of enemies and calculate the distance.
-	//if the distance is smaller than the range of the tower, then attack the enemy
+	m_delayTime = sf::milliseconds(m_rate);
+	m_elapsedTime = m_timer.getElapsedTime() - m_timePoint;
+
+	if (m_elapsedTime > m_delayTime)
+	{
+		m_timePoint = m_timer.getElapsedTime();
+
+		this->reduceEnemyHealth(enemies);
+	}
+}
+
+void Tower::reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>& enemies)
+{
+	float distance;
+	float minDistance = (float)this->getRange(); //reset
+	int enemyIndex = -1;
+
+	for (unsigned int i = 0; i < enemies.size(); i++)
+	{
+		distance = distanceBetweenPoints(
+			enemies.at(i)->getPosition().x, enemies.at(i)->getPosition().y, this->getPosition().x, this->getPosition().y);
+
+		if (distance <= this->getRange())
+		{
+			if (distance <= minDistance)
+			{
+				switch (m_attackType) // only doing these calculations for enemies in range
+				{
+				case attackType::divide:
+					if (enemies.at(i)->getHealth() % this->m_strength == 0) // mod
+					{
+						minDistance = distance; //new minimum distance found
+						enemyIndex = i;
+					}
+					break;
+				case attackType::subtract:
+					minDistance = distance; // new minumum distance found
+					enemyIndex = i;
+					break;
+				case attackType::squareroot:
+					if (std::round(std::sqrt(enemies.at(i)->getHealth())) - std::sqrt(enemies.at(i)->getHealth()) == 0) // is a perfect square
+					{
+						minDistance = distance; // new minumum distance found
+						enemyIndex = i;
+					}
+					break;
+				case attackType::cuberoot:
+					if (std::round(std::cbrt(enemies.at(i)->getHealth())) - std::cbrt(enemies.at(i)->getHealth()) == 0) // is a perfect square
+					{
+						minDistance = distance; // new minumum distance found
+						enemyIndex = i;
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	if (enemyIndex != -1) //changed
+	{
+		switch (m_attackType)
+		{
+		case attackType::divide:
+			enemies.at(enemyIndex)->setHealth(enemies.at(enemyIndex)->getHealth() / m_strength);
+			break;
+		case attackType::subtract:
+			enemies.at(enemyIndex)->setHealth(enemies.at(enemyIndex)->getHealth() - m_strength);
+			break;
+		case attackType::squareroot:
+			enemies.at(enemyIndex)->setHealth((int)std::sqrt(enemies.at(enemyIndex)->getHealth()));
+			break;
+		case attackType::cuberoot:
+			enemies.at(enemyIndex)->setHealth((int)std::cbrt(enemies.at(enemyIndex)->getHealth()));
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void Tower::render(sf::RenderTarget& renderer)
 {
 	renderer.draw(m_circle);
-
+	renderer.draw(m_strengthString);
 }
-
 
 int Tower::getRange() { return m_range; }
 void Tower::setRange(int range) { m_range = range; }
 
-int Tower::getDivisor() { return m_divisor; }
-void Tower::setDivisor(int divisor) { m_divisor = divisor; }
+int Tower::getStrength() { return m_strength; }
+void Tower::setStrength(int strength) { m_strength = strength; }
 
 
 bool Tower::bInterferesWithScene(std::vector<std::unique_ptr<Tower>>& towers, Path & path, const sf::RenderWindow & window)

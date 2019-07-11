@@ -26,7 +26,7 @@ void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemie
 		// could be read from a/multiple private vectors belonging to WaveManager, so that World.cpp doesn't need to concern itself
 		// with the types of waves being sent, only with sending the next wave when it is called for
 		//gameobjects->push_back(std::make_unique<Enemy>(*vertices, 100)); // instantiate an enemy
-		enemies->push_back(std::make_unique<Enemy>(*vertices, 100)); // instantiate an enemy // NEW
+		enemies->push_back(std::make_unique<Enemy>(*vertices, 134217728)); // instantiate an enemy
 		m_numOfEnemiesStarted++;
 
 		std::cout << "Enemy started for wave # " << m_waveNumber << std::endl;

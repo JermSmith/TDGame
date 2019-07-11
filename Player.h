@@ -5,7 +5,7 @@ class Player : public GameObject
 {
 public:
 
-	void update() override;
+	void update();
 	void render(sf::RenderTarget& renderer) override;
 
 
