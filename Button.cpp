@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "Util\Math.h"
 #include <iostream>
 
 namespace gui
@@ -47,6 +48,8 @@ namespace gui
 			{
 			case sf::Mouse::Left:
 				if (m_button.getGlobalBounds().contains((float)pos.x, (float)pos.y))
+					//(float)pos.x * OG_WINDOW_SIZE_X / window.getSize().x, (float)pos.y * OG_WINDOW_SIZE_Y / window.getSize().y))
+					//global bounds conform exactly to the rectangle b/c there is no rotation applied to the rectangle
 				{
 					m_function();
 				}

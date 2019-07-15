@@ -1,11 +1,14 @@
 #include "StackMenu.h"
-
+#include "Util\Math.h"
 #include "ResourceManager\ResourceHolder.h"
 
 constexpr float BASE_Y = 95.0f;
 
 namespace gui
 {
+	/*StackMenu::StackMenu(const sf::RenderWindow& window, float baseY)
+		: m_basePosition((float)window.getSize().x / 2.0f, baseY * OG_WINDOW_SIZE_Y / window.getSize().y)
+		, m_baseSize(300, 20)*/
 	StackMenu::StackMenu(const sf::RenderWindow& window, float baseY)
 		: m_basePosition((float)window.getSize().x / 2.0f, baseY)
 		, m_baseSize(300, 20)

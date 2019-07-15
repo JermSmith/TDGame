@@ -1,9 +1,9 @@
 #include "Game.h"
 #include "States\StateMainMenu.h"
-
+#include "Util\Math.h"
 #include <iostream>
 
-Game::Game() : m_window({ 1280, 720 }, "Prime TD")
+Game::Game() : m_window({ OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y }, "Prime TD")
 {
 	m_window.setPosition({ m_window.getPosition().x, 0 });
 	m_window.setFramerateLimit(60);
@@ -87,12 +87,66 @@ void Game::handleEvent()
 
 	while (m_window.pollEvent(e))
 	{
+		std::pair<unsigned int, unsigned int> prevWindowSize = std::make_pair(OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y);
+
 		getCurrentState().handleEvent(e);
 		switch (e.type)
 		{
 		case sf::Event::Closed:
 			m_window.close();
 			break;
+
+		case sf::Event::MouseButtonPressed:
+			if (e.mouseButton.button == sf::Mouse::Right)
+			{
+				m_window.setSize(sf::Vector2u(OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y));
+				m_window.setView(m_window.getDefaultView());
+				m_window.setPosition({ 0, 0 });
+			}
+			break;
+
+		case sf::Event::Resized:
+			//m_window.setView(sf::View(sf::FloatRect(0, 0, (float)e.size.width, (float)e.size.height)));
+
+			if ((float)m_window.getSize().x / (float)m_window.getSize().y <
+				((float)OG_WINDOW_SIZE_X / (float)OG_WINDOW_SIZE_Y)) //AR is "tall", horiz dimension fits in window
+			{
+				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)OG_WINDOW_SIZE_X, (float)OG_WINDOW_SIZE_Y));
+
+				resizedView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f,
+					(float)OG_WINDOW_SIZE_Y * ((float)m_window.getSize().x / (float)OG_WINDOW_SIZE_X) / (float)m_window.getSize().y));
+
+				m_window.setView(resizedView);
+			}
+			
+			else if ((float)m_window.getSize().x / (float)m_window.getSize().y >
+				((float)OG_WINDOW_SIZE_X / (float)OG_WINDOW_SIZE_Y)) //AR is "wide", vertical dimension fits in window
+			{
+				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)OG_WINDOW_SIZE_X, (float)OG_WINDOW_SIZE_Y));
+
+				resizedView.setViewport(sf::FloatRect(0.f, 0.f,
+					(float)OG_WINDOW_SIZE_X * ((float)m_window.getSize().y / (float)OG_WINDOW_SIZE_Y) / (float)m_window.getSize().x,
+					1.0f));
+
+				m_window.setView(resizedView);
+			}
+
+			prevWindowSize = std::make_pair(m_window.getSize().x, m_window.getSize().y);
+
+			break;
+
+		/*case sf::Event::MouseWheelScrolled:
+			if (e.mouseWheelScroll.delta < 0)
+			{
+				m_window.setView(sf::View(sf::FloatRect(
+					OG_WINDOW_SIZE_X - (float)m_window.getSize().x, OG_WINDOW_SIZE_Y - (float)m_window.getSize().y,
+					(float)m_window.getSize().x, (float)m_window.getSize().y)));
+			}
+			else if (e.mouseWheelScroll.delta > 0)
+			{
+				m_window.setView(sf::View(sf::FloatRect(0, 0, (float)m_window.getSize().x, (float)m_window.getSize().y)));
+			}
+			break;*/
 
 		default:
 			break;
@@ -129,3 +183,4 @@ const sf::RenderWindow& Game::getWindow() const
 {
 	return m_window;
 }
+

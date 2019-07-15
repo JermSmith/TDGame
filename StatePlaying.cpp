@@ -1,6 +1,7 @@
 #include "StatePlaying.h"
 #include "StateMainMenu.h"
 
+#include "Util\Math.h"
 #include "GUI\Button.h"
 #include "GUI\Textbox.h"
 #include "Game.h"
@@ -9,8 +10,7 @@
 
 StatePlaying::StatePlaying(Game& game)
 	: StateBase(game)
-	, m_playingMenu(sf::Vector2f((float)game.getWindow().getSize().x - 200, 100),
-		sf::Vector2f(300, 50))
+	, m_playingMenu(sf::Vector2f(((float)game.getWindow().getSize().x - 200), 100), sf::Vector2f(300, 50))
 {
 	auto btnRandPath = gui::makeButton();
 	btnRandPath->setText("Make Random Path");

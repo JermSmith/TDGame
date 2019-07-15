@@ -19,7 +19,9 @@ public:
 
 private:
 	gui::StackMenu m_playingMenu;
-	sf::RectangleShape m_banner;
+
+	//sf::RectangleShape m_banner;
+
 	World m_world;
 
 };

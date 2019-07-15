@@ -3,6 +3,9 @@
 constexpr float PI = 3.14159265f;
 constexpr float MIN_PI = 3.14f;
 
+constexpr unsigned int OG_WINDOW_SIZE_X = 1280;
+constexpr unsigned int OG_WINDOW_SIZE_Y = 720;
+
 template <typename T>
 T toRadians(T degrees)
 {

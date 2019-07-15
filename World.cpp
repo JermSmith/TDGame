@@ -23,7 +23,7 @@ void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
 		{
 			//no interference found with new object and path, so can place object
 			m_testNewTower.pop_back();
-			m_towers.push_back(std::make_unique<Tower>(window, attackType::cuberoot, 1, 128, 1000)); // "move" the test tower to the vector of towers
+			m_towers.push_back(std::make_unique<Tower>(window, attackType::divide, 3, 128, 1000)); // "move" the test tower to the vector of towers
 			m_bTowerBeingPlaced = false;
 		}
 		else

@@ -1,4 +1,5 @@
 #include "Cursor.h"
+#include "Util\Math.h"
 
 Cursor::Cursor()
 {
@@ -21,6 +22,8 @@ void Cursor::updatePositive(const sf::RenderWindow& window)
 	m_cursorCircle.setFillColor(sf::Color::Transparent);
 	m_cursorCircle.setOutlineThickness(-2);
 	m_cursorCircle.setOutlineColor(sf::Color::Cyan);
+	/*m_cursorCircle.setPosition(sf::Vector2f((float)sf::Mouse::getPosition(window).x * OG_WINDOW_SIZE_X / window.getSize().x - m_cursorCircle.getRadius(),
+		(float)sf::Mouse::getPosition(window).y * OG_WINDOW_SIZE_Y / window.getSize().y - m_cursorCircle.getRadius()));*/
 	m_cursorCircle.setPosition(sf::Vector2f((float)sf::Mouse::getPosition(window).x - m_cursorCircle.getRadius(),
 		(float)sf::Mouse::getPosition(window).y - m_cursorCircle.getRadius()));
 }

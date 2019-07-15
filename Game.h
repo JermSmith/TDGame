@@ -24,7 +24,7 @@ public:
 	void pushState(std::unique_ptr<StateBase> state);
 	void popState();
 	void exitGame();
-	template <typename T, typename... Args> void changeState(Args&&... args);
+	//template <typename T, typename... Args> void changeState(Args&&... args);
 
 	const sf::RenderWindow& getWindow() const;
 
@@ -50,9 +50,10 @@ template<typename T, typename... Args> inline void Game::pushState(Args&&... arg
 	pushState(std::make_unique<T>(std::forward<Args>(args)...));
 }
 
+/*
 template<typename T, typename... Args> inline void Game::changeState(Args&&... args)
 {
 	m_change = std::make_unique<T>(std::forward<Args>(args)...);
 	m_shouldPop = true;
 	m_shouldChangeState = true;
-}
+}*/

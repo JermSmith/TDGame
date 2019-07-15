@@ -11,7 +11,11 @@ Tower::Tower()
 Tower::Tower(const sf::RenderWindow& window)
 {
 	m_size = sf::Vector2f(64, 64);
-	m_position = sf::Vector2f(sf::Mouse::getPosition(window)); //position where the mouse is clicked; want this to be centre of circle
+	/*m_position = sf::Vector2f(sf::Mouse::getPosition(window).x * (float)OG_WINDOW_SIZE_X / window.getSize().x
+		, sf::Mouse::getPosition(window).y * (float)OG_WINDOW_SIZE_Y / window.getSize().y);
+	//position where the mouse is clicked; want this to be centre of circle*/
+	m_position = sf::Vector2f(sf::Mouse::getPosition(window));
+	//position where the mouse is clicked; want this to be centre of circle
 
 	m_circle.setRadius(m_size.x / 2);
 	m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
@@ -24,7 +28,8 @@ Tower::Tower(const sf::RenderWindow& window)
 Tower::Tower(const sf::RenderWindow& window, attackType type, int strength, int range, int rate)
 {
 	m_size = sf::Vector2f(64, 64);
-	m_position = sf::Vector2f(sf::Mouse::getPosition(window)); //position where the mouse is clicked; want this to be centre of circle
+	m_position = sf::Vector2f(sf::Mouse::getPosition(window));
+	//position where the mouse is clicked; want this to be centre of circle
 
 	// m_strengthString.setFontResourceHolder::get().fonts.get("stkaiti"));
 	m_strengthString.setFont(ResourceHolder::get().fonts.get("arial"));
