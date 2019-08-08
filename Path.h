@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ResourceManager\ResourceHolder.h"
+#include "ResourceManager\ResourceHolder.h" // load textures for path and vertices
+#include "Util\Math.h" // toDegrees in generateSprites function
 #include <vector>
 
 class Path
@@ -13,12 +14,13 @@ public:
 	void createOrthoPath(int numInternalVertices);
 	void createCustomPath(std::vector<sf::Vector2f>& vertices);
 
-	std::vector<sf::Vector2f>& getVertices();
-	float getLength();
+	const std::vector<sf::Vector2f>& getVertices() const;
+	const float getLength(); // calculates length before it returns it, so function is not const
+
+	const float getWidth() const;
+	const float getVertexWidth() const;
 
 	void setWidth(float width);
-	float getWidth() const;
-	float getVertexWidth() const;
 
 	void clear();
 
@@ -34,17 +36,22 @@ private:
 	sf::Vector2f m_firstVertex;
 	sf::Vector2f m_lastVertex;
 
-	float m_pathLength;
+	float m_pathLength = 0;
 
-	float m_PATH_WIDTH;
-	//float m_VERTEX_RADIUS;
-	float m_STAR_WIDTH; // side length of square or diamond in the star
+	float m_PATH_WIDTH = 40;
+	//m_VERTEX_RADIUS = m_PATH_WIDTH * (float)1.25;
+	float m_STAR_WIDTH = m_PATH_WIDTH * (float)1.25; // side length of square or diamond in the star
 
-	float m_TOLERANCE;
-	int m_MAX_NUM_LOOPS;
+	float m_VRTX_EDGE_CLRNCE = m_STAR_WIDTH * 2;
 
-	float m_TOP_BORDER;
-	float m_LEFT_BORDER;
+	float m_TOLERANCE = m_STAR_WIDTH + m_PATH_WIDTH;
+	int m_MAX_NUM_LOOPS = 20;
+
+	float m_LEFT_BORDER = m_PATH_WIDTH;
+	float m_TOP_BORDER = m_PATH_WIDTH;
+
+	float m_RIGHT_BORDER = (float)(sizes::WORLD_SIZE_X - sizes::PLAYINGMENU_X) - m_PATH_WIDTH; // largest x-val for vertex position
+	float m_BOTTOM_BORDER = (float)sizes::WORLD_SIZE_Y - m_PATH_WIDTH; //largest y-val for vertex position
 
 	std::vector<sf::Vector2f> m_vertices;
 	
@@ -56,4 +63,7 @@ private:
 	std::vector<sf::Sprite> m_pathRectangles;
 	//std::vector<sf::CircleShape> m_vertexCircles;
 	std::vector<sf::Sprite> m_vertexStars;
+	sf::Sprite m_startArrowRect;
+	sf::ConvexShape m_startArrowTri;
+
 };

@@ -18,6 +18,7 @@ namespace gui
 		void render(sf::RenderTarget& renderer) override;
 		void setPosition(const sf::Vector2f& pos) override;
 		sf::Vector2f getSize() const override;
+		int getNumColumns() const override;
 
 	private:
 		void handleClick(sf::Event e, const sf::RenderWindow& window);

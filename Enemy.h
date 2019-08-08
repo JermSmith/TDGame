@@ -1,14 +1,24 @@
 #pragma once
-#include "GameObject.h"
+#include <SFML\Graphics.hpp>
+#include <vector>
 
-class Enemy : public GameObject
+class Enemy
 {
 public:
-	Enemy();
-	Enemy(std::vector<sf::Vector2f> path, int health);
+	//Enemy();
+	Enemy(std::vector<sf::Vector2f> path, int health, float speed);
 	
+	const sf::Vector2f& getPosition() const;
+	void setPosition(sf::Vector2f& position);
+
+	const sf::Vector2f& getSize() const;
+	void setSize(sf::Vector2f& size);
+
 	int getHealth();
 	void setHealth(int health);
+
+	bool getbIsAlive();
+	//void setbIsAlive(bool tf);
 
 	std::vector<sf::Vector2f> getVertices();
 	void setVertices(std::vector<sf::Vector2f> vertices);
@@ -20,16 +30,21 @@ public:
 	void setDirection(sf::Vector2f startPos, sf::Vector2f endPos);
 
 	void update();
-	void render(sf::RenderTarget& renderer) override;
+	void render(sf::RenderTarget& renderer);
 
 
 
 
 private:
+	sf::Vector2f m_position;
+	sf::Vector2f m_size;
+
 	int m_health;
 	sf::Text m_healthString;
 
-	float m_speed = (float)2; // pixels per second
+	bool m_bIsAlive;
+
+	float m_speed; // pixels per update
 
 	void updatePosition();
 

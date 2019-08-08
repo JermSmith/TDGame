@@ -1,12 +1,13 @@
 #pragma once
-#include "GameObject.h"
+#include <SFML\Graphics.hpp>
+#include <vector>
 
-class Projectile : public GameObject
+class Projectile
 {
 public:
 
 	void update();
-	void render(sf::RenderTarget& renderer) override;
+	void render(sf::RenderTarget& renderer);
 
 
 private:

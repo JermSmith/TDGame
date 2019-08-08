@@ -3,13 +3,15 @@
 #include <iostream>
 #include "ResourceManager\ResourceHolder.h"
 
-Enemy::Enemy()
+/*Enemy::Enemy()
 {
 	
-}
+}*/
 
-Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health)
+Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 {
+	m_bIsAlive = true;
+	
 	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
 	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
 
@@ -23,14 +25,23 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health)
 
 	m_vertices = vertices;
 	m_health = health;
+	m_speed = speed;
 
 	m_position = m_vertices.at(0);
 	setDirection(vertices.at(0), vertices.at(1)); // sets m_direction
 }
 
+const sf::Vector2f& Enemy::getPosition() const { return m_position; }
+void Enemy::setPosition(sf::Vector2f& position) { m_position = position; }
+
+const sf::Vector2f& Enemy::getSize() const { return m_size; }
+void Enemy::setSize(sf::Vector2f& size) { m_size = size; }
 
 int Enemy::getHealth() { return m_health; }
 void Enemy::setHealth(int health) { m_health = health; }
+
+bool Enemy::getbIsAlive() { return m_bIsAlive; }
+//void Enemy::setbIsAlive(bool tf) { m_bIsAlive = tf; }
 
 std::vector<sf::Vector2f> Enemy::getVertices() { return m_vertices; }
 void Enemy::setVertices(std::vector<sf::Vector2f> vertices) { m_vertices = vertices; }
@@ -81,6 +92,11 @@ void Enemy::updatePosition()
 
 void Enemy::update()
 {
+	if (m_health <= 0)
+	{
+		m_bIsAlive = false;
+	}
+	
 	updatePosition();
 
 	m_healthString.setString(std::to_string(m_health));

@@ -3,7 +3,7 @@
 #include "Util\Math.h"
 #include <iostream>
 
-Game::Game() : m_window({ OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y }, "Prime TD")
+Game::Game() : m_window({ sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y }, "Prime TD")
 {
 	m_window.setPosition({ m_window.getPosition().x, 0 });
 	m_window.setFramerateLimit(60);
@@ -87,8 +87,8 @@ void Game::handleEvent()
 
 	while (m_window.pollEvent(e))
 	{
-		std::pair<unsigned int, unsigned int> prevWindowSize = std::make_pair(OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y);
-
+		std::pair<unsigned int, unsigned int> prevWindowSize = std::make_pair(sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y);
+		
 		getCurrentState().handleEvent(e);
 		switch (e.type)
 		{
@@ -99,7 +99,7 @@ void Game::handleEvent()
 		case sf::Event::MouseButtonPressed:
 			if (e.mouseButton.button == sf::Mouse::Right)
 			{
-				m_window.setSize(sf::Vector2u(OG_WINDOW_SIZE_X, OG_WINDOW_SIZE_Y));
+				m_window.setSize(sf::Vector2u(sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y));
 				m_window.setView(m_window.getDefaultView());
 				m_window.setPosition({ 0, 0 });
 			}
@@ -109,23 +109,23 @@ void Game::handleEvent()
 			//m_window.setView(sf::View(sf::FloatRect(0, 0, (float)e.size.width, (float)e.size.height)));
 
 			if ((float)m_window.getSize().x / (float)m_window.getSize().y <
-				((float)OG_WINDOW_SIZE_X / (float)OG_WINDOW_SIZE_Y)) //AR is "tall", horiz dimension fits in window
+				((float)sizes::WORLD_SIZE_X / (float)sizes::WORLD_SIZE_Y)) //AR is "tall", horiz dimension fits in window
 			{
-				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)OG_WINDOW_SIZE_X, (float)OG_WINDOW_SIZE_Y));
+				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)sizes::WORLD_SIZE_X, (float)sizes::WORLD_SIZE_Y));
 
 				resizedView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f,
-					(float)OG_WINDOW_SIZE_Y * ((float)m_window.getSize().x / (float)OG_WINDOW_SIZE_X) / (float)m_window.getSize().y));
+					(float)sizes::WORLD_SIZE_Y * ((float)m_window.getSize().x / (float)sizes::WORLD_SIZE_X) / (float)m_window.getSize().y));
 
 				m_window.setView(resizedView);
 			}
 			
 			else if ((float)m_window.getSize().x / (float)m_window.getSize().y >
-				((float)OG_WINDOW_SIZE_X / (float)OG_WINDOW_SIZE_Y)) //AR is "wide", vertical dimension fits in window
+				((float)sizes::WORLD_SIZE_X / (float)sizes::WORLD_SIZE_Y)) //AR is "wide", vertical dimension fits in window
 			{
-				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)OG_WINDOW_SIZE_X, (float)OG_WINDOW_SIZE_Y));
+				sf::View resizedView = sf::View(sf::FloatRect(0, 0, (float)sizes::WORLD_SIZE_X, (float)sizes::WORLD_SIZE_Y));
 
 				resizedView.setViewport(sf::FloatRect(0.f, 0.f,
-					(float)OG_WINDOW_SIZE_X * ((float)m_window.getSize().y / (float)OG_WINDOW_SIZE_Y) / (float)m_window.getSize().x,
+					(float)sizes::WORLD_SIZE_X * ((float)m_window.getSize().y / (float)sizes::WORLD_SIZE_Y) / (float)m_window.getSize().x,
 					1.0f));
 
 				m_window.setView(resizedView);
@@ -139,7 +139,7 @@ void Game::handleEvent()
 			if (e.mouseWheelScroll.delta < 0)
 			{
 				m_window.setView(sf::View(sf::FloatRect(
-					OG_WINDOW_SIZE_X - (float)m_window.getSize().x, OG_WINDOW_SIZE_Y - (float)m_window.getSize().y,
+					sizes::WORLD_SIZE_X - (float)m_window.getSize().x, sizes::WORLD_SIZE_Y - (float)m_window.getSize().y,
 					(float)m_window.getSize().x, (float)m_window.getSize().y)));
 			}
 			else if (e.mouseWheelScroll.delta > 0)

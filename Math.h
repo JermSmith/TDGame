@@ -3,8 +3,13 @@
 constexpr float PI = 3.14159265f;
 constexpr float MIN_PI = 3.14f;
 
-constexpr unsigned int OG_WINDOW_SIZE_X = 1280;
-constexpr unsigned int OG_WINDOW_SIZE_Y = 720;
+namespace sizes
+{
+	constexpr unsigned int WORLD_SIZE_X = 1280;
+	constexpr unsigned int WORLD_SIZE_Y = 720;
+
+	constexpr unsigned int PLAYINGMENU_X = 320; //height of playing menu is world_size_y
+}
 
 template <typename T>
 T toRadians(T degrees)

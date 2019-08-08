@@ -1,11 +1,7 @@
 #include "World.h"
 
-#include "Math.h"
-#include "WaveManager.h"
-
-#include "GameObjects\Path.h"
-#include "GameObjects\Tower.h"
-#include "GameObjects\Enemy.h"
+#include "Util\Math.h"
+#include "Path.h"
 
 World::World()
 {
@@ -14,100 +10,85 @@ World::World()
 
 void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
 {
-	if (e.type == sf::Event::EventType::MouseButtonReleased && m_bTowerBeingPlaced)
-	{
-		//create a new object in testNewGameObject to test if it works, and if so remove it from testNewGameObject and make a new one in gameObjects
-		m_testNewTower.push_back(std::make_unique<Tower>(window));
-
-		if (!m_testNewTower.back()->bInterferesWithScene(m_towers, m_path, window))
-		{
-			//no interference found with new object and path, so can place object
-			m_testNewTower.pop_back();
-			m_towers.push_back(std::make_unique<Tower>(window, attackType::divide, 3, 128, 1000)); // "move" the test tower to the vector of towers
-			m_bTowerBeingPlaced = false;
-		}
-		else
-		{
-			m_testNewTower.pop_back();
-		}
-	}
+	// TODO: pass this along to tower.handleEvent(e, window, m_towers)
+	
+	m_towerManager.handleEvent(e, window, m_path);
 }
 
-bool World::getBoolTowerBeingPlaced() { return m_bTowerBeingPlaced; }
-void World::setBoolTowerBeingPlaced(bool b)
+bool World::getBoolTowerBeingPlaced() { return m_towerManager.getbTowerBeingPlaced(); }
+void World::setBoolTowerBeingPlaced(bool tf)
 {
-	m_bTowerBeingPlaced = b;
+	m_towerManager.setbTowerBeingPlaced(tf);
 }
 
-void World::createOrthoPath()
+void World::setdummyTowerProperties(attackType type, int strength)
+{
+	// not necessary to set dummy tower position until checking position compatibility
+	m_towerManager.getDummyTower()->storeLogicData(type, strength);
+
+	m_towerManager.getDummyTower()->storeGraphicsData_Cursor();
+}
+
+void World::createOrthoPath(int numInternalVertices)
 {
 	clearScene();
-	m_path.createOrthoPath(4);
+	m_path.createOrthoPath(numInternalVertices);
 }
 
-void World::createRandomPath()
+void World::createRandomPath(int numInternalVertices)
 {
 	clearScene();
-	m_path.createRandomPath(4);
+	m_path.createRandomPath(numInternalVertices);
 
 }
 void World::clearScene()
 {
 	m_path.clear();
-	m_towers.clear();
+	m_towerManager.getTowers()->clear();
 	m_enemies.clear();
 	m_waveManager.reset();
 }
 
-void World::allowInstantiatingEnemies() { m_waveManager.setbCanInstantiateEnemies(true); }
-
-void World::update(sf::Time deltaTime, const sf::RenderWindow& window)
+void World::requestStartWave()
 {
-	for (unsigned int i = 0; i < m_towers.size(); i++)
+	if (m_path.getLength() != 0)
 	{
-		m_towers.at(i)->update(m_enemies);
-	}
-	for (unsigned int i = 0; i < m_enemies.size(); i++)
-	{
-		m_enemies.at(i)->update();
-	}
-
-	//TODO:
-	//for each tower (this would happen in the tower class, not here - it would happen in tower->update),
-	//loop through the list of enemies and calculate the distance. if the distance is smaller than the range of the tower,
-	//then attack the enemy. m_enemies will need to be passed into m_towers->update(m_enemies)
-
-	// instantiate enemies -- TODO: can allow for different sets of path vertices to be given to enemies
-	if (m_waveManager.getbCanInstantiateEnemies() && m_path.getLength() > 0)
-	{
-		m_waveManager.instantiateEnemies(&m_enemies, &m_path.getVertices());
-	}
-
-	updateCursor(window);
-
-}
-
-void World::updateCursor(const sf::RenderWindow& window)
-{
-	if (m_bTowerBeingPlaced)
-	{
-		//create a new object in testNewGameObject at the current mouse position to check what color the cursor circle should be
-		m_testNewTower.push_back(std::make_unique<Tower>(window));
-
-		if (!m_testNewTower.back()->bInterferesWithScene(m_towers, m_path, window))
+		if (m_waveManager.getbWaveOngoing())
 		{
-			m_cursor.updatePositive(window); //possible to place tower here
-			m_testNewTower.pop_back(); //remove the new tower from the back of m_testNewTower since color of cursor has been decided
+			m_waveManager.setbStartWaveRequested(false);
 		}
 		else
 		{
-			m_cursor.updateNegative(window); //not possible to place tower here
-			m_testNewTower.pop_back(); //remove the new tower from the back of m_testNewTower since color of cursor has been decided
+			m_waveManager.setbStartWaveRequested(true);
 		}
 	}
-	else
+}
+
+void World::update(const sf::RenderWindow& window)
+{
+	m_towerManager.update(window, m_path, &m_enemies);
+	
+	for (unsigned int i = 0; i < m_enemies.size(); i++)
 	{
-		m_cursor.hide(); //do not show a circle around radius, since no tower is being placed
+		m_enemies.at(i)->update();
+		if (!m_enemies.at(i)->getbIsAlive()) { m_enemies.erase(m_enemies.begin() + i); }
+	}
+
+	m_waveManager.updatebWaveOngoing(m_enemies.size());
+
+	// see if we can start the next wave
+	if (m_waveManager.getbStartWaveRequested())
+	{
+		if (!m_waveManager.getbWaveOngoing())
+		{
+			m_waveManager.startWave();
+		}
+	}
+
+	// see if we can send an enemy
+	if (m_waveManager.bShouldInstantiateEnemies()) //TODO: can allow for different sets of path vertices to be given to enemies
+	{
+		m_waveManager.instantiateEnemies(&m_enemies, m_path.getVertices());
 	}
 }
 
@@ -115,20 +96,17 @@ void World::render(sf::RenderTarget& renderer)
 {
 	m_path.render(renderer);
 
-	for (const auto& obj : m_towers)
-	{
-		obj->render(renderer);
-	}
+	m_towerManager.render(renderer);
+	
 	for (const auto& obj : m_enemies)
 	{
 		obj->render(renderer);
 	}
-
-	m_cursor.render(renderer);
-
 }
 
 void World::handleInput()
 {
 
 }
+
+

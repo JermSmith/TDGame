@@ -1,52 +1,116 @@
 #include "WaveManager.h"
-#include "GameObjects\Enemy.h"
+#include "Enemy.h"
+
+#include "Util\Random.h"
 #include <iostream>
+
+WaveManager::WaveManager()
+{
+	reset();
+	
+	m_constructWaveGeneratingData();
+}
 
 void WaveManager::reset()
 {
-	m_waveNumber = 0;
-	m_bWaveSending = false;
-	m_bCanInstantiateEnemies = false;
+	m_waveNumber = 0; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
+	m_bWaveOngoing = false;
+	m_bStartWaveRequested = false;
+	m_bShouldInstantiateEnemies = false;
 	m_numOfEnemiesStarted = 0;
-
+	m_timePoint = m_timer.restart();
 }
 
-void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices)
+void WaveManager::updatebWaveOngoing(int sizeOfEnemyVector)
+{
+	if (sizeOfEnemyVector > 0) { m_bWaveOngoing = true; }
+	else { m_bWaveOngoing = false; }
+}
+
+void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, const std::vector<sf::Vector2f>& vertices)
 {
 	//trigger for next wave to begin (and wavenumber to increase) is a click on "start wave", which makes bCanInstantiateEnemies true
 	//this function only gets entered when bCanInstantiateEnemies is true
 
 	m_elapsedTime = m_timer.getElapsedTime() - m_timePoint;
-	if (m_elapsedTime > m_delayTime && m_numOfEnemiesStarted < m_numOfEnemiesVector.at(m_waveNumber))
+	if (m_elapsedTime > m_enemyReleaseDelayTime && m_numOfEnemiesStarted < (signed)m_currWave.size())
 	{
 		m_timePoint = m_timer.getElapsedTime();
 
-		// may also choose to make another constructor for Enemy, so that more characteristics can be specified for specific waves,
-		// such as types of enemies, speed, health (already included), random possibilities. These characteristics for a given wave
-		// could be read from a/multiple private vectors belonging to WaveManager, so that World.cpp doesn't need to concern itself
-		// with the types of waves being sent, only with sending the next wave when it is called for
+		// when instantiating an enemy here, instead of only health, can specify 2 arguments: m_currWave.at(m_waveNumber).first, m_currWave.at(m_waveNumber).second
+		// this would look better if instead of first and second, we selected "health" and "speed" as members of a struct
 
-		enemies->push_back(std::make_unique<Enemy>(*vertices, 27)); // instantiate an enemy
+		enemies->push_back(std::make_unique<Enemy>(vertices, m_currWave.at(m_numOfEnemiesStarted).first, 
+			m_currWave.at(m_numOfEnemiesStarted).second)); // instantiate an enemy
 		m_numOfEnemiesStarted++;
-
-		std::cout << "Enemy started for wave # " << m_waveNumber << std::endl;
 	}
 
-	if (m_numOfEnemiesStarted == m_numOfEnemiesVector.at(m_waveNumber)) // all enemies for this wave have been started
+	if (m_numOfEnemiesStarted == m_currWave.size()) // all enemies for this wave have been started
 	{
-		//waveNumber=0 is wave#1, waveNumber=1 is wave#2, etc.
-		if (m_waveNumber != m_numOfEnemiesVector.size() - 1)
-		{
-			m_waveNumber++;
-		}
-
+		m_bShouldInstantiateEnemies = false; //don't enter this entire function again until the player clicks the button again
 		m_numOfEnemiesStarted = 0; //reset this value
-		m_bCanInstantiateEnemies = false; //don't enter this entire function again until the player clicks the button again
+
+		//waveNumber=0 is wave#1, waveNumber=1 is wave#2, etc.
+		if (m_waveNumber != m_waveGeneratingData.size() - 1)
+		{
+			m_waveNumber++; // should actually increase wavenumber only when all enemies are !alive
+		}
 	}
 }
 
-bool WaveManager::getbCanInstantiateEnemies() { return m_bCanInstantiateEnemies; }
-void WaveManager::setbCanInstantiateEnemies(bool tf) { m_bCanInstantiateEnemies = tf; }
+bool WaveManager::getbWaveOngoing() const { return m_bWaveOngoing; }
 
+bool WaveManager::bShouldInstantiateEnemies() { return m_bShouldInstantiateEnemies; }
+
+void WaveManager::setbStartWaveRequested(bool tf) { m_bStartWaveRequested = tf; }
+bool WaveManager::getbStartWaveRequested() const { return m_bStartWaveRequested; }
+
+void WaveManager::startWave()
+{
+	m_generateAndStoreWave(m_waveNumber);
+	m_bShouldInstantiateEnemies = true;
+	m_bStartWaveRequested = false;
+}
+
+void WaveManager::m_constructWaveGeneratingData()
+{
+	m_waveGeneratingData =
+	{
+		std::make_pair<std::vector<int>, int>({ 2, 3, 4, 5}, 5),
+		std::make_pair<std::vector<int>, int>({ 2, 4, 6, 8, 10 }, 6),
+		std::make_pair<std::vector<int>, int>({ 3, 5, 7, 9 }, 3),
+		std::make_pair<std::vector<int>, int>({ 11 }, 4),
+		std::make_pair<std::vector<int>, int>({ 2, 3, 5, 7, 11, 13, 17 }, 6),
+		std::make_pair<std::vector<int>, int>({ 4, 9, 16, 25, 36, 49 }, 3),
+		std::make_pair<std::vector<int>, int>({ 2, 6, 10, 14, 18, 22, 26 }, 5),
+		std::make_pair<std::vector<int>, int>({ 50 }, 4),
+		std::make_pair<std::vector<int>, int>({ 7 }, 15),
+		std::make_pair<std::vector<int>, int>({ 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 61 }, 12),
+		std::make_pair<std::vector<int>, int>({ 8, 27, 64, 125, 216, 343, 512 }, 5),
+		std::make_pair<std::vector<int>, int>({ 99 }, 4),
+		std::make_pair<std::vector<int>, int>({ 101 }, 4)
+	};
+}
+
+void WaveManager::m_generateAndStoreWave(int waveNumber)
+{
+	if (m_waveNumber != 0)
+	{
+		m_prevWave = m_currWave; // store the previous wave data
+		m_currWave.clear();
+	}
+
+	static Random<> rand;
+
+	for (int i = 0; i < m_waveGeneratingData.at(waveNumber).second; i++) // # of enemy profiles to create
+	{
+		// number representing either the 1st, 2nd, 3rd, .. up to nth element of m_waveGeneratingData's vector for this wave
+		int enemySelectionIndex = rand.getIntInRange(0, m_waveGeneratingData.at(waveNumber).first.size() - 1);
+
+		int enemyHealth = m_waveGeneratingData.at(waveNumber).first.at(enemySelectionIndex);
+
+		m_currWave.push_back(std::make_pair(enemyHealth, (float)3.0));
+	}
+}
 
 

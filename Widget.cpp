@@ -13,7 +13,8 @@ namespace gui
 
 	bool Widget::Rectangle::isRolledOn(const sf::RenderWindow& window) const
 	{
-		auto pos = sf::Mouse::getPosition(window);
+		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+		
 		return getGlobalBounds().contains((float)pos.x, (float)pos.y);
 	}
 

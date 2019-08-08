@@ -15,42 +15,42 @@ StateMainMenu::StateMainMenu(Game& game)
 	//m_banner.setPosition(sf::Vector2f(128, 64));
 	//m_banner.setFillColor(sf::Color::White);
 
-	auto btnNewGame = gui::makeButton();
+	auto btnNewGame = gui::makeButton(gui::ButtonSize::Wide);
 	btnNewGame->setText("New Game");
 	btnNewGame->setFunction([&]()
 	{
 		game.pushState<StatePlaying>(game);
 	});
 	
-	auto btnLoadGame = gui::makeButton();
+	auto btnLoadGame = gui::makeButton(gui::ButtonSize::Wide);
 	btnLoadGame->setText("Load Game");
 	btnLoadGame->setFunction([&]()
 	{
 		
 	});
 
-	auto btnOptions = gui::makeButton();
+	auto btnOptions = gui::makeButton(gui::ButtonSize::Wide);
 	btnOptions->setText("Options");
 	btnOptions->setFunction([&]()
 	{
 
 	});
 
-	auto btnHowToPlay = gui::makeButton();
+	auto btnHowToPlay = gui::makeButton(gui::ButtonSize::Wide);
 	btnHowToPlay->setText("How To Play");
 	btnHowToPlay->setFunction([&]()
 	{
 
 	});
 
-	auto btnHighScores = gui::makeButton();
+	auto btnHighScores = gui::makeButton(gui::ButtonSize::Wide);
 	btnHighScores->setText("High Scores");
 	btnHighScores->setFunction([&]()
 	{
 
 	});
 
-	auto btnExit = gui::makeButton();
+	auto btnExit = gui::makeButton(gui::ButtonSize::Wide);
 	btnExit->setText("Exit");
 	btnExit->setFunction([&]()
 	{
@@ -83,5 +83,5 @@ void StateMainMenu::update(sf::Time deltaTime)
 void StateMainMenu::render(sf::RenderTarget& renderer)
 {
 	m_mainMenu.render(renderer);
-	renderer.draw(m_banner);
+	//renderer.draw(m_banner);
 }

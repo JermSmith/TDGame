@@ -1,25 +1,22 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include "GameObjects\Tower.h"
 
-class Cursor
+class Cursor : public Tower
 {
 public:
 	Cursor();
 
 	//void handleEvent(sf::Event e, const sf::RenderWindow& window);
-	//void update(sf::Time deltaTime);
-	//void fixedUpdate(sf::Time deltaTime);
+	void update(const sf::RenderWindow& window, bool bTowerBeingPlaced, const std::vector<std::unique_ptr<Tower>>& towers, const Path& path);
 	void render(sf::RenderTarget& renderer);
 
-	void hide();
-	void updatePositive(const sf::RenderWindow& window);
-	void updateNegative(const sf::RenderWindow& window);
+	bool bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path, const sf::RenderWindow& window);
 
-	void setRadius(float& radius);
-
-	float getRadius();
 
 private:
-	sf::CircleShape m_cursorCircle;
+	void updatePositive(const sf::RenderWindow& window);
+	void updateNegative(const sf::RenderWindow& window);
+	void hide();
 
 };

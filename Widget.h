@@ -2,6 +2,7 @@
 
 #include <SFML\Graphics.hpp>
 #include <memory>
+#include "Util\Math.h"
 #include "ResourceManager\ResourceHolder.h"
 
 namespace gui
@@ -17,6 +18,8 @@ namespace gui
 
 		virtual sf::Vector2f getSize() const = 0;
 
+		virtual int getNumColumns() const = 0;
+
 		class Text : public sf::Text
 		{
 		public:
@@ -29,5 +32,7 @@ namespace gui
 			bool isRolledOn(const sf::RenderWindow& window) const;
 			bool isClicked(sf::Event, const sf::RenderWindow& window);
 		};
+
+		// class Circle... public convex shape?
 	};
 }

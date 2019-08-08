@@ -1,41 +1,71 @@
 #pragma once
-#include "GameObject.h"
+#include <SFML\Graphics.hpp>
+#include <vector>
+#include <memory>
+
 #include "Path.h"
 #include "Enemy.h"
-#include <memory>
+
 
 enum class attackType
 {
 divide,
 subtract,
 squareroot,
-cuberoot
+cuberoot,
+none,
 };
 
-class Tower : public GameObject
+class Tower
 {
 public:
 	Tower();
-	Tower(const sf::RenderWindow& window);
-	Tower(const sf::RenderWindow& window, attackType type, int strength, int range, int rate);
+	
+	Tower(const sf::RenderWindow& window, attackType type, int strength);
 
-	void handleEvent(sf::Event e, const sf::RenderWindow& window) override;
-	void update(std::vector<std::unique_ptr<Enemy>>& enemies);
-	void render(sf::RenderTarget& renderer) override;
+	void storeLogicData(attackType type, int strength, sf::Vector2f position = { -1, -1 });
+	void storeGraphicsData_Cursor();
 
-	bool bInterferesWithScene(std::vector<std::unique_ptr<Tower>>& towers, Path& path, const sf::RenderWindow& window);
+	void handleEvent(sf::Event e, const sf::RenderWindow& window);
+	void update(std::vector<std::unique_ptr<Enemy>>* enemies);
+	void render(sf::RenderTarget& renderer);
 
-	int getRange();
-	void setRange(int);
+	const sf::Vector2f& getPosition() const;
+	void setPosition(sf::Vector2f& position);
 
-	int getStrength();
+	const float& getRadius() const;
+	void setRadius(float radius);
+
+	const attackType getAttackType() const;
+	void setAttackType(attackType);
+
+	float getRange() const;
+	void setRange(float);
+
+	int getRate() const;
+	void setRate(int);
+
+	int getStrength() const;
 	void setStrength(int);
 
+	bool getbIsClickedOn() const;
+	void setbIsClickedOn(bool);
+
+protected:
+	sf::Vector2f m_position;
+	float m_radius;
+	float m_range;
+
+	sf::CircleShape m_towerCircle;
+	sf::CircleShape m_rangeCircle;
+
+
+
 private:
-	
+	void storeGraphicsData_TowerConstruction();
+
 	attackType m_attackType;
 	int m_strength;
-	int m_range;
 	int m_rate;
 
 	sf::Text m_strengthString;
@@ -45,10 +75,10 @@ private:
 	sf::Time m_timePoint = m_timer.restart();
 	sf::Time m_delayTime; //depends on m_rate
 
-	void reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>& enemies);
-
-	sf::CircleShape m_circle;
+	int m_numofAttacksInWave = 0;
 	
+	void m_reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>* enemies);
 	
+	bool m_bIsClickedOn = true;
 
 };

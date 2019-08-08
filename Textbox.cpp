@@ -56,9 +56,16 @@ namespace gui
 				m_rect.getSize().y + m_label.getGlobalBounds().height };
 	}
 
+	int TextBox::getNumColumns() const
+	{
+		return 1;
+	}
+
+	// private methods below this line
+
 	void TextBox::handleClick(sf::Event e, const sf::RenderWindow& window)
 	{
-		auto pos = sf::Mouse::getPosition(window);
+		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 		if (m_rect.getGlobalBounds().contains((float)pos.x, (float)pos.y))
 		{

@@ -1,22 +1,50 @@
 #include "Button.h"
-#include "Util\Math.h"
 #include <iostream>
 
 namespace gui
 {
-	Button::Button(ButtonSize s)
+	Button::Button(ButtonSize size)
 	{
-		m_button.setOutlineThickness(1);
+		m_buttonSize = size;
+
+		m_button.setOutlineThickness(-2);
 		m_button.setOutlineColor(sf::Color::Green);
 		m_button.setFillColor(sf::Color::Black);
-		switch (s)
+		switch (m_buttonSize)
 		{
 		case ButtonSize::Wide:
-			m_button.setSize({ 256, 64 });
+			m_button.setPointCount(4);
+			m_button.setPoint(0, sf::Vector2f(-128, -32)); // top left
+			m_button.setPoint(1, sf::Vector2f(128, -32)); // top right
+			m_button.setPoint(2, sf::Vector2f(128, 32)); // bottom right
+			m_button.setPoint(3, sf::Vector2f(-128, 32)); // bottom left
 			break;
 
 		case ButtonSize::Small:
-			m_button.setSize({ 128, 64 });
+			m_button.setPointCount(4);
+			m_button.setPoint(0, sf::Vector2f(-96, -24)); // top left
+			m_button.setPoint(1, sf::Vector2f(96, -24)); // top right
+			m_button.setPoint(2, sf::Vector2f(96, 24)); // bottom right
+			m_button.setPoint(3, sf::Vector2f(-96, 24)); // bottom left
+			break;
+
+		case ButtonSize::Circle3:
+			// the origin of the circle is (0, 0) by default,
+			// which is the centre of the circle, since we place all points a distance "radius" away from (0, 0)
+
+			m_button.setPointCount(50);
+
+			float radius = 32;
+			float theta = 0; // angle in radians
+			for (int p = 0; p < (signed)m_button.getPointCount(); p++)
+			{
+				float x = radius * cosf(theta);
+				float y = radius * sinf(theta);
+
+				m_button.setPoint(p, sf::Vector2f(x, y));
+
+				theta = theta + 2 * PI / m_button.getPointCount(); // incrementing the angle getPointCount times makes one revolution
+			}
 			break;
 		}
 	}
@@ -39,7 +67,7 @@ namespace gui
 
 	void Button::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	{
-		auto pos = sf::Mouse::getPosition(window);
+		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 		switch (e.type)
 		{
@@ -47,11 +75,24 @@ namespace gui
 			switch (e.mouseButton.button)
 			{
 			case sf::Mouse::Left:
-				if (m_button.getGlobalBounds().contains((float)pos.x, (float)pos.y))
-					//(float)pos.x * OG_WINDOW_SIZE_X / window.getSize().x, (float)pos.y * OG_WINDOW_SIZE_Y / window.getSize().y))
-					//global bounds conform exactly to the rectangle b/c there is no rotation applied to the rectangle
+				if (m_buttonSize == ButtonSize::Circle3) // is a circle
 				{
-					m_function();
+					if (distanceBetweenPoints(
+						m_button.getPosition().x,
+						m_button.getPosition().y,
+						pos.x, pos.y) <
+						m_button.getGlobalBounds().width / 2) // if distance is less than radius
+					{
+						m_function();
+					}
+				}
+				else // is a rectangle
+				{
+					if (m_button.getGlobalBounds().contains((float)pos.x, (float)pos.y))
+						//global bounds conform exactly to the rectangle b/c there is no rotation applied to the rectangle
+					{
+						m_function();
+					}
 				}
 
 			default:
@@ -62,7 +103,7 @@ namespace gui
 			break;
 		}
 	}
-	
+
 	void Button::render(sf::RenderTarget& renderer)
 	{
 		renderer.draw(m_button);
@@ -79,14 +120,37 @@ namespace gui
 		updateText();
 	}
 
-	void Button::updateText()
-	{
-		m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 2);
-		m_text.move(m_button.getGlobalBounds().width / 2.0f, m_button.getGlobalBounds().height / 2.5f);
-	}
-
 	sf::Vector2f Button::getSize() const
 	{
-		return m_button.getSize();
+		return sf::Vector2f(m_button.getGlobalBounds().width, m_button.getGlobalBounds().height);
 	}
+
+	int Button::getNumColumns() const
+	{
+		int numColumns;
+		switch (m_buttonSize)
+		{
+		case ButtonSize::Wide:
+			numColumns = 1;
+			break;
+		case ButtonSize::Small:
+			numColumns = 2;
+			break;
+		case ButtonSize::Circle2:
+			numColumns = 2;
+			break;
+		case ButtonSize::Circle3:
+			numColumns = 3;
+			break;
+		}
+		return numColumns;
+	}
+
+	// private methods below this line
+
+	void Button::updateText()
+	{
+		m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 1.25f); // origin is slightly above the centre point
+	}
+
 }

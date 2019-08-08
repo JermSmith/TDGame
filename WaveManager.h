@@ -1,35 +1,52 @@
 #pragma once
-#include "GameObjects\Enemy.h"
-#include "GameObjects\Path.h"
+#include "Enemy.h"
+#include "Path.h"
 #include <memory>
 
 
 class WaveManager
 {
 public:
+	WaveManager();
+
 	void reset();
 
-	void instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, std::vector<sf::Vector2f> *vertices);
+	void updatebWaveOngoing(int sizeOfEnemyVector);
 
-	bool getbCanInstantiateEnemies();
-	void setbCanInstantiateEnemies(bool);
+	void instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, const std::vector<sf::Vector2f>& vertices);
+
+	bool bShouldInstantiateEnemies();
+
+	bool getbWaveOngoing() const;
+
+	void setbStartWaveRequested(bool);
+	bool getbStartWaveRequested() const;
+
+	void startWave();
 
 
 private:
-	bool m_bCanInstantiateEnemies = false;
-	bool m_bWaveSending = false;
+	bool m_bShouldInstantiateEnemies;
+	bool m_bStartWaveRequested;
+	bool m_bWaveOngoing;
 	
-	// waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
-	int m_waveNumber = 0; 
+	int m_waveNumber; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
+	int m_numOfEnemiesStarted;
 
-	int m_numOfEnemiesStarted = 0;
 
-	std::vector<int> m_numOfEnemiesVector = { 3, 2, 3, 4, 5 };
+	void m_constructWaveGeneratingData();
+
+	void m_generateAndStoreWave(int waveNumber);
+
+	std::vector<std::pair<int, float>> m_currWave; // each pair is an enemy with two properties: health(int) and speed(float)
+	std::vector<std::pair<int, float>> m_prevWave;
+
+	std::vector<std::pair<std::vector<int>, int>> m_waveGeneratingData;
 
 	sf::Clock m_timer;
 	sf::Time m_elapsedTime;
-	sf::Time m_timePoint = m_timer.restart();
-	sf::Time m_delayTime = sf::milliseconds(500);
+	sf::Time m_timePoint;
+	sf::Time m_enemyReleaseDelayTime = sf::milliseconds(500);
 
 };
 
