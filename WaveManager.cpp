@@ -11,6 +11,37 @@ WaveManager::WaveManager()
 	m_constructWaveGeneratingData();
 }
 
+void WaveManager::m_constructWaveGeneratingData()
+{
+	// TODO: wave 1: 1s for -1 tower practice
+	// wave 2: 2s for /2 tower practice (do not allow it to be completed with -1s)
+	// wave 3: 3s for /3 tower practice
+	// wave 4: 4s for sqrt tower practice
+	// wave 5: primes (2, 3, 5) -- in general, if n is prime then have the nth wave be a wave of primes
+
+	m_waveGeneratingData =
+	{
+		std::make_pair<std::vector<int>, int>({ 126 }, 15),
+		std::make_pair<std::vector<int>, int>({ 2 }, 10),
+		std::make_pair<std::vector<int>, int>({ 3 }, 10),
+		std::make_pair<std::vector<int>, int>({ 4 }, 10),
+		std::make_pair<std::vector<int>, int>({ 2, 3, 5 }, 10),
+		std::make_pair<std::vector<int>, int>({ 3, 6, 9 }, 25),
+		std::make_pair<std::vector<int>, int>({ 2, 4, 6, 8, 10 }, 6),
+		std::make_pair<std::vector<int>, int>({ 3, 5, 7, 9 }, 3),
+		std::make_pair<std::vector<int>, int>({ 11 }, 4),
+		std::make_pair<std::vector<int>, int>({ 2, 3, 5, 7, 11, 13, 17 }, 6),
+		std::make_pair<std::vector<int>, int>({ 4, 9, 16, 25, 36, 49 }, 3),
+		std::make_pair<std::vector<int>, int>({ 2, 6, 10, 14, 18, 22, 26 }, 5),
+		std::make_pair<std::vector<int>, int>({ 50 }, 4),
+		std::make_pair<std::vector<int>, int>({ 7 }, 15),
+		std::make_pair<std::vector<int>, int>({ 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 61 }, 12),
+		std::make_pair<std::vector<int>, int>({ 8, 27, 64, 125, 216, 343, 512 }, 5),
+		std::make_pair<std::vector<int>, int>({ 99 }, 4),
+		std::make_pair<std::vector<int>, int>({ 101 }, 4)
+	};
+}
+
 void WaveManager::reset()
 {
 	m_waveNumber = 0; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
@@ -70,26 +101,6 @@ void WaveManager::startWave()
 	m_generateAndStoreWave(m_waveNumber);
 	m_bShouldInstantiateEnemies = true;
 	m_bStartWaveRequested = false;
-}
-
-void WaveManager::m_constructWaveGeneratingData()
-{
-	m_waveGeneratingData =
-	{
-		std::make_pair<std::vector<int>, int>({ 2, 3, 4, 5}, 5),
-		std::make_pair<std::vector<int>, int>({ 2, 4, 6, 8, 10 }, 6),
-		std::make_pair<std::vector<int>, int>({ 3, 5, 7, 9 }, 3),
-		std::make_pair<std::vector<int>, int>({ 11 }, 4),
-		std::make_pair<std::vector<int>, int>({ 2, 3, 5, 7, 11, 13, 17 }, 6),
-		std::make_pair<std::vector<int>, int>({ 4, 9, 16, 25, 36, 49 }, 3),
-		std::make_pair<std::vector<int>, int>({ 2, 6, 10, 14, 18, 22, 26 }, 5),
-		std::make_pair<std::vector<int>, int>({ 50 }, 4),
-		std::make_pair<std::vector<int>, int>({ 7 }, 15),
-		std::make_pair<std::vector<int>, int>({ 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 61 }, 12),
-		std::make_pair<std::vector<int>, int>({ 8, 27, 64, 125, 216, 343, 512 }, 5),
-		std::make_pair<std::vector<int>, int>({ 99 }, 4),
-		std::make_pair<std::vector<int>, int>({ 101 }, 4)
-	};
 }
 
 void WaveManager::m_generateAndStoreWave(int waveNumber)

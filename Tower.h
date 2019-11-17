@@ -5,15 +5,14 @@
 
 #include "Path.h"
 #include "Enemy.h"
+#include "ProjectileManager.h"
 
 
 enum class attackType
 {
 divide,
 subtract,
-squareroot,
-cuberoot,
-none,
+root,
 };
 
 class Tower
@@ -36,19 +35,19 @@ public:
 	const float& getRadius() const;
 	void setRadius(float radius);
 
-	const attackType getAttackType() const;
-	void setAttackType(attackType);
+	const attackType& getAttackType() const;
+	void setAttackType(attackType&);
 
-	float getRange() const;
-	void setRange(float);
+	const float& getRange() const;
+	void setRange(float&);
 
-	int getRate() const;
-	void setRate(int);
+	//const sf::Time& getCooldown() const;
+	//void setCooldown(sf::Time&);
 
-	int getStrength() const;
-	void setStrength(int);
+	const int& getStrength() const;
+	void setStrength(int&);
 
-	bool getbIsClickedOn() const;
+	const bool& getbIsClickedOn() const;
 	void setbIsClickedOn(bool);
 
 protected:
@@ -59,25 +58,26 @@ protected:
 	sf::CircleShape m_towerCircle;
 	sf::CircleShape m_rangeCircle;
 
-
-
-private:
+private:	
 	void storeGraphicsData_TowerConstruction();
+
+	ProjectileManager m_projectileManager;
 
 	attackType m_attackType;
 	int m_strength;
-	int m_rate;
 
 	sf::Text m_strengthString;
 
 	sf::Clock m_timer;
 	sf::Time m_elapsedTime;
 	sf::Time m_timePoint = m_timer.restart();
-	sf::Time m_delayTime; //depends on m_rate
+	sf::Time m_cooldownTime; //depends on m_rate
+	bool m_bShouldResetElapsedTime = false;
 
 	int m_numofAttacksInWave = 0;
 	
-	void m_reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>* enemies);
+	void m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies);
+	//void m_reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>* enemies);
 	
 	bool m_bIsClickedOn = true;
 

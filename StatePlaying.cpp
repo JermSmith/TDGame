@@ -24,26 +24,26 @@ StatePlaying::StatePlaying(Game& game)
 	});
 
 	auto btnPlaceTower1 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower1->setText("-1");
+	btnPlaceTower1->setText("/11");
 	btnPlaceTower1->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::subtract, 1);
+			m_world.setdummyTowerProperties(attackType::divide, 11);
 		}
 	});
 
 	auto btnPlaceTower2 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower2->setText("+1");
+	btnPlaceTower2->setText("/13");
 	btnPlaceTower2->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::subtract, -1); 
+			m_world.setdummyTowerProperties(attackType::divide, 13); 
 		}
 	});
 
@@ -55,31 +55,31 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::squareroot, NULL);
+			m_world.setdummyTowerProperties(attackType::root, 2);
 		}
 	});
 
 	auto btnPlaceTower4 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower4->setText("/3");
+	btnPlaceTower4->setText("CBRT");
 	btnPlaceTower4->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 3);
+			m_world.setdummyTowerProperties(attackType::root, 3);
 		}
 	});
 
 	auto btnPlaceTower5 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower5->setText("/5");
+	btnPlaceTower5->setText("4th root");
 	btnPlaceTower5->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 5);
+			m_world.setdummyTowerProperties(attackType::root, 4);
 		}
 	});
 
@@ -94,6 +94,32 @@ StatePlaying::StatePlaying(Game& game)
 			m_world.setdummyTowerProperties(attackType::divide, 7);
 		}
 	});
+
+	// TODO: allow for the addition of 7th, 8th buttons etc.
+	// TODO: figure out where wave stats, tower stats, shop, inventory, etc. will be displayed
+	/*auto btnPlaceTower7 = gui::makeButton(gui::ButtonSize::Circle3);
+	btnPlaceTower7->setText("/11");
+	btnPlaceTower7->setFunction([&]()
+	{
+		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
+		else
+		{
+			m_world.setBoolTowerBeingPlaced(true);
+			m_world.setdummyTowerProperties(attackType::divide, 11);
+		}
+	});
+
+	auto btnPlaceTower8 = gui::makeButton(gui::ButtonSize::Circle3);
+	btnPlaceTower8->setText("/13");
+	btnPlaceTower8->setFunction([&]()
+	{
+		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
+		else
+		{
+			m_world.setBoolTowerBeingPlaced(true);
+			m_world.setdummyTowerProperties(attackType::divide, 13);
+		}
+	});*/
 
 	auto btnNewPath = gui::makeButton(gui::ButtonSize::Wide);
 	btnNewPath->setText("New Path");
@@ -113,14 +139,14 @@ StatePlaying::StatePlaying(Game& game)
 		
 	});
 
-	auto btnMainMenu = gui::makeButton(gui::ButtonSize::Small);
+	auto btnMainMenu = gui::makeButton(gui::ButtonSize::Wide);
 	btnMainMenu->setText("Main Menu");
 	btnMainMenu->setFunction([&]()
 	{
 		game.pushState<StateMainMenu>(game);
 	});
 
-	auto btnPrevWaveStats = gui::makeButton(gui::ButtonSize::Small);
+	auto btnPrevWaveStats = gui::makeButton(gui::ButtonSize::Wide);
 	btnPrevWaveStats->setText("Previous Wave Stats");
 	btnPrevWaveStats->setFunction([&]()
 	{
@@ -141,6 +167,8 @@ StatePlaying::StatePlaying(Game& game)
 	m_playingMenu.addWidget(std::move(btnPlaceTower4));
 	m_playingMenu.addWidget(std::move(btnPlaceTower5));
 	m_playingMenu.addWidget(std::move(btnPlaceTower6));
+	//m_playingMenu.addWidget(std::move(btnPlaceTower7));
+	//m_playingMenu.addWidget(std::move(btnPlaceTower8));
 	m_playingMenu.addWidget(std::move(btnNewPath));
 	m_playingMenu.addWidget(std::move(btnPrevWaveStats));
 	m_playingMenu.addWidget(std::move(btnMainMenu));
@@ -165,10 +193,10 @@ void StatePlaying::update(sf::Time deltaTime)
 	m_world.update(m_pGame->getWindow());
 }
 
-void StatePlaying::fixedUpdate(sf::Time deltaTime)
+/*void StatePlaying::fixedUpdate(sf::Time deltaTime)
 {
 
-}
+}*/
 
 void StatePlaying::render(sf::RenderTarget& renderer)
 {

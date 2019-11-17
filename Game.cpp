@@ -13,13 +13,16 @@ Game::Game() : m_window({ sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y }, "Prime TD"
 //Runs the main loop
 void Game::run()
 {
+	// Fixed Time Update stuff
+	/*
 	constexpr unsigned TPS = 30; //ticks per second
 	const sf::Time timePerUpdate = sf::seconds(1.0f / float(TPS));
 	unsigned ticks = 0;
+	*/
 
 	sf::Clock timer;
 	auto lastTime = sf::Time::Zero;
-	auto lag = sf::Time::Zero;
+	//auto lag = sf::Time::Zero; // used for Fixed Time Update
 
 	//Main loop of the game
 	while (m_window.isOpen() && !m_states.empty())
@@ -30,20 +33,23 @@ void Game::run()
 		auto time = timer.getElapsedTime();
 		auto elapsed = time - lastTime;
 		lastTime = time;
-		lag += elapsed;
+		//lag += elapsed; // used for Fixed Time Update
 
 		//Real time update
 		state.handleInput();
 		state.update(elapsed);
 		counter.update();
 
+		
 		//Fixed time update
+		/*
 		while (lag >= timePerUpdate)
 		{
 			ticks++;
 			lag -= timePerUpdate;
 			state.fixedUpdate(elapsed);
 		}
+		*/
 
 		//Render
 		m_window.clear();
@@ -106,8 +112,6 @@ void Game::handleEvent()
 			break;
 
 		case sf::Event::Resized:
-			//m_window.setView(sf::View(sf::FloatRect(0, 0, (float)e.size.width, (float)e.size.height)));
-
 			if ((float)m_window.getSize().x / (float)m_window.getSize().y <
 				((float)sizes::WORLD_SIZE_X / (float)sizes::WORLD_SIZE_Y)) //AR is "tall", horiz dimension fits in window
 			{
@@ -134,19 +138,6 @@ void Game::handleEvent()
 			prevWindowSize = std::make_pair(m_window.getSize().x, m_window.getSize().y);
 
 			break;
-
-		/*case sf::Event::MouseWheelScrolled:
-			if (e.mouseWheelScroll.delta < 0)
-			{
-				m_window.setView(sf::View(sf::FloatRect(
-					sizes::WORLD_SIZE_X - (float)m_window.getSize().x, sizes::WORLD_SIZE_Y - (float)m_window.getSize().y,
-					(float)m_window.getSize().x, (float)m_window.getSize().y)));
-			}
-			else if (e.mouseWheelScroll.delta > 0)
-			{
-				m_window.setView(sf::View(sf::FloatRect(0, 0, (float)m_window.getSize().x, (float)m_window.getSize().y)));
-			}
-			break;*/
 
 		default:
 			break;
