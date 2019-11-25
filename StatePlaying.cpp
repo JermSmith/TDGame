@@ -72,14 +72,14 @@ StatePlaying::StatePlaying(Game& game)
 	});
 
 	auto btnPlaceTower5 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower5->setText("4th root");
+	btnPlaceTower5->setText("/5");
 	btnPlaceTower5->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::root, 4);
+			m_world.setdummyTowerProperties(attackType::divide, 5);
 		}
 	});
 

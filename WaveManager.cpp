@@ -21,7 +21,7 @@ void WaveManager::m_constructWaveGeneratingData()
 
 	m_waveGeneratingData =
 	{
-		std::make_pair<std::vector<int>, int>({ 126 }, 15),
+		std::make_pair<std::vector<int>, int>({ 125 }, 15),
 		std::make_pair<std::vector<int>, int>({ 2 }, 10),
 		std::make_pair<std::vector<int>, int>({ 3 }, 10),
 		std::make_pair<std::vector<int>, int>({ 4 }, 10),
