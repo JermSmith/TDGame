@@ -1,5 +1,8 @@
 #pragma once
 
+#include "TowerSub.h"
+#include "TowerDiv.h"
+#include "TowerRoot.h"
 #include "Tower.h"
 #include "GUI\Cursor.h"
 

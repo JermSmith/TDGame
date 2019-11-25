@@ -161,12 +161,24 @@ void Tower::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 	float minDistance = m_range; //reset
 	int enemyIndex = -1;
 
-	// TODO: allow for different targeting preferences (divide,sqrt,cbrt: close or strong; plus,minus: weak or strongest prime)
+	
+
+	// TODO: allow for different targeting preferences:
+	// closest				(all)
+	// first				(all)
+	// last					(all)
+	// strongest			(all)
+	// weakest				(all)
+	// largest prime		(+ -)
+
+	// TODO: make it so there is a different class for each tower attack type, each inheriting from tower. When determining
+	//which enemy to attack, create a vector to store the enemies. It SHOULD be preset how many enemies will be attacked, so the
+	//tower can attack the one (or two, three, etc.) closest (or strongest, furthest, etc.) tower(s)
 
 	for (unsigned int i = 0; i < enemies->size(); i++)
 	{
 		distance = distanceBetweenPoints(enemies->at(i)->getPosition(), m_position);
-
+		
 		if (distance <= m_range)
 		{
 			if (distance <= minDistance)
@@ -174,10 +186,13 @@ void Tower::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 				switch (m_attackType) // only doing these calculations for enemies in range
 				{
 				case attackType::divide:
-					if (enemies->at(i)->getHealth() % m_strength == 0) // mod
+					if (enemies->at(i)->getHealth() > 1) // ensure does not attack enemy of health 1 or 0
 					{
-						minDistance = distance; //new minimum distance found
-						enemyIndex = i;
+						if (enemies->at(i)->getHealth() % m_strength == 0) // mod
+						{
+							minDistance = distance; //new minimum distance found
+							enemyIndex = i;
+						}
 					}
 					break;
 

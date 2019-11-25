@@ -51,6 +51,8 @@ public:
 	void setbIsClickedOn(bool);
 
 protected:
+	void storeGraphicsData_TowerConstruction();
+
 	sf::Vector2f m_position;
 	float m_radius;
 	float m_range;
@@ -58,9 +60,7 @@ protected:
 	sf::CircleShape m_towerCircle;
 	sf::CircleShape m_rangeCircle;
 
-private:	
-	void storeGraphicsData_TowerConstruction();
-
+private:
 	ProjectileManager m_projectileManager;
 
 	attackType m_attackType;

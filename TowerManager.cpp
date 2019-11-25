@@ -170,6 +170,9 @@ void TowerManager::m_handleEvent_TowerSelection_LoopTowers(const sf::RenderWindo
 	}
 }
 
+
+// TODO: possibly rewrite this to accommodate a single vector of towers, and to create towers that
+// are the correct subclass (subTower, divTower, rootTower)
 void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::RenderWindow& window)
 {
 	if (m_dummyTower.getAttackType() == attackType::subtract)
@@ -179,15 +182,19 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 		while (!bTowerInsertedIntoVector) // go through subAddTowers from front to back to find the position at which to place new tower
 		{
 			if (i_ == m_subAddTowers.size()) // this is true if vector was previously empty, or if we reach the end of the vector
-			{
-				m_subAddTowers.push_back(std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+			{ 
+				// TODO: NOTE THIS CHANGE THAT WAS MADE, TESTING TowerSub CONSTRUCTION (also a few lines down)
+				
+				m_subAddTowers.push_back(std::make_unique<TowerSub>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				//m_subAddTowers.push_back(std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
 				bTowerInsertedIntoVector = true; // leave the while loop
 			}
 			else if (m_dummyTower.getStrength() >= m_subAddTowers.at(i_)->getStrength())
 			{
 				// there are already some towers in the vector
 				m_subAddTowers.insert(m_subAddTowers.begin() + i_,
-					std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+					std::make_unique<TowerSub>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+					//std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -204,7 +211,15 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 		{
 			if (i_ == m_divRootTowers.size()) // this is true if vector was previously empty, or if we reach the end of the vector
 			{
-				m_divRootTowers.push_back(std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				if (m_dummyTower.getAttackType() == attackType::divide)
+				{
+					m_divRootTowers.push_back(std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				}
+				else
+				{
+					m_divRootTowers.push_back(std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				}
+				
 				bTowerInsertedIntoVector = true; // leave the while loop
 			}
 			else if (m_dummyTower.getAttackType() == attackType::root)
@@ -213,7 +228,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 				{
 					// we have reached the first divide tower, so place the new root tower before it
 					m_divRootTowers.insert(m_divRootTowers.begin() + i_,
-						std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
 					bTowerInsertedIntoVector = true;
 					// note that the above .insert line is written 3 times in this section in different if statements for
 					// clarity of code, instead of writing them only once
@@ -222,7 +237,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 				{
 					// reached an existing root tower of equal or lesser strength, so place the new root tower before it
 					m_divRootTowers.insert(m_divRootTowers.begin() + i_,
-						std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
 					bTowerInsertedIntoVector = true;
 				}
 				else
@@ -237,7 +252,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 					m_dummyTower.getStrength() >= m_divRootTowers.at(i_)->getStrength())
 				{
 					m_divRootTowers.insert(m_divRootTowers.begin() + i_,
-						std::make_unique<Tower>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
 					bTowerInsertedIntoVector = true;
 				}
 				else
