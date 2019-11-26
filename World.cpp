@@ -9,9 +9,7 @@ World::World()
 }
 
 void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
-{
-	// TODO: pass this along to tower.handleEvent(e, window, m_towers)
-	
+{	
 	m_towerManager.handleEvent(e, window, m_path);
 }
 
@@ -41,10 +39,11 @@ void World::createRandomPath(int numInternalVertices)
 	m_path.createRandomPath(numInternalVertices);
 
 }
+
 void World::clearScene()
 {
 	m_path.clear();
-	m_towerManager.getTowers()->clear();
+	m_towerManager.getTowersVector()->clear();
 	m_enemies.clear();
 	m_waveManager.reset();
 }
@@ -74,6 +73,8 @@ void World::update(const sf::RenderWindow& window)
 		if (!m_enemies.at(i)->getbIsAlive()) { m_enemies.erase(m_enemies.begin() + i); }
 	}
 
+	// TODO: incorporate a lot of this into waveManager::update
+
 	m_waveManager.updatebWaveOngoing(m_enemies.size());
 
 	// see if we can start the next wave
@@ -84,7 +85,7 @@ void World::update(const sf::RenderWindow& window)
 			m_waveManager.startWave();
 		}
 	}
-
+	
 	// see if we can send an enemy
 	if (m_waveManager.bShouldInstantiateEnemies()) //TODO: can allow for different sets of path vertices to be given to enemies
 	{

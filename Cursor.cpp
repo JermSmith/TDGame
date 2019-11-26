@@ -6,7 +6,8 @@ Cursor::Cursor()
 
 }
 
-void Cursor::update(const sf::RenderWindow& window, bool bTowerBeingPlaced, const std::vector<std::unique_ptr<Tower>>& towers, const Path& path)
+void Cursor::update(const sf::RenderWindow& window, const Path& path,
+	const std::vector<std::unique_ptr<Tower>>& towers, bool bTowerBeingPlaced)
 {
 	if (bTowerBeingPlaced)
 	{
@@ -33,7 +34,6 @@ void Cursor::render(sf::RenderTarget& renderer)
 	renderer.draw(m_towerCircle);
 	renderer.draw(m_rangeCircle);
 }
-
 
 bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path, const sf::RenderWindow& window)
 {
@@ -77,18 +77,18 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 			if (i != path.getVertices().size() - 1) // NOT last vertex
 			{
-				if (distanceBetweenPoints(corner.x, corner.y, vo.x, vo.y) <= path.getVertexWidth() / sqrtf(2))
+				if (distanceBetweenPoints(corner, vo) <= path.getVertexWidth() / sqrtf(2))
 				{
 					return true; // a "corner" interferes with a vertex
 				}
 			}
 			else // 
 			{
-				if (distanceBetweenPoints(corner.x, corner.y, vo.x, vo.y) <= path.getVertexWidth() / sqrtf(2))
+				if (distanceBetweenPoints(corner, vo) <= path.getVertexWidth() / sqrtf(2))
 				{
 					return true; // a "corner" interferes with second-last vertex
 				}
-				if (distanceBetweenPoints(corner.x, corner.y, vi.x, vi.y) <= path.getVertexWidth() / sqrtf(2))
+				if (distanceBetweenPoints(corner, vi) <= path.getVertexWidth() / sqrtf(2))
 				{
 					return true; // a "corner" interferes with last vertex
 				}
@@ -135,10 +135,10 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	// above here is checking for interference between newObj and path
 	// below here is checking for interference between newObj and other objects, assuming all objects are circles (size.x = size.y for circles)
-
+	
 	for (unsigned int i = 0; i < towers.size(); i++)
 	{
-		if (distanceBetweenPoints(m_position.x, m_position.y, towers.at(i)->getPosition().x, towers.at(i)->getPosition().y) <
+		if (distanceBetweenPoints(m_position, towers.at(i)->getPosition()) <
 			(m_radius + towers.at(i)->getRadius()))
 		{
 			return true;
@@ -172,7 +172,6 @@ void Cursor::hide()
 void Cursor::updatePositive(const sf::RenderWindow& window)
 {
 	m_towerCircle.setRadius(m_radius);
-	//m_towerCircle.setFillColor(sf::Color::Transparent);
 	m_towerCircle.setOutlineThickness(-2);
 	m_towerCircle.setOutlineColor(sf::Color::Cyan);
 	m_towerCircle.setPosition(sf::Vector2f((float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).x,
@@ -198,4 +197,5 @@ void Cursor::updateNegative(const sf::RenderWindow& window)
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);
 }
+
 

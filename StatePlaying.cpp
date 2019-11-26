@@ -60,14 +60,14 @@ StatePlaying::StatePlaying(Game& game)
 	});
 
 	auto btnPlaceTower4 = gui::makeButton(gui::ButtonSize::Circle3);
-	btnPlaceTower4->setText("+1");
+	btnPlaceTower4->setText("CBRT");
 	btnPlaceTower4->setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::subtract, -1);
+			m_world.setdummyTowerProperties(attackType::root, 3);
 		}
 	});
 

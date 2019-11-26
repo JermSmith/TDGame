@@ -77,6 +77,7 @@ private:
 	int m_numofAttacksInWave = 0;
 	
 	void m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies);
+	//virtual void m_attackEnemies() = 0;
 	//void m_reduceEnemyHealth(std::vector<std::unique_ptr<Enemy>>* enemies);
 	
 	bool m_bIsClickedOn = true;

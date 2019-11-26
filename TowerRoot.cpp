@@ -10,3 +10,4 @@ TowerRoot::TowerRoot(const sf::RenderWindow& window, attackType type, int streng
 	storeGraphicsData_TowerConstruction();
 }
 
+
