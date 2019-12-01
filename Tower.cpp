@@ -5,7 +5,7 @@
 
 Tower::Tower() {} // necessary, so that Cursor inherits a default constructor
 
-// (1)window, (2)attack type, (3)strength
+				  // (1)window, (2)attack type, (3)strength
 Tower::Tower(const sf::RenderWindow& window, attackType type, int strength) // this constructor gets called when tower is actually placed in m_towers in World.cpp
 {
 	storeLogicData(type, strength, sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))));
@@ -123,27 +123,7 @@ void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 
 void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies)
 {
-	m_elapsedTime = m_timer.getElapsedTime() - m_timePoint;
 	
-	if (m_elapsedTime > m_cooldownTime)
-	{
-		// projectiles also created in this function
-		m_attackEnemies(enemies);
-
-		if (m_bShouldResetElapsedTime) // essentially reset m_elapsedTime to 0 (see above)
-		{
-			m_timePoint = m_timer.getElapsedTime();
-			m_bShouldResetElapsedTime = false;
-		}
-	}
-
-	if (m_bIsClickedOn)
-	{
-		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	}
-	else { m_rangeCircle.setFillColor(sf::Color::Transparent); }
-
-	m_projectileManager.update();
 }
 
 void Tower::render(sf::RenderTarget& renderer)
@@ -155,26 +135,14 @@ void Tower::render(sf::RenderTarget& renderer)
 	m_projectileManager.render(renderer);
 }
 
-void Tower::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
+/* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of
+the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndices"
+vector at the proper position to maintain the sorting of strongest towers to weakest towers in the vector, or else
+it does not change "enemyIndices" if the enemy does not exceed priority criteria. Returns vector of enemy indices. */
+std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::unique_ptr<Enemy>>* enemies, int a_enemyIndex, std::vector<int> a_enemyIndices)
 {
-	// in the first half of this function, we determine the "indices" of the enemies to be attacked.
-	// in the second half of the function, we attack the enemies at the given indices.
-
-	enum class targetPriority
-	{
-		close,
-		first,
-		last,
-		strong,
-		weak,
-		largestPrime,
-	};
-
-	targetPriority priority = targetPriority::close;
-	unsigned int numEnemiesToAttack = 3;
-
-	float enemyDistance;
-	std::vector<int> enemyIndices = {};
+	int i_e = a_enemyIndex;
+	std::vector<int> enemyIndices = a_enemyIndices;
 
 	// TODO: allow for different targeting preferences:
 	// closest				(all)
@@ -184,145 +152,96 @@ void Tower::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 	// weakest				(all)
 	// largest prime		(+ -)
 
-	// TODO: make it so there is a different class for each tower attack type, each inheriting from tower. When determining
-	//which enemy to attack, create a vector to store the enemies. It SHOULD be preset how many enemies will be attacked, so the
-	//tower can attack the one (or two, three, etc.) closest (or strongest, furthest, etc.) tower(s)
+	float distanceToBeat; // used for "closest" priority
+	float enemyDistance; // used for "closest" priority
 
-	float distanceToBeat;
-
-	// determine the enemy indices
-	switch (priority)
+	switch (m_priority)
 	{
 	case targetPriority::close:
 		distanceToBeat = m_range; //reset to "max", but can get smaller as closer enemies are found
+		enemyDistance = distanceBetweenPoints(enemies->at(i_e)->getPosition(), m_position);
 
-		for (unsigned int i_e = 0; i_e < enemies->size(); i_e++)
+		// The enemy indices are placed into "enemyIndices" in such a way that the index at position 0 is the closest enemy,
+		// and the index at position "numEnemiesToAttack" (or otherwise at the back, if num enemies in range is less than
+		// numEnemiesToAttack) is the furthest enemy
+		if (enemyDistance < distanceToBeat) // "closest" priority search criteria
+											// note that if enemyDistance is equal to distance to beat (e.g. two enemies are tied for distance), the target will not change
 		{
-			enemyDistance = distanceBetweenPoints(enemies->at(i_e)->getPosition(), m_position);
-			if (enemyDistance <= m_range) // skips the rest of the calculations for enemies out of range
-			{ // found an enemy within range of the tower
-				
-				if (enemyDistance < distanceToBeat) // "closest" priority search criteria
-					// note that if enemyDistance is equal to distance to beat (e.g. two enemies are tied for distance), the target will not change
+			if (enemyIndices.size() == 0) // first enemy to be added
+			{
+				enemyIndices.push_back(i_e);
+				if (enemyIndices.size() < m_numEnemiesToAttack)
 				{
-					switch (m_attackType)
+					distanceToBeat = m_range; // can still accept an enemy that is more distant than those already included, since
+											  // vector still has room to grow
+				}
+				else
+				{
+					distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
+				}
+			}
+
+			else if (enemyIndices.size() < m_numEnemiesToAttack) // insert an index into enemyIndices without removing any of them
+			{
+				bool bIndexInsertedIntoVector = false;
+				int j_wh = 0; // iterator for vector of indices (same as # of times while has looped)
+
+				while (!bIndexInsertedIntoVector)
+				{// compare distance of enemy (i_e) with distances of enemies already stored (j_wh)
+					if (j_wh == enemyIndices.size()) // the end of the vector
 					{
-					case attackType::divide:
-						if (enemies->at(i_e)->getHealth() > 1) // ensure does not attack enemy of health 1 or 0
-						{
-							if (enemies->at(i_e)->getHealth() % m_strength == 0) // mod
-							{
-								// The enemy indices are placed into "enemyIndices" in such a way that the index at position 0 is the closest enemy,
-								// and the index at position "numEnemiesToAttack" (or otherwise at the back, if num enemies in range is less than
-								// numEnemiesToAttack) is the furthest enemy
-
-								if (enemyIndices.size() == 0) // first enemy to be added
-								{
-									enemyIndices.push_back(i_e);
-									if (enemyIndices.size() < numEnemiesToAttack)
-									{
-										distanceToBeat = m_range; // can still accept an enemy that is more distant than those already included, since
-										// vector still has room to grow
-									}
-									else
-									{
-										distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
-									}
-								}
-								
-								else if (enemyIndices.size() < numEnemiesToAttack) // insert an index into enemyIndices without removing any of them
-								{
-									bool bIndexInsertedIntoVector = false;
-									int j_wh = 0; // iterator for vector of indices (same as # of times while has looped)
-
-									while (!bIndexInsertedIntoVector)
-									{// compare distance of enemy (i_e) with distances of enemies already stored (j_wh)
-										if (j_wh == enemyIndices.size()) // the end of the vector
-										{
-											enemyIndices.push_back(i_e); // insert i_e at the end of enemyIndices
-											if (numEnemiesToAttack > enemyIndices.size()) { distanceToBeat = m_range; }
-											else {
-												distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
-											}
-											bIndexInsertedIntoVector = true; // leave this while loop
-										}
-										else if (distanceBetweenPoints(enemies->at(enemyIndices.at(j_wh))->getPosition(), m_position) > enemyDistance)
-										{
-											// if here, then the distance from tower to enemy (not yet in index vector) is less than
-											// the distance from tower to enemy at position j_wh (which is already in index vector)
-											enemyIndices.insert(enemyIndices.begin() + j_wh, i_e); // insert index i_e at position j_wh
-											if (numEnemiesToAttack > enemyIndices.size()) { distanceToBeat = m_range; }
-											else {
-												distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
-											}
-											bIndexInsertedIntoVector = true; // leave this while loop
-										}
-										else
-										{
-											j_wh++;
-										}
-									}
-								}
-
-								else if (enemyIndices.size() == numEnemiesToAttack) // the vector size is maxxed out, so the currently last index will be popped
-								{
-									bool bIndexInsertedIntoVector = false;
-									int j_wh = 0; // iterator for vector of indices (same as # of times while has looped)
-
-									while (!bIndexInsertedIntoVector)
-									{// compare distance of enemy (i_e) with distances of enemies already stored (j_wh)
-										if (distanceBetweenPoints(enemies->at(enemyIndices.at(j_wh))->getPosition(), m_position) > enemyDistance)
-										{
-											// if here, then the distance from tower to enemy (not yet in index vector) is less than
-											// the distance from tower to enemy at position j_wh (which is already in index vector)
-											enemyIndices.insert(enemyIndices.begin() + j_wh, i_e); // insert index i_e at position j_wh
-											enemyIndices.pop_back(); // remove the last element, since distance is too large -- the final index must be
-											// popped AFTER the insertion, not before, or else the insertion will be out of range in the case of inserting
-											// immediately before the final index
-											distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
-											// the most distant enemy that is still included to be attacked is at the end of enemyIndices
-											bIndexInsertedIntoVector = true; // leave this while loop
-										}
-										else
-										{
-											j_wh++;
-										}
-									}
-								}
-								
-							}
+						enemyIndices.push_back(i_e); // insert i_e at the end of enemyIndices
+						if (m_numEnemiesToAttack > enemyIndices.size()) { distanceToBeat = m_range; }
+						else {
+							distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
 						}
-						break;
-
-					case attackType::subtract:
-						distanceToBeat = enemyDistance; // new minumum distance found
-						if (enemyIndices.size() == 0) { enemyIndices.push_back(i_e); }
-						else { enemyIndices.at(0) = i_e; }
-						break;
-
-					case attackType::root:
-						if (enemies->at(i_e)->getHealth() > 1) // ensure does not attack enemy of health 1 or 0
-						{
-							double val1 = std::round(std::pow(enemies->at(i_e)->getHealth(), 1. / double(m_strength)));
-							double val2 = std::pow(enemies->at(i_e)->getHealth(), 1. / double(m_strength));
-
-							if (abs(val1 - val2) < 1e-7) // is a perfect nth root
-							{
-								distanceToBeat = enemyDistance; // new minumum distance found
-								if (enemyIndices.size() == 0) { enemyIndices.push_back(i_e); }
-								else { enemyIndices.at(0) = i_e; }
-							}
+						bIndexInsertedIntoVector = true; // leave this while loop
+					}
+					else if (distanceBetweenPoints(enemies->at(enemyIndices.at(j_wh))->getPosition(), m_position) > enemyDistance)
+					{
+						// if here, then the distance from tower to enemy (not yet in index vector) is less than
+						// the distance from tower to enemy at position j_wh (which is already in index vector)
+						enemyIndices.insert(enemyIndices.begin() + j_wh, i_e); // insert index i_e at position j_wh
+						if (m_numEnemiesToAttack > enemyIndices.size()) { distanceToBeat = m_range; }
+						else {
+							distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
 						}
-						break;
-
-					default:
-						break;
+						bIndexInsertedIntoVector = true; // leave this while loop
+					}
+					else
+					{
+						j_wh++;
 					}
 				}
 			}
-		}
 
-		break;
+			else if (enemyIndices.size() == m_numEnemiesToAttack) // the vector size is maxxed out, so the currently last index will be popped
+			{
+				bool bIndexInsertedIntoVector = false;
+				int j_wh = 0; // iterator for vector of indices (same as # of times while has looped)
+
+				while (!bIndexInsertedIntoVector)
+				{// compare distance of enemy (i_e) with distances of enemies already stored (j_wh)
+					if (distanceBetweenPoints(enemies->at(enemyIndices.at(j_wh))->getPosition(), m_position) > enemyDistance)
+					{
+						// if here, then the distance from tower to enemy (not yet in index vector) is less than
+						// the distance from tower to enemy at position j_wh (which is already in index vector)
+						enemyIndices.insert(enemyIndices.begin() + j_wh, i_e); // insert index i_e at position j_wh
+						enemyIndices.pop_back(); // remove the last element, since distance is too large -- the final index must be
+												 // popped AFTER the insertion, not before, or else the insertion will be out of range in the case of inserting
+												 // immediately before the final index
+						distanceToBeat = distanceBetweenPoints(enemies->at(enemyIndices.back())->getPosition(), m_position);
+						// the most distant enemy that is still included to be attacked is at the end of enemyIndices
+						bIndexInsertedIntoVector = true; // leave this while loop
+					}
+					else
+					{
+						j_wh++;
+					}
+				}
+			}
+
+			break;
 	case targetPriority::first:
 
 
@@ -343,34 +262,10 @@ void Tower::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 
 		break;
-	}
-
-	// this is the part of the function where we actually attack enemies
-	if (enemyIndices.size() > 0) // we found (at least) one enemy to attack
-	{
-		m_bShouldResetElapsedTime = true;
-
-		for (unsigned int i = 0; i < enemyIndices.size(); i++)
-		{
-			m_numofAttacksInWave++; // for stat collection purposes
-			m_projectileManager.createProjectile(enemies->at(enemyIndices.at(i)), m_position, m_towerCircle.getFillColor());
-
-			switch (m_attackType)
-			{
-			case attackType::divide:
-				enemies->at(enemyIndices.at(i))->setHealth(enemies->at(enemyIndices.at(i))->getHealth() / m_strength);
-				break;
-			case attackType::subtract:
-				enemies->at(enemyIndices.at(i))->setHealth(enemies->at(enemyIndices.at(i))->getHealth() - m_strength);
-				break;
-			case attackType::root:
-				enemies->at(enemyIndices.at(i))->setHealth((int)std::pow(enemies->at(enemyIndices.at(i))->getHealth(), 1. / double(m_strength)));
-				break;
-			default:
-				break;
-			}
 		}
 	}
+
+	return enemyIndices;
 }
 
 
@@ -394,7 +289,6 @@ void Tower::setStrength(int& strength) { m_strength = strength; }
 
 const bool& Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Tower::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
-
 
 
 

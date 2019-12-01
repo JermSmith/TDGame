@@ -7,7 +7,7 @@
 WaveManager::WaveManager()
 {
 	reset();
-	
+
 	m_constructWaveGeneratingData();
 }
 
@@ -71,7 +71,7 @@ void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemie
 		// when instantiating an enemy here, instead of only health, can specify 2 arguments: m_currWave.at(m_waveNumber).first, m_currWave.at(m_waveNumber).second
 		// this would look better if instead of first and second, we selected "health" and "speed" as members of a struct
 
-		enemies->push_back(std::make_unique<Enemy>(vertices, m_currWave.at(m_numOfEnemiesStarted).first, 
+		enemies->push_back(std::make_unique<Enemy>(vertices, m_currWave.at(m_numOfEnemiesStarted).first,
 			m_currWave.at(m_numOfEnemiesStarted).second)); // instantiate an enemy
 		m_numOfEnemiesStarted++;
 	}
@@ -81,7 +81,7 @@ void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemie
 		m_bShouldInstantiateEnemies = false; //don't enter this entire function again until the player clicks the button again
 		m_numOfEnemiesStarted = 0; //reset this value
 
-		//waveNumber=0 is wave#1, waveNumber=1 is wave#2, etc.
+								   //waveNumber=0 is wave#1, waveNumber=1 is wave#2, etc.
 		if (m_waveNumber != m_waveGeneratingData.size() - 1)
 		{
 			m_waveNumber++; // should actually increase wavenumber only when all enemies are !alive
@@ -123,5 +123,4 @@ void WaveManager::m_generateAndStoreWave(int waveNumber)
 		m_currWave.push_back(std::make_pair(enemyHealth, (float)3.0));
 	}
 }
-
 

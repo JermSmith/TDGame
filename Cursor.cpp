@@ -43,7 +43,7 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	std::vector<sf::Vector2f> corners = {}; // vector containing all points to check for potential collision
 
-	// the following assignment assumes m_position takes centre of circle (and that circle is aligned with axes, although doesn't matter for circles)
+											// the following assignment assumes m_position takes centre of circle (and that circle is aligned with axes, although doesn't matter for circles)
 	corners.push_back(m_position); // centre
 
 	int numOfPointsOnCircle = 16; // number of points on circle to check for possible collisions; power of 2 allows top and bottom of circle to be included
@@ -63,7 +63,7 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 		float theta = atan2f(vi.y - vo.y, vi.x - vo.x); // angle of path segment in radians (CW is +ve from +ve x-axis)
 
-		// ol is back left corner of the rectangle, ir is front right corner of the rectangle
+														// ol is back left corner of the rectangle, ir is front right corner of the rectangle
 		sf::Vector2f ol = sf::Vector2f(vo.x - t_*cos(theta) + t_*sin(theta), vo.y - t_*cos(theta) - t_*sin(theta));
 		sf::Vector2f or = sf::Vector2f(vo.x - t_*cos(theta) - t_*sin(theta), vo.y + t_*cos(theta) - t_*sin(theta));
 		sf::Vector2f il = sf::Vector2f(vi.x + t_*cos(theta) + t_*sin(theta), vi.y - t_*cos(theta) + t_*sin(theta));
@@ -135,7 +135,7 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	// above here is checking for interference between newObj and path
 	// below here is checking for interference between newObj and other objects, assuming all objects are circles (size.x = size.y for circles)
-	
+
 	for (unsigned int i = 0; i < towers.size(); i++)
 	{
 		if (distanceBetweenPoints(m_position, towers.at(i)->getPosition()) <
@@ -197,5 +197,4 @@ void Cursor::updateNegative(const sf::RenderWindow& window)
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);
 }
-
 
