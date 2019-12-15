@@ -21,7 +21,7 @@ void WaveManager::m_constructWaveGeneratingData()
 
 	m_waveGeneratingData =
 	{
-		std::make_pair<std::vector<int>, int>({ 125 }, 15),
+		std::make_pair<std::vector<int>, int>({ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }, 35),
 		std::make_pair<std::vector<int>, int>({ 2 }, 10),
 		std::make_pair<std::vector<int>, int>({ 3 }, 10),
 		std::make_pair<std::vector<int>, int>({ 4 }, 10),
@@ -120,7 +120,7 @@ void WaveManager::m_generateAndStoreWave(int waveNumber)
 
 		int enemyHealth = m_waveGeneratingData.at(waveNumber).first.at(enemySelectionIndex);
 
-		m_currWave.push_back(std::make_pair(enemyHealth, (float)3.0));
+		m_currWave.push_back(std::make_pair(enemyHealth, (float)1.5));
 	}
 }
 

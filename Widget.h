@@ -2,7 +2,6 @@
 
 #include <SFML\Graphics.hpp>
 #include <memory>
-#include "Util\Math.h"
 #include "ResourceManager\ResourceHolder.h"
 
 namespace gui

@@ -476,7 +476,7 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 	// check if new path segment is too short
 	p0 = m_vertices.back(); // soon-to-be second-last vertex
 	p1 = vertex; // vertex to be placed
-	if (distanceBetweenPoints(p0.x, p0.y, p1.x, p1.y) <= m_TOLERANCE)
+	if (distanceBetweenPoints(p0, p1) <= m_TOLERANCE)
 	{
 		return true;
 	}
@@ -496,7 +496,7 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 			&& sinf(theta) * p0.y <= sinf(theta) * p1.y)
 		{
 			// check intersection
-			if (distanceBetweenPoints(p0.x, p0.y, m_vertices.at(v-1).x, m_vertices.at(v-1).y) <= m_TOLERANCE)
+			if (distanceBetweenPoints(p0, m_vertices.at(v-1)) <= m_TOLERANCE)
 			{
 				return true; // new path segment is too close to an existing vertex
 			}
@@ -526,7 +526,7 @@ bool Path::vertexInterferesWithPath(sf::Vector2f& vertex)
 			// p0.x and p0.y increment while p1.x/y stay constant, so eventually p0.x/y will overtake p1.x/y, then that path segment is done
 		{
 			// check intersection
-			if (distanceBetweenPoints(p0.x, p0.y, vertex.x, vertex.y) <= m_TOLERANCE)
+			if (distanceBetweenPoints(p0, vertex) <= m_TOLERANCE)
 			{
 				return true; // vertex (provided in argument) is too close to an existing path
 			}
@@ -611,7 +611,7 @@ void Path::generateSprites()
 	float angleInRad = atan2f(m_vertices.at(1).y - m_vertices.at(0).y, m_vertices.at(1).x - m_vertices.at(0).x);
 	float offsetFromVertex = m_STAR_WIDTH / (float)1.4;
 	float straightLength = 72;
-	while (distanceBetweenPoints(m_vertices.at(0).x, m_vertices.at(0).y, m_vertices.at(1).x, m_vertices.at(1).y) < straightLength + offsetFromVertex * 2)
+	while (distanceBetweenPoints(m_vertices.at(0), m_vertices.at(1)) < straightLength + offsetFromVertex * 2)
 	{
 		straightLength = straightLength / 2; // shorten the straight portion of the arrow, since the first two vertices are close together
 		offsetFromVertex = offsetFromVertex / 2; // move the arrow closer to the starting vertex

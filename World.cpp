@@ -1,6 +1,4 @@
 #include "World.h"
-
-#include "Util\Math.h"
 #include "Path.h"
 
 World::World()
@@ -19,12 +17,9 @@ void World::setBoolTowerBeingPlaced(bool tf)
 	m_towerManager.setbTowerBeingPlaced(tf);
 }
 
-void World::setdummyTowerProperties(attackType type, int strength)
+void World::setdummyTowerProperties(attackType type, int strength, sf::Vector2f position)
 {
-	// not necessary to set dummy tower position until checking position compatibility
-	m_towerManager.getDummyTower()->storeLogicData(type, strength);
-
-	m_towerManager.getDummyTower()->storeGraphicsData_Cursor();
+	m_towerManager.getDummyTower()->setBasicProperties(type, strength, position);
 }
 
 void World::createOrthoPath(int numInternalVertices)
@@ -67,13 +62,13 @@ void World::update(const sf::RenderWindow& window)
 {
 	m_towerManager.update(window, m_path, &m_enemies);
 	
+	// TODO: incorporate a lot of this into waveManager::update
+
 	for (unsigned int i = 0; i < m_enemies.size(); i++)
 	{
 		m_enemies.at(i)->update();
 		if (!m_enemies.at(i)->getbIsAlive()) { m_enemies.erase(m_enemies.begin() + i); }
 	}
-
-	// TODO: incorporate a lot of this into waveManager::update
 
 	m_waveManager.updatebWaveOngoing(m_enemies.size());
 

@@ -2,12 +2,32 @@
 #include "Util\Math.h"
 #include "ResourceManager\ResourceHolder.h"
 
-// (1)window, (2)attack type, (3)strength
-TowerRoot::TowerRoot(const sf::RenderWindow& window, attackType type, int strength) // this constructor gets called when tower is actually placed in m_towers in World.cpp
+// (1)attack type, (2)strength, (3)position
+TowerRoot::TowerRoot(const attackType& type, const int& strength, const sf::Vector2f& position) // this constructor gets called when tower is actually placed in m_towers in World.cpp
 {
-	storeLogicData(type, strength, sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))));
+	setBasicProperties(type, strength, position);
 
-	storeGraphicsData_TowerConstruction();
+	m_cooldownTime = sf::milliseconds(1000);
+	m_priority = targetPriority::weak;
+	m_maxNumTargets = 1;
+
+	if (m_strength == 2)
+	{
+		m_towerCircle.setFillColor(sf::Color::Magenta);
+		m_strengthString.setString("Sqrt");
+	}
+	else if (m_strength == 3)
+	{
+		m_towerCircle.setFillColor(sf::Color::Cyan);
+		m_strengthString.setString("Cbrt");
+	}
+	else
+	{
+		m_towerCircle.setFillColor(sf::Color::Cyan);
+		m_strengthString.setString(std::to_string(m_strength) + "th root");
+	}
+	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+	m_strengthString.setFillColor(sf::Color::Red);
 }
 
 void TowerRoot::update(std::vector<std::unique_ptr<Enemy>>* enemies)
@@ -38,14 +58,12 @@ void TowerRoot::update(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 {
-	m_priority = targetPriority::close;
-	m_numEnemiesToAttack = 5;
-	std::vector<int> enemyIndices = {};
+	std::vector<int> enemyIndicesToAttack = {};
 
 	for (unsigned int i_e = 0; i_e < enemies->size(); i_e++)
 	{
 		float enemyDistance = distanceBetweenPoints(enemies->at(i_e)->getPosition(), m_position);
-		if (enemyDistance <= m_range) // if false, then enemy out of range, so skips the rest of the calculations for this enemy
+		if (enemyDistance < m_range) // if false, then enemy out of range, so skips the rest of the calculations for this enemy
 		{
 			if (enemies->at(i_e)->getHealth() > 1) // ensure does not attack enemy of health 1 or 0
 			{
@@ -54,7 +72,7 @@ void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 				if (abs(val1 - val2) < 1e-7) // is a perfect nth root
 				{
-					enemyIndices = m_possiblyAddEnemyIndexToVectorAndSort(enemies, i_e, enemyIndices);
+					enemyIndicesToAttack = m_possiblyAddEnemyIndexToVectorAndSort(enemies, i_e, enemyIndicesToAttack);
 				}
 			}
 		}
@@ -62,16 +80,16 @@ void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 	// this is the part of the function where we actually attack enemies
 
-	if (enemyIndices.size() > 0) // we found (at least) one enemy to attack
+	if (enemyIndicesToAttack.size() > 0) // we found (at least) one enemy to attack
 	{
 		m_bShouldResetElapsedTime = true;
 
-		for (unsigned int i = 0; i < enemyIndices.size(); i++)
+		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
 			m_numofAttacksInWave++; // for stat collection purposes
-			m_projectileManager.createProjectile(enemies->at(enemyIndices.at(i)), m_position, m_towerCircle.getFillColor());
+			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, m_towerCircle.getFillColor());
 
-			enemies->at(enemyIndices.at(i))->setHealth((int)std::pow(enemies->at(enemyIndices.at(i))->getHealth(), 1. / double(m_strength)));
+			enemies->at(enemyIndicesToAttack.at(i))->setHealth((int)std::round(std::pow(enemies->at(enemyIndicesToAttack.at(i))->getHealth(), 1. / float(m_strength))));
 		}
 	}
 }

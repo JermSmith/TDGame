@@ -24,7 +24,38 @@ T toDegrees(T radians)
 }
 
 template <typename T>
-T distanceBetweenPoints(T x1, T y1, T x2, T y2)
+T distanceBetweenPoints(T x1, T y1, T x2, T y2) // for points
 {
 	return (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
 }
+
+template <typename T>
+float distanceBetweenPoints(T v1, T v2) // for vector2f
+{
+	return (sqrt((v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y)));
+}
+
+template <typename T>
+bool bIsPrime(T input)
+{
+	int i = (int)round(input);
+	bool bResult = true;
+
+	if (i <= 1)
+	{
+		bResult = false; // the input is 1 (or 0), which is not prime
+	}
+	else
+	{
+		for (int n = 2; n <= i / 2; n++)
+		{
+			if (i % n == 0)
+			{
+				bResult = false; // has been found to be composite
+			}
+		}
+	}
+	
+	return bResult;
+}
+

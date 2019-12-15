@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "Util\Math.h"
 #include <iostream>
 
 namespace gui
@@ -77,10 +78,7 @@ namespace gui
 			case sf::Mouse::Left:
 				if (m_buttonSize == ButtonSize::Circle3) // is a circle
 				{
-					if (distanceBetweenPoints(
-						m_button.getPosition().x,
-						m_button.getPosition().y,
-						pos.x, pos.y) <
+					if (distanceBetweenPoints(m_button.getPosition(), pos) <
 						m_button.getGlobalBounds().width / 2) // if distance is less than radius
 					{
 						m_function();
@@ -120,6 +118,8 @@ namespace gui
 		updateText();
 	}
 
+	//sf::Vector2f Button::getPosition() { return m_position; }
+
 	sf::Vector2f Button::getSize() const
 	{
 		return sf::Vector2f(m_button.getGlobalBounds().width, m_button.getGlobalBounds().height);
@@ -154,3 +154,4 @@ namespace gui
 	}
 
 }
+

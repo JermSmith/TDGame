@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-
 #include "Widget.h"
 
 namespace gui
@@ -12,7 +11,7 @@ namespace gui
 		TextBox(std::string& modString);
 
 		void setLabel(const std::string& str);
-		void setTexture(const sf::Texture& tex);
+		//void setTexture(const sf::Texture& tex);
 
 		void handleEvent(sf::Event e, const sf::RenderWindow& window) override;
 		void render(sf::RenderTarget& renderer) override;

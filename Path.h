@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ResourceManager\ResourceHolder.h" // load textures for path and vertices
-#include "Util\Math.h" // toDegrees in generateSprites function
+#include "Util\Math.h" // game dimension constants
 #include <vector>
 
 class Path
@@ -31,7 +31,6 @@ private:
 
 	bool vertexInterferesWithPath(sf::Vector2f& vertex);
 	void generateSprites();
-	//float Path::getDistanceBetweenPoints(sf::Vector2f& v0, sf::Vector2f& v1);
 
 	sf::Vector2f m_firstVertex;
 	sf::Vector2f m_lastVertex;

@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "Util\Math.h"
 
 namespace gui
 {

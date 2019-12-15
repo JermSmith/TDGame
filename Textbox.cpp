@@ -1,6 +1,6 @@
-#include "Textbox.h"
-
 #include <iostream>
+#include "Textbox.h"
+#include "Util\Math.h"
 
 namespace gui
 {

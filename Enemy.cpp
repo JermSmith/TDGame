@@ -3,11 +3,6 @@
 #include <iostream>
 #include "ResourceManager\ResourceHolder.h"
 
-/*Enemy::Enemy()
-{
-	
-}*/
-
 Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 {
 	m_bIsAlive = true;
@@ -20,7 +15,7 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 	m_healthString.setFillColor(sf::Color::Yellow);
 
 	m_circle.setRadius(16.);
-	m_circle.setFillColor(sf::Color::Red);
+	m_circle.setFillColor(m_defaultFillColor);
 	m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
 
 	m_vertices = vertices;
@@ -28,7 +23,10 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 	m_speed = speed;
 
 	m_position = m_vertices.at(0);
-	setDirection(vertices.at(0), vertices.at(1)); // sets m_direction
+	m_theta = atan2f(vertices.at(1).y - vertices.at(0).y, vertices.at(1).x - vertices.at(0).x);
+
+	m_nextVertexIndex = 1; // 1 is for its first destination vertex, and increases after arriving at each vertex
+
 }
 
 const sf::Vector2f& Enemy::getPosition() const { return m_position; }
@@ -37,58 +35,62 @@ void Enemy::setPosition(sf::Vector2f& position) { m_position = position; }
 const sf::Vector2f& Enemy::getSize() const { return m_size; }
 void Enemy::setSize(sf::Vector2f& size) { m_size = size; }
 
-int Enemy::getHealth() { return m_health; }
+const int& Enemy::getHealth() const { return m_health; }
 void Enemy::setHealth(int health) { m_health = health; }
 
-bool Enemy::getbIsAlive() { return m_bIsAlive; }
-//void Enemy::setbIsAlive(bool tf) { m_bIsAlive = tf; }
+const bool& Enemy::getbIsAlive() const { return m_bIsAlive; }
 
-std::vector<sf::Vector2f> Enemy::getVertices() { return m_vertices; }
+const std::vector<sf::Vector2f>& Enemy::getVertices() const { return m_vertices; }
 void Enemy::setVertices(std::vector<sf::Vector2f> vertices) { m_vertices = vertices; }
 
-float Enemy::getSpeed() { return m_speed; }
+const sf::Vector2f& Enemy::getNextDest() const { return m_vertices.at(m_nextVertexIndex); }
+
+const float& Enemy::getSpeed() const { return m_speed; }
 void Enemy::setSpeed(float speed) { m_speed = speed; }
 
-sf::Vector2f Enemy::getDirection() { return m_direction; }
-// normalized so direction vector has length 1
-void Enemy::setDirection(sf::Vector2f posA, sf::Vector2f posB)
-{
-	m_direction.x = (posB.x - posA.x) / distanceBetweenPoints(posA.x, posA.y, posB.x, posB.y);
-	m_direction.y = (posB.y - posA.y) / distanceBetweenPoints(posA.x, posA.y, posB.x, posB.y);
-}
+const float& Enemy::getTheta() const { return m_theta; }
 
-void Enemy::updatePosition()
-{
-	m_position.x = m_position.x + m_direction.x * m_speed;
-	m_position.y = m_position.y + m_direction.y * m_speed;
+//temporary for debugging
+void Enemy::resetFillColor() { m_circle.setFillColor(m_defaultFillColor); }
+void Enemy::setFillColor(sf::Color color) { m_circle.setFillColor(color); }
 
-	if ((m_direction.x * m_position.x >= m_direction.x * m_vertices.at(m_nextVertex).x &&
-		m_direction.y * m_position.y >= m_direction.y * m_vertices.at(m_nextVertex).y)
+void Enemy::m_updatePosition()
+{
+	m_position.x = m_position.x + cosf(m_theta) * m_speed;
+	m_position.y = m_position.y + sinf(m_theta) * m_speed;
+
+	if ((m_position.x * cosf(m_theta) >= m_vertices.at(m_nextVertexIndex).x * cosf(m_theta) &&
+		m_position.y * sinf(m_theta) >= m_vertices.at(m_nextVertexIndex).y * sinf(m_theta))
 		||
-		(abs(m_direction.x) < sin(PI / 9) &&    //moving vertically at an angle > 70 degrees, so only check that x-component has passed vertex
-		m_direction.y * m_position.y > m_direction.y * m_vertices.at(m_nextVertex).y)
+		//moving vertically at an angle > 70 degrees, so only check that x-component has passed vertex
+		(abs(cosf(m_theta)) < sin(PI / 9) && // horizontal component is small
+			m_position.y * sinf(m_theta) > m_vertices.at(m_nextVertexIndex).y * sinf(m_theta))
 		||
-		(abs(m_direction.y) < sin(PI / 9) &&    //moving horizontally at an angle < 20 degrees, so only check that y-component has passed vertex
-		m_direction.x * m_position.x > m_direction.x * m_vertices.at(m_nextVertex).x))
+		//moving horizontally at an angle < 20 degrees, so only check that y-component has passed vertex
+		(abs(sinf(m_theta)) < sin(PI / 9) && // vertical component is small 
+			m_position.x * cosf(m_theta) > m_vertices.at(m_nextVertexIndex).x * cosf(m_theta)))
 		// note 1: multiply by m_direction.x or y to change direction of inequality for motion in a negative direction
 		// note 2: >= means that for ortho path, x-component may always be equal (so true) but y-component will change from 
 		//			false to true at some point (or vice versa). equal sign not necessary for path of arbitrary directions
 	{
-		m_nextVertex++; // enemy arrived at "next vertex", so select the next "next vertex"
+		m_nextVertexIndex++; // enemy arrived at "next vertex", so select the next "next vertex"
 
-		if (m_nextVertex == m_vertices.size())
+		if (m_nextVertexIndex == m_vertices.size())
 		{
 			// then cannot do m_vertices.at(m_nextVertex) because it is out of range
 			// this means enemy has arrived at final vertex
-			//this->setPosition(sf::Vector2f(0, 0));
-			this->setSpeed(0);
-			this->m_circle.setFillColor(sf::Color::Transparent);
-			m_nextVertex = 0;
+			setSpeed(0);
+			m_circle.setFillColor(sf::Color::Transparent);
+			m_nextVertexIndex = 0;
 		}
-		else { setDirection(m_vertices.at(m_nextVertex - 1), m_vertices.at(m_nextVertex)); }
+		else
+		{
+			float dy = m_vertices.at(m_nextVertexIndex).y - m_vertices.at(m_nextVertexIndex - 1).y;
+			float dx = m_vertices.at(m_nextVertexIndex).x - m_vertices.at(m_nextVertexIndex - 1).x;
+			m_theta = atan2f(dy , dx);
+		}
 	}
 }
-
 
 void Enemy::update()
 {
@@ -97,22 +99,27 @@ void Enemy::update()
 		m_bIsAlive = false;
 	}
 	
-	updatePosition();
+	m_updatePosition();
 
 	m_healthString.setString(std::to_string(m_health));
 	m_healthString.setPosition(m_position);
+	
+	if (bIsPrime(m_health))
+	{
+		m_circle.setFillColor(sf::Color::White);
+	}
+	if (!bIsPrime(m_health))
+	{
+		m_circle.setFillColor(m_defaultFillColor);
+	}
 
 }
 
 void Enemy::render(sf::RenderTarget& renderer)
 {
-	/*m_sprite.setPosition(m_position);
-	renderer.draw(m_sprite);*/
-
 	m_circle.setPosition(m_position);
 	renderer.draw(m_circle);
 	renderer.draw(m_healthString);
-
 }
 
 
