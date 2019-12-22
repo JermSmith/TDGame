@@ -11,6 +11,8 @@ StateMainMenu::StateMainMenu(Game& game)
 	: StateBase(game)
 	, m_mainMenu(game.getWindow(), 100)
 {
+	m_musicFilenames = { "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" , "Kai_Engel_-_04_-_Moonlight_Reprise" };
+
 	//m_banner.setSize(sf::Vector2f((float)128, (float)8));
 	//m_banner.setPosition(sf::Vector2f(128, 64));
 	//m_banner.setFillColor(sf::Color::White);
@@ -85,3 +87,4 @@ void StateMainMenu::render(sf::RenderTarget& renderer)
 	m_mainMenu.render(renderer);
 	//renderer.draw(m_banner);
 }
+

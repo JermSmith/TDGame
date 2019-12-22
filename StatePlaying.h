@@ -16,6 +16,7 @@ public:
 	void update			(sf::Time deltaTime) override;
 	//void fixedUpdate	(sf::Time deltaTime) override;
 	void render			(sf::RenderTarget& renderer) override;
+	//void playMusic		()				override;
 
 private:
 	gui::StackMenu m_playingMenu;
@@ -25,3 +26,4 @@ private:
 	World m_world;
 
 };
+

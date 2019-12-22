@@ -18,27 +18,30 @@ void WaveManager::m_constructWaveGeneratingData()
 	// wave 3: 3s for /3 tower practice
 	// wave 4: 4s for sqrt tower practice
 	// wave 5: primes (2, 3, 5) -- in general, if n is prime then have the nth wave be a wave of primes
+	// OR, every 5th wave is a wave of only primes, increasing in the number of enemies?
 
 	m_waveGeneratingData =
 	{
-		std::make_pair<std::vector<int>, int>({ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }, 35),
+		std::make_pair<std::vector<int>, int>({ 1 }, 10),
 		std::make_pair<std::vector<int>, int>({ 2 }, 10),
 		std::make_pair<std::vector<int>, int>({ 3 }, 10),
 		std::make_pair<std::vector<int>, int>({ 4 }, 10),
-		std::make_pair<std::vector<int>, int>({ 2, 3, 5 }, 10),
-		std::make_pair<std::vector<int>, int>({ 3, 6, 9 }, 25),
-		std::make_pair<std::vector<int>, int>({ 2, 4, 6, 8, 10 }, 6),
-		std::make_pair<std::vector<int>, int>({ 3, 5, 7, 9 }, 3),
-		std::make_pair<std::vector<int>, int>({ 11 }, 4),
-		std::make_pair<std::vector<int>, int>({ 2, 3, 5, 7, 11, 13, 17 }, 6),
-		std::make_pair<std::vector<int>, int>({ 4, 9, 16, 25, 36, 49 }, 3),
-		std::make_pair<std::vector<int>, int>({ 2, 6, 10, 14, 18, 22, 26 }, 5),
-		std::make_pair<std::vector<int>, int>({ 50 }, 4),
-		std::make_pair<std::vector<int>, int>({ 7 }, 15),
-		std::make_pair<std::vector<int>, int>({ 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 61 }, 12),
-		std::make_pair<std::vector<int>, int>({ 8, 27, 64, 125, 216, 343, 512 }, 5),
-		std::make_pair<std::vector<int>, int>({ 99 }, 4),
-		std::make_pair<std::vector<int>, int>({ 101 }, 4)
+		std::make_pair<std::vector<int>, int>({ 2, 3, 5 }, 15),
+		std::make_pair<std::vector<int>, int>({ 3, 6, 9 }, 15),
+		std::make_pair<std::vector<int>, int>({ 2, 4, 6, 8, 10 }, 15),
+		std::make_pair<std::vector<int>, int>({ 3, 5, 7, 9 }, 15),
+		std::make_pair<std::vector<int>, int>({ 4, 5, 6, 7, 8, 9, 10 }, 15),
+		std::make_pair<std::vector<int>, int>({ 2, 3, 5, 7, 11, 13, 17, 19 }, 20),
+		std::make_pair<std::vector<int>, int>({ 4, 9, 16, 25, 36, 49 }, 20),
+		std::make_pair<std::vector<int>, int>({ 2, 6, 10, 14, 18, 22, 26 }, 20),
+		std::make_pair<std::vector<int>, int>({ 50 }, 20),
+		std::make_pair<std::vector<int>, int>({ 29 }, 20),
+		std::make_pair<std::vector<int>, int>({ 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 61 }, 25),
+		std::make_pair<std::vector<int>, int>({ 8, 27, 64, 125, 216, 343, 512 }, 25),
+		std::make_pair<std::vector<int>, int>({ 99 }, 25),
+		std::make_pair<std::vector<int>, int>({ 101 }, 25),
+		std::make_pair<std::vector<int>, int>({ 173 }, 25),
+		std::make_pair<std::vector<int>, int>({ 23, 29, 31, 37, 41, 43, 47, 53, 61, 67, 71, 73, 79, 83, 89, 91, 97, 101, 103 }, 30)
 	};
 }
 

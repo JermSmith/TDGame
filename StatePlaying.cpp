@@ -14,6 +14,9 @@ StatePlaying::StatePlaying(Game& game)
 	, m_playingMenu(sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), (float)gui::StackMenu::WIDGET_SPACER), 
 		sf::Vector2f((float)sizes::PLAYINGMENU_X, (float)sizes::WORLD_SIZE_Y))
 {
+	m_musicFilenames = { "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" ,
+		"Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" };
+
 	m_world.createRandomPath(0);
 
 	auto btnStartWave = gui::makeButton(gui::ButtonSize::Wide);
@@ -31,7 +34,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 11);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::divide, 11, mousePos);
 		}
 	});
 
@@ -43,7 +47,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::subtract, 1); 
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::subtract, 1, mousePos);
 		}
 	});
 
@@ -55,7 +60,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::root, 2);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::root, 2, mousePos);
 		}
 	});
 
@@ -67,7 +73,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::root, 3);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::root, 3, mousePos);
 		}
 	});
 
@@ -79,7 +86,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 5);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::divide, 5, mousePos);
 		}
 	});
 
@@ -91,7 +99,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 7);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::divide, 7, mousePos);
 		}
 	});
 
@@ -105,7 +114,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 11);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::divide, 11, mousePos);
 		}
 	});
 
@@ -117,7 +127,8 @@ StatePlaying::StatePlaying(Game& game)
 		else
 		{
 			m_world.setBoolTowerBeingPlaced(true);
-			m_world.setdummyTowerProperties(attackType::divide, 13);
+			sf::Vector2f mousePos = sf::Vector2f(m_pGame->getWindow().mapPixelToCoords(sf::Mouse::getPosition(m_pGame->getWindow())));
+			m_world.setdummyTowerProperties(attackType::divide, 13, mousePos);
 		}
 	});*/
 

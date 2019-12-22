@@ -14,8 +14,11 @@ public:
 	void handleInput	()				override;
 	void update			(sf::Time deltaTime) override;
 	void render			(sf::RenderTarget& renderer) override;
+	//void playMusic		()				override;
 
 private:
 	gui::StackMenu m_mainMenu;
-	sf::RectangleShape m_banner;
+
+	//sf::RectangleShape m_banner;
 };
+
