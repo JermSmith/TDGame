@@ -11,9 +11,9 @@ TowerDiv::TowerDiv(const attackType& type, const int& strength, const sf::Vector
 	m_priority = targetPriority::strong;
 	m_maxNumTargets = 2;
 
-	m_towerCircle.setFillColor(sf::Color::Cyan);
-	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	m_strengthString.setFillColor(sf::Color::Red);
+	//m_towerCircle.setFillColor(sf::Color::Cyan);
+	//m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+	//m_strengthString.setFillColor(sf::Color::Red);
 	m_strengthString.setString("/ " + std::to_string(m_strength));
 }
 

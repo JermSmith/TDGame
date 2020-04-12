@@ -13,9 +13,9 @@ TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector
 	m_priority = targetPriority::largestPrime;
 	m_maxNumTargets = 1;
 
-	m_towerCircle.setFillColor(sf::Color::Magenta);
-	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	m_strengthString.setFillColor(sf::Color::Red);
+	//m_towerCircle.setFillColor(sf::Color::Magenta);
+	//m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+	//m_strengthString.setFillColor(sf::Color::Red);
 
 	if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }

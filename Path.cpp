@@ -630,15 +630,15 @@ void Path::generateSprites()
 	//    origin -->|	>
 	//				|  /
 	//				|/
-	m_startArrowTri.setTexture(&m_vertexTexture);
-	m_startArrowTri.setFillColor(sf::Color::Red);
-	m_startArrowTri.setPointCount(3); // then define the 3 points of the triangle below
-	m_startArrowTri.setPoint(0, sf::Vector2f(0, 0));
-	m_startArrowTri.setPoint(1, sf::Vector2f(0, m_PATH_WIDTH));
-	m_startArrowTri.setPoint(2, sf::Vector2f(m_PATH_WIDTH / 2, m_PATH_WIDTH * cosf(MIN_PI / 3)));
-	m_startArrowTri.setOrigin(sf::Vector2f(0, m_PATH_WIDTH / 2)); //set origin to be midpoint of base
-	m_startArrowTri.setRotation(toDegrees(angleInRad));
-	m_startArrowTri.setPosition(m_vertices.at(0).x + (offsetFromVertex + straightLength) * cosf(angleInRad)
+	m_startArrowTriangle.setTexture(&m_vertexTexture);
+	m_startArrowTriangle.setFillColor(sf::Color::Red);
+	m_startArrowTriangle.setPointCount(3); // then define the 3 points of the triangle below
+	m_startArrowTriangle.setPoint(0, sf::Vector2f(0, 0));
+	m_startArrowTriangle.setPoint(1, sf::Vector2f(0, m_PATH_WIDTH));
+	m_startArrowTriangle.setPoint(2, sf::Vector2f(m_PATH_WIDTH / 2, m_PATH_WIDTH * cosf(MIN_PI / 3)));
+	m_startArrowTriangle.setOrigin(sf::Vector2f(0, m_PATH_WIDTH / 2)); //set origin to be midpoint of base
+	m_startArrowTriangle.setRotation(toDegrees(angleInRad));
+	m_startArrowTriangle.setPosition(m_vertices.at(0).x + (offsetFromVertex + straightLength) * cosf(angleInRad)
 		, m_vertices.at(0).y + (offsetFromVertex + straightLength) * sinf(angleInRad));
 
 }
@@ -657,7 +657,7 @@ void Path::render(sf::RenderTarget& renderer)
 	for (auto& diam : m_vertexStars) { renderer.draw(diam); }
 
 	renderer.draw(m_startArrowRect);
-	renderer.draw(m_startArrowTri);
+	renderer.draw(m_startArrowTriangle);
 }
 
 void Path::clear()
@@ -667,7 +667,7 @@ void Path::clear()
 	//m_vertexCircles.clear();
 	m_vertexStars.clear();
 	m_startArrowRect.setColor(sf::Color::Transparent);
-	m_startArrowTri.setFillColor(sf::Color::Transparent);
+	m_startArrowTriangle.setFillColor(sf::Color::Transparent);
 }
 
 const float Path::getLength()
@@ -692,3 +692,4 @@ void Path::setWidth(float width) { m_PATH_WIDTH = width; }
 const float Path::getWidth() const { return m_PATH_WIDTH; }
 
 const float Path::getVertexWidth() const { return m_STAR_WIDTH; }
+

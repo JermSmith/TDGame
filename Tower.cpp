@@ -1,9 +1,10 @@
 #include "Tower.h"
 #include "Util\Math.h"
 #include "ResourceManager\ResourceHolder.h"
+#include "Util\ColourManager.h"
 #include <algorithm>
 
-Tower::Tower() {} // necessary, so that Cursor inherits a default constructor
+Tower::Tower() {} // Cursor inherits this constructor
 
 void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position)
 {
@@ -12,7 +13,7 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 	m_attackType = type;
 	m_strength = strength;
 	
-	switch (m_attackType) // IMPORTANT: when previewing tower placement, Cursor reads radius and range from this function
+	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
 		m_radius = 32.f;
@@ -30,18 +31,21 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 		break;
 	}
 
-	// m_strengthString.setFontResourceHolder::get().fonts.get("stkaiti"));
-	m_strengthString.setFont(ResourceHolder::get().fonts.get("arial"));
-	m_strengthString.setPosition(m_position);
-
 	m_towerCircle.setRadius(m_radius);
 	m_towerCircle.setOrigin(sf::Vector2f(m_radius, m_radius));
 	//origin is relative to the top left corner of the circle's surrounding "box"; here it is set to be the centre of circle
 	m_towerCircle.setPosition(m_position); //origin of the circle goes to this position, which is location of click
+	m_towerCircle.setFillColor(colours::selectRandomColor());
 
 	m_rangeCircle.setRadius(m_range);
 	m_rangeCircle.setOrigin(sf::Vector2f(m_range, m_range));
 	m_rangeCircle.setPosition(m_position);
+	m_rangeCircle.setFillColor(colours::towerRangeFillColour);
+
+	// m_strengthString.setFontResourceHolder::get().fonts.get("stkaiti"));
+	m_strengthString.setFont(ResourceHolder::get().fonts.get("arial"));
+	m_strengthString.setPosition(sf::Vector2f(m_position.x - m_radius / (float)2, m_position.y - m_radius / (float)2));
+	m_strengthString.setFillColor(colours::towerTextColour);
 }
 
 void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)

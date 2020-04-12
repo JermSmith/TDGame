@@ -8,6 +8,9 @@ namespace sizes
 	constexpr unsigned int WORLD_SIZE_X = 1280;
 	constexpr unsigned int WORLD_SIZE_Y = 720;
 
+	constexpr unsigned int MAINMENU_BASESIZE_X = 300;
+	//constexpr unsigned int MAINMENU_BASESIZE_Y = 100;
+
 	constexpr unsigned int PLAYINGMENU_X = 320; //height of playing menu is world_size_y
 }
 

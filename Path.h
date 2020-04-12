@@ -63,6 +63,7 @@ private:
 	//std::vector<sf::CircleShape> m_vertexCircles;
 	std::vector<sf::Sprite> m_vertexStars;
 	sf::Sprite m_startArrowRect;
-	sf::ConvexShape m_startArrowTri;
+	sf::ConvexShape m_startArrowTriangle;
 
 };
+

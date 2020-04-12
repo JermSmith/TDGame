@@ -13,21 +13,21 @@ TowerRoot::TowerRoot(const attackType& type, const int& strength, const sf::Vect
 
 	if (m_strength == 2)
 	{
-		m_towerCircle.setFillColor(sf::Color::Magenta);
+		//m_towerCircle.setFillColor(sf::Color::Magenta);
 		m_strengthString.setString("Sqrt");
 	}
 	else if (m_strength == 3)
 	{
-		m_towerCircle.setFillColor(sf::Color::Cyan);
+		//m_towerCircle.setFillColor(sf::Color::Cyan);
 		m_strengthString.setString("Cbrt");
 	}
 	else
 	{
-		m_towerCircle.setFillColor(sf::Color::Cyan);
+		//m_towerCircle.setFillColor(sf::Color::Cyan);
 		m_strengthString.setString(std::to_string(m_strength) + "th root");
 	}
-	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	m_strengthString.setFillColor(sf::Color::Red);
+	//m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+	//m_strengthString.setFillColor(sf::Color::Red);
 }
 
 void TowerRoot::update(std::vector<std::unique_ptr<Enemy>>* enemies)
