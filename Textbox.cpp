@@ -56,9 +56,20 @@ namespace gui
 				m_rect.getSize().y + m_label.getGlobalBounds().height };
 	}
 
-	int TextBox::getNumColumns() const
+	int TextBox::getMaxNumInRow() const
 	{
 		return 1;
+	}
+
+	// first column has index=0
+	int TextBox::getPositionInRow() const
+	{
+		return m_positionInRow;
+	}
+	// first column has index=0
+	void TextBox::setPositionInRow(const int num)
+	{
+		m_positionInRow = num;
 	}
 
 	// private methods below this line
@@ -137,3 +148,4 @@ namespace gui
 	}
 
 }
+

@@ -17,7 +17,12 @@ namespace gui
 
 		virtual sf::Vector2f getSize() const = 0;
 
-		virtual int getNumColumns() const = 0;
+		virtual int getMaxNumInRow() const = 0;
+
+		// first column is index 0
+		virtual int getPositionInRow() const = 0;
+		// first column is index 0
+		virtual void setPositionInRow(const int) = 0;
 
 		class Text : public sf::Text
 		{
@@ -33,5 +38,9 @@ namespace gui
 		};
 
 		// class Circle... public convex shape?
+
+	protected:
+		int m_positionInRow = 0;
 	};
 }
+

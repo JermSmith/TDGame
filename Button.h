@@ -7,8 +7,8 @@ namespace gui
 {
 	enum class ButtonSize
 	{
-		Small, // placed in 1 column
-		Wide, // placed in 2 columns
+		Wide, // placed in 1 column
+		Small, // placed in 2 columns
 		Circle2, // placed in 2 columns
 		Circle3, // placed in 3 columns
 	};
@@ -25,11 +25,14 @@ namespace gui
 		void handleEvent(sf::Event e, const sf::RenderWindow& window) override;
 		void render(sf::RenderTarget& renderer) override;
 		void setPosition(const sf::Vector2f& pos) override;
+		//sf::Vector2f getPosition();
 		sf::Vector2f getSize() const override;
-		int getNumColumns() const override;
+		int getMaxNumInRow() const override;
+		int getPositionInRow() const override;
+		void setPositionInRow(const int) override;
 
 	private:
-		void updateText();
+		//void updateText();
 
 		sf::Vector2f m_position; // centre of shape for both rectangles and circles
 
@@ -42,3 +45,4 @@ namespace gui
 
 	inline std::unique_ptr<Button> makeButton(ButtonSize s) { return std::make_unique<Button>(s); }
 }
+

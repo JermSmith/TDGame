@@ -11,22 +11,40 @@ namespace gui
 		m_button.setOutlineThickness(-2);
 		m_button.setOutlineColor(sf::Color::Green);
 		m_button.setFillColor(sf::Color::Black);
+
+		float radius;
+		float theta;
 		switch (m_buttonSize)
 		{
 		case ButtonSize::Wide:
 			m_button.setPointCount(4);
-			m_button.setPoint(0, sf::Vector2f(-128, -32)); // top left
-			m_button.setPoint(1, sf::Vector2f(128, -32)); // top right
-			m_button.setPoint(2, sf::Vector2f(128, 32)); // bottom right
-			m_button.setPoint(3, sf::Vector2f(-128, 32)); // bottom left
+			m_button.setPoint(0, sf::Vector2f(-128, -24)); // top left
+			m_button.setPoint(1, sf::Vector2f(128, -24)); // top right
+			m_button.setPoint(2, sf::Vector2f(128, 24)); // bottom right
+			m_button.setPoint(3, sf::Vector2f(-128, 24)); // bottom left
 			break;
 
 		case ButtonSize::Small:
 			m_button.setPointCount(4);
-			m_button.setPoint(0, sf::Vector2f(-96, -24)); // top left
-			m_button.setPoint(1, sf::Vector2f(96, -24)); // top right
-			m_button.setPoint(2, sf::Vector2f(96, 24)); // bottom right
-			m_button.setPoint(3, sf::Vector2f(-96, 24)); // bottom left
+			m_button.setPoint(0, sf::Vector2f(-(float)sizes::PLAYINGMENU_X / 4, -24)); // top left
+			m_button.setPoint(1, sf::Vector2f((float)sizes::PLAYINGMENU_X / 4, -24)); // top right
+			m_button.setPoint(2, sf::Vector2f((float)sizes::PLAYINGMENU_X / 4, 24)); // bottom right
+			m_button.setPoint(3, sf::Vector2f(-(float)sizes::PLAYINGMENU_X / 4, 24)); // bottom left
+			break;
+
+		case ButtonSize::Circle2:
+			m_button.setPointCount(50);
+			radius = 20;
+			theta = 0; // angle in radians
+			for (int p = 0; p < (signed)m_button.getPointCount(); p++)
+			{
+				float x = radius * cosf(theta);
+				float y = radius * sinf(theta);
+
+				m_button.setPoint(p, sf::Vector2f(x, y));
+
+				theta = theta + 2 * PI / m_button.getPointCount(); // incrementing the angle getPointCount times makes one revolution
+			}
 			break;
 
 		case ButtonSize::Circle3:
@@ -35,8 +53,8 @@ namespace gui
 
 			m_button.setPointCount(50);
 
-			float radius = 32;
-			float theta = 0; // angle in radians
+			radius = 32;
+			theta = 0; // angle in radians
 			for (int p = 0; p < (signed)m_button.getPointCount(); p++)
 			{
 				float x = radius * cosf(theta);
@@ -58,7 +76,6 @@ namespace gui
 	void Button::setText(const std::string& str)
 	{
 		m_text.setString(str);
-		updateText();
 	}
 
 	void Button::setTexture(const sf::Texture& tex)
@@ -113,9 +130,9 @@ namespace gui
 		m_position = pos;
 
 		m_button.setPosition(m_position);
-		m_text.setPosition(m_position);
 
-		updateText();
+		m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 1.25f);
+		m_text.setPosition(m_position);
 	}
 
 	//sf::Vector2f Button::getPosition() { return m_position; }
@@ -125,9 +142,9 @@ namespace gui
 		return sf::Vector2f(m_button.getGlobalBounds().width, m_button.getGlobalBounds().height);
 	}
 
-	int Button::getNumColumns() const
+	int Button::getMaxNumInRow() const
 	{
-		int numColumns;
+		int numColumns = 1;
 		switch (m_buttonSize)
 		{
 		case ButtonSize::Wide:
@@ -146,12 +163,24 @@ namespace gui
 		return numColumns;
 	}
 
+	// first column has index=0
+	int Button::getPositionInRow() const
+	{
+		return m_positionInRow;
+	}
+
+	// first column has index=0
+	void Button::setPositionInRow(const int num)
+	{
+		m_positionInRow = num;
+	}
+
 	// private methods below this line
 
-	void Button::updateText()
-	{
-		m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 1.25f); // origin is slightly above the centre point
-	}
+	//void Button::updateText()
+	//{
+		//m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 1.25f); // origin is slightly above the centre point
+	//}
 
 }
 

@@ -12,15 +12,17 @@ namespace gui
 	class StackMenu : public NonCopyable
 	{
 	public:
-		StackMenu(const sf::RenderWindow& window, float baseY);
+		StackMenu(float basePositionY);
 		StackMenu(const sf::Vector2f& basePosition, const sf::Vector2f& baseSize);
 
-		StackMenu(StackMenu&& other);
-		StackMenu& operator =(StackMenu&& other);
+		//StackMenu(StackMenu&& other);
+		//StackMenu& operator =(StackMenu&& other);
 
 		~StackMenu() = default;
 
 		void addWidget(std::unique_ptr<Widget> w);
+		void clearWidgets();
+		bool bContainsWidgets();
 		/*
 		template<typename T, typename... Args> void addWidget(Args&&... args)
 		{
@@ -29,21 +31,22 @@ namespace gui
 			m_widgets.push_back(std::move(w));
 		}*/
 		
-		void setTitle(const std::string& title);
+		//void setTitle(const std::string& title);
 
 		void handleEvent(sf::Event e, const sf::RenderWindow& window);
 		void render(sf::RenderTarget& renderer);
 
-		static const int WIDGET_SPACER = 25;
+		static const int WIDGET_SPACER = 15;
 
 	private:
-		const sf::RenderWindow& getWindow() const;
+		//const sf::RenderWindow& getWindow() const;
+		float m_origBasePositionY = 0;
+		//float m_origBaseSizeY;
 
 		void initWidget(Widget& w);
-		int m_prevNumColumns = 1; // default is to place widgets in a single column
-		int m_consecutiveColumnStyleCount = 0; // no widgets have been placed at initialization
+		bool m_bIsFirstWidgetInMenu = true;
 
-		const sf::RenderWindow* m_pWindow;
+		//const sf::RenderWindow* m_pWindow;
 
 		std::vector<std::unique_ptr<Widget>> m_widgets;
 		sf::RectangleShape m_background;
@@ -51,6 +54,7 @@ namespace gui
 		sf::Vector2f m_basePosition; //top centre point of menu
 		sf::Vector2f m_baseSize; //(width, height) of menu
 
-		Widget::Text m_titleText;
+		//Widget::Text m_titleText;
 	};
 }
+

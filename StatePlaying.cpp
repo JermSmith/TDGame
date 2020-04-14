@@ -171,7 +171,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower8 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower8 = gui::makeButton(gui::ButtonSize::Circle2);
 	btnPlaceTower8->setText("sqrt");
 	btnPlaceTower8->setFunction([&]()
 	{
@@ -184,7 +184,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower9 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower9 = gui::makeButton(gui::ButtonSize::Circle2);
 	btnPlaceTower9->setText("cbrt");
 	btnPlaceTower9->setFunction([&]()
 	{
@@ -204,7 +204,7 @@ void StatePlaying::generateButtons(Game& game)
 
 	});
 
-	auto btnRestartGame = gui::makeButton(gui::ButtonSize::Small);
+	auto btnRestartGame = gui::makeButton(gui::ButtonSize::Wide);
 	btnRestartGame->setText("Restart Game");
 	btnRestartGame->setFunction([&]()
 	{
@@ -231,7 +231,7 @@ void StatePlaying::generateButtons(Game& game)
 		game.pushState<StateMainMenu>(game);
 	});
 
-	auto btnToggleMusic = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnToggleMusic = gui::makeButton(gui::ButtonSize::Small);
 	btnToggleMusic->setText("Toggle Music");
 	btnToggleMusic->setFunction([&]()
 	{

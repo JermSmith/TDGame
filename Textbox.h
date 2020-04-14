@@ -17,7 +17,9 @@ namespace gui
 		void render(sf::RenderTarget& renderer) override;
 		void setPosition(const sf::Vector2f& pos) override;
 		sf::Vector2f getSize() const override;
-		int getNumColumns() const override;
+		int getMaxNumInRow() const override;
+		int getPositionInRow() const override;
+		void setPositionInRow(const int) override;
 
 	private:
 		void handleClick(sf::Event e, const sf::RenderWindow& window);
@@ -36,8 +38,6 @@ namespace gui
 		bool m_isActive = false;
 	};
 
-	inline std::unique_ptr<TextBox> makeTextBox(std::string& modStr)
-	{
-		return std::make_unique<TextBox>(modStr);
-	}
+	inline std::unique_ptr<TextBox> makeTextBox(std::string& modStr) { return std::make_unique<TextBox>(modStr); }
 }
+
