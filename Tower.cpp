@@ -31,11 +31,17 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 		break;
 	}
 
-	m_towerCircle.setRadius(m_radius);
-	m_towerCircle.setOrigin(sf::Vector2f(m_radius, m_radius));
+	//m_towerCircle.setRadius(m_radius);
+	//m_towerCircle.setOrigin(sf::Vector2f(m_radius, m_radius));
 	//origin is relative to the top left corner of the circle's surrounding "box"; here it is set to be the centre of circle
-	m_towerCircle.setPosition(m_position); //origin of the circle goes to this position, which is location of click
-	m_towerCircle.setFillColor(colours::selectRandomColor());
+	//m_towerCircle.setPosition(m_position); //origin of the circle goes to this position, which is location of click
+	//m_towerCircle.setFillColor(colours::selectRandomColor());
+
+	getCircle()->setRadius(m_radius);
+	getCircle()->setOrigin(sf::Vector2f(m_radius, m_radius));
+	//origin is relative to the top left corner of the circle's surrounding "box"; here it is set to be the centre of circle
+	getCircle()->setPosition(m_position); //origin of the circle goes to this position, which is location of click
+	getCircle()->setFillColor(colours::selectRandomColor());
 
 	m_rangeCircle.setRadius(m_range);
 	m_rangeCircle.setOrigin(sf::Vector2f(m_range, m_range));
@@ -53,7 +59,7 @@ void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	
 }
 
-void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies)
+void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window)
 {
 	
 }
@@ -61,7 +67,8 @@ void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies)
 void Tower::render(sf::RenderTarget& renderer)
 {
 	renderer.draw(m_rangeCircle);
-	renderer.draw(m_towerCircle);
+	//renderer.draw(m_towerCircle);
+	renderer.draw(*getCircle());
 	renderer.draw(m_strengthString);
 
 	m_projectileManager.render(renderer);

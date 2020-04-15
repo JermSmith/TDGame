@@ -10,11 +10,11 @@
 StateMainMenu::StateMainMenu(Game& game)
 	: StateBase(game)
 	//, m_mainMenu(game.getWindow(), 100)
-	, m_mainMenu(100)
-	, m_optionsMenu(sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), 0),
-		sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))
+	, m_mainMenu(game.getWindow(), 100)
+	, m_optionsMenu(100)// sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), 0),
+		//sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))
 {
-	m_musicFilenames = { "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" , "Kai_Engel_-_04_-_Moonlight_Reprise" };
+	m_musicFilenames = { "Kai_Engel_-_04_-_Moonlight_Reprise" , "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" };
 
 	generateButtons(game);
 
@@ -48,21 +48,21 @@ void StateMainMenu::render(sf::RenderTarget& renderer)
 
 void StateMainMenu::generateButtons(Game& game)
 {
-	auto btnNewGame = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnNewGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnNewGame->setText("New Game");
 	btnNewGame->setFunction([&]()
 	{
 		game.pushState<StatePlaying>(game);
 	});
 
-	auto btnLoadGame = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnLoadGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnLoadGame->setText("Load Game");
 	btnLoadGame->setFunction([&]()
 	{
 
 	});
 
-	auto btnOptions = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnOptions = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnOptions->setText("Options");
 	btnOptions->setFunction([&]()
 	{
@@ -70,21 +70,21 @@ void StateMainMenu::generateButtons(Game& game)
 		else { m_optionsMenu.clearWidgets(); }
 	});
 
-	auto btnHowToPlay = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnHowToPlay = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnHowToPlay->setText("How To Play");
 	btnHowToPlay->setFunction([&]()
 	{
 
 	});
 
-	auto btnHighScores = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnHighScores = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnHighScores->setText("High Scores");
 	btnHighScores->setFunction([&]()
 	{
 
 	});
 
-	auto btnExit = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnExit = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnExit->setText("Exit");
 	btnExit->setFunction([&]()
 	{
@@ -102,7 +102,7 @@ void StateMainMenu::generateButtons(Game& game)
 
 void StateMainMenu::m_generateOptionsButtons(Game& game)
 {
-	auto btnToggleMusic = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnToggleMusic = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnToggleMusic->setText("Toggle Music");
 	btnToggleMusic->setFunction([&]()
 	{
@@ -116,14 +116,14 @@ void StateMainMenu::m_generateOptionsButtons(Game& game)
 		}
 	});
 
-	auto btnColourScheme = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnColourScheme = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnColourScheme->setText("Toggle Change Colour Scheme");
 	btnColourScheme->setFunction([&]()
 	{
 
 	});
 
-	auto btnMainMenu = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnMainMenu = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnMainMenu->setText("Return to Menu");
 	btnMainMenu->setFunction([&]()
 	{

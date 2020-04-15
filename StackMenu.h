@@ -12,8 +12,8 @@ namespace gui
 	class StackMenu : public NonCopyable
 	{
 	public:
-		StackMenu(float basePositionY);
-		StackMenu(const sf::Vector2f& basePosition, const sf::Vector2f& baseSize);
+		StackMenu(const sf::RenderWindow& window, float basePositionY);
+		StackMenu(float basePositionY);// const sf::Vector2f& basePosition, const sf::Vector2f& baseSize);
 
 		//StackMenu(StackMenu&& other);
 		//StackMenu& operator =(StackMenu&& other);
@@ -54,7 +54,7 @@ namespace gui
 		sf::Vector2f m_basePosition; //top centre point of menu
 		sf::Vector2f m_baseSize; //(width, height) of menu
 
-		//Widget::Text m_titleText;
+		Widget::Text m_titleText;
 	};
 }
 

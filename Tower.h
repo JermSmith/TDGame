@@ -15,13 +15,13 @@ enum class attackType
 	root,
 };
 
-class Tower
+class Tower : public InteractableCircle
 {
 public:
 	Tower();
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
-	virtual void update(std::vector<std::unique_ptr<Enemy>>* enemies);
+	virtual void update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
@@ -56,7 +56,7 @@ protected:
 	float m_radius;
 	float m_range;
 
-	sf::CircleShape m_towerCircle;
+	//sf::CircleShape m_towerCircle;
 	sf::CircleShape m_rangeCircle;
 	sf::Text m_strengthString;
 

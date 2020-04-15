@@ -1,11 +1,11 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>
+#include "GUI\InteractableCircle.h"
 
-class Enemy
+class Enemy : public InteractableCircle
 {
 public:
-	//Enemy();
 	Enemy(std::vector<sf::Vector2f> path, int health, float speed);
 	
 	const sf::Vector2f& getPosition() const;
@@ -14,22 +14,27 @@ public:
 	const sf::Vector2f& getSize() const;
 	void setSize(sf::Vector2f& size);
 
-	int getHealth();
+	const int& getHealth() const;
 	void setHealth(int health);
 
-	bool getbIsAlive();
-	//void setbIsAlive(bool tf);
+	const bool& getbIsAlive() const;
 
-	std::vector<sf::Vector2f> getVertices();
+	const std::vector<sf::Vector2f>& getVertices() const;
 	void setVertices(std::vector<sf::Vector2f> vertices);
 
-	float getSpeed();
+	const sf::Vector2f& getNextDest() const;
+
+	const float& getSpeed() const;
 	void setSpeed(float speed);
 
-	sf::Vector2f getDirection();
-	void setDirection(sf::Vector2f startPos, sf::Vector2f endPos);
+	const float& getTheta() const;
 
-	void update();
+	// temporary for debugging
+	void resetFillColor();
+	void setFillColor(sf::Color color);
+
+	void handleEvent(sf::Event e, const sf::RenderWindow& window);
+	void update(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 
@@ -39,23 +44,25 @@ private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_size;
 
-	int m_health;
+	int m_health;	
+
 	sf::Text m_healthString;
+
+	sf::Color m_defaultFillColor = sf::Color::Red;
 
 	bool m_bIsAlive;
 
 	float m_speed; // pixels per update
+	float m_theta; // direction of travel
 
-	void updatePosition();
+	void m_updatePosition();
+	void m_updateText();
 
 	std::vector<sf::Vector2f> m_vertices;
 	
-	unsigned int m_nextVertex = 1; // 1 is for its first destination vertex, and increases after arriving at each vertex
-
-	sf::Vector2f m_direction; // unit vector describing direction of motion of enemy
-
-	// m_position, m_size inherited from GameObject
+	unsigned int m_nextVertexIndex; // 1 is for its first destination vertex, and increases after arriving at each vertex
 
 	/*sf::Sprite m_sprite;*/
-	sf::CircleShape m_circle;
+	//sf::CircleShape m_circle;
 };
+

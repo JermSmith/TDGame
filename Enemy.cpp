@@ -11,12 +11,17 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
 
 	// m_healthString.setFont(ResourceHolder::get().fonts.get("stkaiti"));
+
 	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
 	m_healthString.setFillColor(sf::Color::Yellow);
 
-	m_circle.setRadius(16.);
-	m_circle.setFillColor(m_defaultFillColor);
-	m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
+	//m_circle.setRadius(16.);
+	//m_circle.setFillColor(m_defaultFillColor);
+	//m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
+
+	getCircle()->setRadius(16.);
+	getCircle()->setFillColor(m_defaultFillColor);
+	getCircle()->setOrigin(sf::Vector2f(getCircle()->getRadius(), getCircle()->getRadius()));
 
 	m_vertices = vertices;
 	m_health = health;
@@ -51,8 +56,11 @@ void Enemy::setSpeed(float speed) { m_speed = speed; }
 const float& Enemy::getTheta() const { return m_theta; }
 
 //temporary for debugging
-void Enemy::resetFillColor() { m_circle.setFillColor(m_defaultFillColor); }
-void Enemy::setFillColor(sf::Color color) { m_circle.setFillColor(color); }
+//void Enemy::resetFillColor() { m_circle.setFillColor(m_defaultFillColor); }
+//void Enemy::setFillColor(sf::Color color) { m_circle.setFillColor(color); }
+
+void Enemy::resetFillColor() { getCircle()->setFillColor(m_defaultFillColor); }
+void Enemy::setFillColor(sf::Color color) { getCircle()->setFillColor(color); }
 
 void Enemy::m_updatePosition()
 {
@@ -80,7 +88,8 @@ void Enemy::m_updatePosition()
 			// then cannot do m_vertices.at(m_nextVertex) because it is out of range
 			// this means enemy has arrived at final vertex
 			setSpeed(0);
-			m_circle.setFillColor(sf::Color::Transparent);
+			//m_circle.setFillColor(sf::Color::Transparent);
+			getCircle()->setFillColor(sf::Color::Transparent);
 			m_nextVertexIndex = 0;
 		}
 		else
@@ -92,7 +101,37 @@ void Enemy::m_updatePosition()
 	}
 }
 
-void Enemy::update()
+void Enemy::m_updateText()
+{
+	m_healthString.setString(std::to_string(m_health));
+	m_healthString.setOrigin(m_healthString.getGlobalBounds().width / (float)2, m_healthString.getGlobalBounds().height / (float)1.25);
+	m_healthString.setStyle(sf::Text::Bold);
+	m_healthString.setPosition(m_position);
+	
+	if (m_health < 10) { m_healthString.setCharacterSize(30); }
+	else if (m_health < 100) { m_healthString.setCharacterSize(25); }
+	else if (m_health < 1000) { m_healthString.setCharacterSize(20); }
+	else { m_healthString.setCharacterSize(15); }
+}
+
+void Enemy::handleEvent(sf::Event e, const sf::RenderWindow& window)
+{
+	switch (e.type)
+	{
+	case sf::Event::MouseMoved:
+		
+		break;
+		
+	case sf::Event::MouseButtonPressed:
+
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Enemy::update(const sf::RenderWindow& window)
 {
 	if (m_health <= 0)
 	{
@@ -100,25 +139,34 @@ void Enemy::update()
 	}
 	
 	m_updatePosition();
+	m_updateText();
 
-	m_healthString.setString(std::to_string(m_health));
-	m_healthString.setPosition(m_position);
+	if (isRolledOn(window))
+	{
+		getCircle()->setFillColor(sf::Color(51, 51, 51));
+	}
+	else
+	{
+		getCircle()->setFillColor(m_defaultFillColor);
+	}
 	
-	if (bIsPrime(m_health))
-	{
-		m_circle.setFillColor(sf::Color::White);
-	}
-	if (!bIsPrime(m_health))
-	{
-		m_circle.setFillColor(m_defaultFillColor);
-	}
+	//if (bIsPrime(m_health))
+	//{
+	//	m_circle.setFillColor(sf::Color::White);
+	//}
+	//if (!bIsPrime(m_health))
+	//{
+	//	m_circle.setFillColor(m_defaultFillColor);
+	//}
 
 }
 
 void Enemy::render(sf::RenderTarget& renderer)
 {
-	m_circle.setPosition(m_position);
-	renderer.draw(m_circle);
+	//m_circle.setPosition(m_position);
+	//renderer.draw(m_circle);
+	getCircle()->setPosition(m_position);
+	renderer.draw(*getCircle());
 	renderer.draw(m_healthString);
 }
 

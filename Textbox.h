@@ -21,6 +21,8 @@ namespace gui
 		int getPositionInRow() const override;
 		void setPositionInRow(const int) override;
 
+		bool isRolledOn(const sf::RenderWindow& window) const override;
+
 	private:
 		void handleClick(sf::Event e, const sf::RenderWindow& window);
 		void handleTextInput(sf::Event e);
@@ -30,7 +32,8 @@ namespace gui
 
 		sf::Vector2f m_position;
 
-		Rectangle m_rect;
+		//Rectangle m_rect;
+		sf::RectangleShape m_rect;
 		Text m_text;
 		Text m_label;
 		std::string* m_pModString; // pointer

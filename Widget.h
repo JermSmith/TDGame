@@ -24,18 +24,20 @@ namespace gui
 		// first column is index 0
 		virtual void setPositionInRow(const int) = 0;
 
+		virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
+
 		class Text : public sf::Text
 		{
 		public:
 			Text();
 		};
 
-		class Rectangle : public sf::RectangleShape
-		{
-		public:
-			bool isRolledOn(const sf::RenderWindow& window) const;
-			bool isClicked(sf::Event, const sf::RenderWindow& window);
-		};
+		//class Rectangle : public sf::RectangleShape
+		//{
+		//public:
+		//virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
+			//bool isClicked(sf::Event, const sf::RenderWindow& window);
+		//};
 
 		// class Circle... public convex shape?
 

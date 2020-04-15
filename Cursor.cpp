@@ -3,7 +3,7 @@
 
 Cursor::Cursor()
 {
-
+	
 }
 
 void Cursor::update(const sf::RenderWindow& window, const Path& path,
@@ -14,13 +14,13 @@ void Cursor::update(const sf::RenderWindow& window, const Path& path,
 		// place dummy tower at the current mouse position to check what color the cursor circle should be
 		m_position = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 
-		if (!bInterferesWithScene(towers, path, window))
+		if (!bInterferesWithScene(towers, path))
 		{
-			updatePositive(window); //possible to place tower here
+			updatePositive(); //possible to place tower here
 		}
 		else
 		{
-			updateNegative(window); //not possible to place tower here
+			updateNegative(); //not possible to place tower here
 		}
 	}
 	else
@@ -31,11 +31,12 @@ void Cursor::update(const sf::RenderWindow& window, const Path& path,
 
 void Cursor::render(sf::RenderTarget& renderer)
 {
-	renderer.draw(m_towerCircle);
+	//renderer.draw(m_towerCircle);
+	renderer.draw(*getCircle());
 	renderer.draw(m_rangeCircle);
 }
 
-bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path, const sf::RenderWindow& window)
+bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path)
 {
 	// depends on tower properties m_position and m_size
 
@@ -43,7 +44,7 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	std::vector<sf::Vector2f> corners = {}; // vector containing all points to check for potential collision
 
-											// the following assignment assumes m_position takes centre of circle (and that circle is aligned with axes, although doesn't matter for circles)
+	// the following assignment assumes m_position takes centre of circle (and that circle is aligned with axes, although doesn't matter for circles)
 	corners.push_back(m_position); // centre
 
 	int numOfPointsOnCircle = 16; // number of points on circle to check for possible collisions; power of 2 allows top and bottom of circle to be included
@@ -147,12 +148,10 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	// below here is checking for interference with menu
 
-	sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-	if (mousePos.x > sizes::WORLD_SIZE_X - (sizes::PLAYINGMENU_X + m_radius) || // menu width + 1/2 tower radius
-		(mousePos.x < m_radius) ||
-		mousePos.y < m_radius ||
-		mousePos.y > sizes::WORLD_SIZE_Y - m_radius)
+	if (m_position.x > sizes::WORLD_SIZE_X - (sizes::PLAYINGMENU_X + m_radius) || // menu width + 1/2 tower radius
+		(m_position.x < m_radius) ||
+		m_position.y < m_radius ||
+		m_position.y > sizes::WORLD_SIZE_Y - m_radius)
 	{
 		return true;
 	}
@@ -165,34 +164,43 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 void Cursor::hide()
 {
-	m_towerCircle.setRadius(0);
+	//m_towerCircle.setRadius(0);
+	getCircle()->setRadius(0);
 	m_rangeCircle.setRadius(0);
 }
 
-void Cursor::updatePositive(const sf::RenderWindow& window)
+void Cursor::updatePositive()
 {
-	m_towerCircle.setRadius(m_radius);
+	/*m_towerCircle.setRadius(m_radius);
 	m_towerCircle.setOutlineThickness(-2);
 	m_towerCircle.setOutlineColor(sf::Color::Cyan);
-	m_towerCircle.setPosition(sf::Vector2f((float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).x,
-		(float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).y));
+	m_towerCircle.setPosition(m_position);*/
+	
+	getCircle()->setRadius(m_radius);
+	getCircle()->setOutlineThickness(-2);
+	getCircle()->setOutlineColor(sf::Color::Cyan);
+	getCircle()->setPosition(m_position);
 
 	m_rangeCircle.setRadius(m_range);
 	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
 	m_rangeCircle.setOutlineThickness(-2);
 	m_rangeCircle.setOutlineColor(sf::Color::Green);
-	m_rangeCircle.setPosition(sf::Vector2f((float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).x,
-		(float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).y));
+	m_rangeCircle.setPosition(m_position);
 }
 
-void Cursor::updateNegative(const sf::RenderWindow& window)
+void Cursor::updateNegative()
 {
-	m_towerCircle.setRadius(m_radius);
+	/*m_towerCircle.setRadius(m_radius);
 	m_towerCircle.setFillColor(sf::Color::Transparent);
 	m_towerCircle.setOutlineThickness(-2);
 	m_towerCircle.setOutlineColor(sf::Color::Red);
-	m_towerCircle.setPosition(sf::Vector2f((float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).x,
-		(float)window.mapPixelToCoords(sf::Mouse::getPosition(window)).y));
+	m_towerCircle.setPosition(m_position);*/
+
+	getCircle()->setRadius(m_radius);
+	getCircle()->setFillColor(sf::Color::Transparent);
+	getCircle()->setOutlineThickness(-2);
+	getCircle()->setOutlineColor(sf::Color::Red);
+	getCircle()->setPosition(m_position);
 
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);

@@ -7,7 +7,6 @@
 WaveManager::WaveManager()
 {
 	reset();
-
 	m_constructWaveGeneratingData();
 }
 
@@ -22,8 +21,8 @@ void WaveManager::m_constructWaveGeneratingData()
 
 	m_waveGeneratingData =
 	{
-		std::make_pair<std::vector<int>, int>({ 1 }, 10),
-		std::make_pair<std::vector<int>, int>({ 2 }, 10),
+		std::make_pair<std::vector<int>, int>({ 888 }, 50),
+		std::make_pair<std::vector<int>, int>({ 28 }, 10),
 		std::make_pair<std::vector<int>, int>({ 3 }, 10),
 		std::make_pair<std::vector<int>, int>({ 4 }, 10),
 		std::make_pair<std::vector<int>, int>({ 2, 3, 5 }, 15),
@@ -55,10 +54,80 @@ void WaveManager::reset()
 	m_timePoint = m_timer.restart();
 }
 
-void WaveManager::updatebWaveOngoing(int sizeOfEnemyVector)
+std::vector<std::unique_ptr<Enemy>>* WaveManager::getEnemiesVector() { return &m_enemies; }
+bool WaveManager::getbWaveOngoing() const { return m_bWaveOngoing; }
+void WaveManager::setbStartWaveRequested(bool tf) { m_bStartWaveRequested = tf; }
+
+const int WaveManager::getWaveNumber() const { return m_waveNumber; }
+
+void WaveManager::handleEvent(sf::Event e, const sf::RenderWindow& window)
 {
-	if (sizeOfEnemyVector > 0) { m_bWaveOngoing = true; }
+	for (const auto& obj : m_enemies)
+	{
+		obj->handleEvent(e, window);
+	}
+}
+
+void WaveManager::render(sf::RenderTarget& renderer)
+{
+	for (const auto& obj : m_enemies)
+	{
+		obj->render(renderer);
+	}
+}
+
+void WaveManager::update(const std::vector<sf::Vector2f>& vertices, const sf::RenderWindow& window)
+{
+	for (unsigned int i = 0; i < m_enemies.size(); i++)
+	{
+		m_enemies.at(i)->update(window);
+		if (!m_enemies.at(i)->getbIsAlive()) { m_enemies.erase(m_enemies.begin() + i); }
+	}
+
+	if (m_enemies.size() > 0) { m_bWaveOngoing = true; }
 	else { m_bWaveOngoing = false; }
+
+	if (m_bStartWaveRequested) // see if we can start the next wave
+	{
+		if (!m_bWaveOngoing)
+		{
+			startWave();
+		}
+	}
+	
+	if (m_bShouldInstantiateEnemies) // see if we can send an enemy
+									 //TODO: can allow for different sets of path vertices to be given to enemies
+	{
+		instantiateEnemies(&m_enemies, vertices);
+	}
+}
+
+void WaveManager::startWave()
+{
+	m_generateAndStoreWave(m_waveNumber);
+	m_bShouldInstantiateEnemies = true;
+	m_bStartWaveRequested = false;
+}
+
+void WaveManager::m_generateAndStoreWave(int waveNumber)
+{
+	if (m_waveNumber != 0)
+	{
+		m_prevWave = m_currWave; // store the previous wave data
+		m_currWave.clear();
+	}
+
+	static Random<> rand;
+
+	for (int i = 0; i < m_waveGeneratingData.at(waveNumber).second; i++) // # of enemy profiles to create
+	{
+		// number representing either the 1st, 2nd, 3rd, .. up to nth element of m_waveGeneratingData's vector for this wave
+		int enemySelectionIndex = rand.getIntInRange(0, m_waveGeneratingData.at(waveNumber).first.size() - 1);
+
+		int enemyHealth = m_waveGeneratingData.at(waveNumber).first.at(enemySelectionIndex);
+
+		m_currWave.push_back(std::make_pair(enemyHealth, (float)1.5));
+	}
 }
 
 void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemies, const std::vector<sf::Vector2f>& vertices)
@@ -92,38 +161,4 @@ void WaveManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemie
 	}
 }
 
-bool WaveManager::getbWaveOngoing() const { return m_bWaveOngoing; }
-
-bool WaveManager::bShouldInstantiateEnemies() { return m_bShouldInstantiateEnemies; }
-
-void WaveManager::setbStartWaveRequested(bool tf) { m_bStartWaveRequested = tf; }
-bool WaveManager::getbStartWaveRequested() const { return m_bStartWaveRequested; }
-
-void WaveManager::startWave()
-{
-	m_generateAndStoreWave(m_waveNumber);
-	m_bShouldInstantiateEnemies = true;
-	m_bStartWaveRequested = false;
-}
-
-void WaveManager::m_generateAndStoreWave(int waveNumber)
-{
-	if (m_waveNumber != 0)
-	{
-		m_prevWave = m_currWave; // store the previous wave data
-		m_currWave.clear();
-	}
-
-	static Random<> rand;
-
-	for (int i = 0; i < m_waveGeneratingData.at(waveNumber).second; i++) // # of enemy profiles to create
-	{
-		// number representing either the 1st, 2nd, 3rd, .. up to nth element of m_waveGeneratingData's vector for this wave
-		int enemySelectionIndex = rand.getIntInRange(0, m_waveGeneratingData.at(waveNumber).first.size() - 1);
-
-		int enemyHealth = m_waveGeneratingData.at(waveNumber).first.at(enemySelectionIndex);
-
-		m_currWave.push_back(std::make_pair(enemyHealth, (float)1.5));
-	}
-}
 

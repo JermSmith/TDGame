@@ -7,7 +7,7 @@ namespace gui
 	// TODO: consolidate these two constructors into one constructor for both main menu and other menus
 
 	//this constructor is called each time the main menu is made
-	StackMenu::StackMenu(float basePositionY)
+	StackMenu::StackMenu(const sf::RenderWindow& window, float basePositionY)
 		: m_basePosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, basePositionY)
 		, m_baseSize((float)sizes::MAINMENU_BASESIZE_X, 0)
 	{
@@ -17,17 +17,20 @@ namespace gui
 		m_background.setSize(m_baseSize);
 		m_background.setPosition(m_basePosition.x - m_baseSize.x / 2, m_basePosition.y);
 
-		//m_titleText.setPosition(0, m_basePosition.y - 35);
-		//m_titleText.setOutlineColor(sf::Color::Black);
-		//m_titleText.setOutlineThickness(1);
-		//m_titleText.setCharacterSize(30);
+		m_titleText.setPosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, m_basePosition.y - 35);
+		m_titleText.setOutlineColor(sf::Color::Black);
+		m_titleText.setOutlineThickness(1);
+		m_titleText.setCharacterSize(30);
+		m_titleText.setString("The Title Of The Game");
 	}
 
 	//this constructor is called each time the playing menu or options menu is made
-	StackMenu::StackMenu(const sf::Vector2f& basePosition, const sf::Vector2f& baseSize)
-		: m_basePosition(basePosition), m_baseSize(baseSize)
+	StackMenu::StackMenu(float basePositionY)//const sf::Vector2f& basePosition, const sf::Vector2f& baseSize)
+		: m_basePosition(sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), basePositionY))
+		, m_baseSize(sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))//baseSize)
+		, m_origBasePositionY(basePositionY)
 	{
-		m_origBasePositionY = basePosition.y;
+		//m_origBasePositionY = basePosition.y;
 		//m_origBaseSizeY = baseSize.y;
 
 		m_background.setFillColor({ 100, 100, 100, 128 });

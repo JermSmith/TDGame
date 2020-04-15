@@ -72,6 +72,13 @@ namespace gui
 		m_positionInRow = num;
 	}
 
+	bool TextBox::isRolledOn(const sf::RenderWindow& window) const
+	{
+		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	
+		return m_rect.getGlobalBounds().contains((float)pos.x, (float)pos.y);
+	}
+
 	// private methods below this line
 
 	void TextBox::handleClick(sf::Event e, const sf::RenderWindow& window)

@@ -21,7 +21,7 @@ TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }
 }
 
-void TowerSub::update(std::vector<std::unique_ptr<Enemy>>* enemies)
+void TowerSub::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window)
 {
 	m_elapsedTime = m_timer.getElapsedTime() - m_timePoint;
 
@@ -45,6 +45,14 @@ void TowerSub::update(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 	m_projectileManager.update();
 
+	if (isRolledOn(window))
+	{
+		getCircle()->setFillColor(sf::Color(51, 51, 51));
+	}
+	else
+	{
+		getCircle()->setFillColor(sf::Color::White);
+	}
 }
 
 void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
@@ -74,7 +82,8 @@ void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
 			m_numofAttacksInWave++; // for stats purposes
-			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, m_towerCircle.getFillColor());
+			//m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, m_towerCircle.getFillColor());
+			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, getCircle()->getFillColor());
 
 			enemies->at(enemyIndicesToAttack.at(i))->setHealth(enemies->at(enemyIndicesToAttack.at(i))->getHealth() - m_strength);
 		}

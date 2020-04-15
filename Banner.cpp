@@ -47,7 +47,13 @@ namespace gui
 	int Banner::getPositionInRow() const { return m_positionInRow; }
 	// first column has index=0
 	void Banner::setPositionInRow(const int num) { m_positionInRow = num; }
-}
 
+	bool Banner::isRolledOn(const sf::RenderWindow& window) const
+	{
+		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+		return m_rect.getGlobalBounds().contains((float)pos.x, (float)pos.y);
+	}
+}
 
 

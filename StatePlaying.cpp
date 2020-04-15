@@ -11,8 +11,8 @@
 
 StatePlaying::StatePlaying(Game& game)
 	: StateBase(game)
-	, m_playingMenu(sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), 0),
-		sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))
+	, m_playingMenu(0)// sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), 0),
+		//sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))
 {
 	m_musicFilenames = { "Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" };
 
@@ -72,14 +72,14 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 
 void StatePlaying::generateButtons(Game& game)
 {
-	auto btnStartWave = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnStartWave = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnStartWave->setText("Start Next Wave");
 	btnStartWave->setFunction([&]()
 	{
 		m_world.requestStartWave();
 	});
 
-	auto btnPlaceTower1 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower1 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower1->setText("-1");
 	btnPlaceTower1->setFunction([&]()
 	{
@@ -92,7 +92,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower2 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower2 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower2->setText("+1");
 	btnPlaceTower2->setFunction([&]()
 	{
@@ -105,7 +105,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower3 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower3 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower3->setText("/2");
 	btnPlaceTower3->setFunction([&]()
 	{
@@ -118,7 +118,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower4 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower4 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower4->setText("/3");
 	btnPlaceTower4->setFunction([&]()
 	{
@@ -131,7 +131,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower5 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower5 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower5->setText("/5");
 	btnPlaceTower5->setFunction([&]()
 	{
@@ -144,7 +144,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower6 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower6 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower6->setText("/7");
 	btnPlaceTower6->setFunction([&]()
 	{
@@ -158,7 +158,7 @@ void StatePlaying::generateButtons(Game& game)
 	});
 
 	// TODO: figure out where wave stats, tower stats, shop, inventory, etc. will be displayed
-	auto btnPlaceTower7 = gui::makeButton(gui::ButtonSize::Circle3);
+	auto btnPlaceTower7 = gui::makeCircularButton(gui::ButtonSize::Circle3);
 	btnPlaceTower7->setText("/11");
 	btnPlaceTower7->setFunction([&]()
 	{
@@ -171,7 +171,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower8 = gui::makeButton(gui::ButtonSize::Circle2);
+	auto btnPlaceTower8 = gui::makeCircularButton(gui::ButtonSize::Circle2);
 	btnPlaceTower8->setText("sqrt");
 	btnPlaceTower8->setFunction([&]()
 	{
@@ -184,7 +184,7 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower9 = gui::makeButton(gui::ButtonSize::Circle2);
+	auto btnPlaceTower9 = gui::makeCircularButton(gui::ButtonSize::Circle2);
 	btnPlaceTower9->setText("cbrt");
 	btnPlaceTower9->setFunction([&]()
 	{
@@ -197,14 +197,14 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPrevWaveStats = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnPrevWaveStats = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnPrevWaveStats->setText("Previous Wave Stats");
 	btnPrevWaveStats->setFunction([&]()
 	{
 
 	});
 
-	auto btnRestartGame = gui::makeButton(gui::ButtonSize::Wide);
+	auto btnRestartGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
 	btnRestartGame->setText("Restart Game");
 	btnRestartGame->setFunction([&]()
 	{
@@ -224,14 +224,14 @@ void StatePlaying::generateButtons(Game& game)
 
 	});
 
-	auto btnMainMenu = gui::makeButton(gui::ButtonSize::Small);
+	auto btnMainMenu = gui::makeRectangularButton(gui::ButtonSize::Small);
 	btnMainMenu->setText("Main Menu");
 	btnMainMenu->setFunction([&]()
 	{
 		game.pushState<StateMainMenu>(game);
 	});
 
-	auto btnToggleMusic = gui::makeButton(gui::ButtonSize::Small);
+	auto btnToggleMusic = gui::makeRectangularButton(gui::ButtonSize::Small);
 	btnToggleMusic->setText("Toggle Music");
 	btnToggleMusic->setFunction([&]()
 	{

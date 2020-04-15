@@ -16,7 +16,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 
 	for (auto& tower : m_towers)
 	{
-		tower->update(enemies); // each tower is updated
+		tower->update(enemies, window);// , window); // each tower is updated
 
 		// the following several lines update all div/root towers each time a sub tower is updated
 		if (tower->getAttackType() == attackType::subtract)
@@ -25,7 +25,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 			{
 				if (tow->getAttackType() != attackType::subtract)
 				{
-					tow->update(enemies);
+					tow->update(enemies, window);// , window);
 				}
 			}
 		}
@@ -36,18 +36,20 @@ void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, cons
 {
 	if (e.type == sf::Event::EventType::MouseButtonReleased)
 	{
-		m_handleEvent_TowerSelection(window);
+		sf::Vector2f clickPos = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+
+		m_handleEvent_TowerSelection(clickPos);
 
 		if (m_bTowerBeingPlaced)
 		{
 			// place dummy tower at mouse position to check for interference
-			m_dummyTower.setPosition(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window))));
+			m_dummyTower.setPosition(clickPos);
 
-			if (!m_dummyTower.bInterferesWithScene(m_towers, path, window))
+			if (!m_dummyTower.bInterferesWithScene(m_towers, path))
 			{
 				//no interference found with new tower and path, so can place tower
 				
-				m_handleEvent_InsertDummyTowerIntoVectorOfTowers(window);
+				m_handleEvent_InsertDummyTowerIntoVectorOfTowers();
 				// Note that strongest towers are placed closer to front of vector, so they are updated first:
 				// root4 > sqrt > /13 > /2 > -2 > -1 > +1 > +2
 
@@ -89,15 +91,15 @@ void TowerManager::setbTowerBeingPlaced(bool tf)
 
 // This function is entered at every click event. It determines whether or not a tower was
 // clicked on, and modifies the "isClickedOn" property of all towers accordingly.
-void TowerManager::m_handleEvent_TowerSelection(const sf::RenderWindow& window)
+void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 {
 	bool bClickedOffOfTower = true; // will remain true until a tower is clicked on
 	// (or more accurately, until a tower is found that "contains" the click)
 
 	for (unsigned int i = 0; i < m_towers.size(); i++)
 	{
-		if (distanceBetweenPoints(m_towers.at(i)->getPosition(), window.mapPixelToCoords(sf::Mouse::getPosition(window))) <
-			m_towers.at(i)->getRadius()) // then the tower at position i is the tower that has been clicked on
+		if (distanceBetweenPoints(m_towers.at(i)->getPosition(), clickPos) < m_towers.at(i)->getRadius())
+			// then the tower at position i is the tower that has been clicked on
 		{
 			bClickedOffOfTower = false; // false, because we have seen that the click was ON a tower
 
@@ -129,7 +131,7 @@ void TowerManager::m_handleEvent_TowerSelection(const sf::RenderWindow& window)
 }
 
 // the dummy tower holds attack type and strength (and a few other properties) of the tower to be placed
-void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::RenderWindow& window)
+void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 {
 	bool bTowerInsertedIntoVector = false;
 
@@ -138,13 +140,13 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 		switch (m_dummyTower.getAttackType())
 		{
 		case attackType::root:
-			m_towers.push_back(std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+			m_towers.push_back(std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 			break;
 		case attackType::divide:
-			m_towers.push_back(std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+			m_towers.push_back(std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 			break;
 		case attackType::subtract:
-			m_towers.push_back(std::make_unique<TowerSub>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+			m_towers.push_back(std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 			break;
 		}
 		return; // leave the function
@@ -158,7 +160,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 			if (m_towers.size() == i_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 				// (and as a result, there must only be root towers in the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				m_towers.push_back(std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -173,20 +175,20 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 					else if (m_towers.at(i_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + i_wh,
-							std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+							std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;
 
 				case attackType::divide:
 					m_towers.insert(m_towers.begin() + i_wh,
-						std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 					bTowerInsertedIntoVector = true;
 					break; // placed the first root tower before the strongest div tower
 
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + i_wh,
-						std::make_unique<TowerRoot>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 					bTowerInsertedIntoVector = true;
 					break; // placed the first root tower before the strongest sub tower
 				}
@@ -201,7 +203,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 		{
 			if (m_towers.size() == j_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				m_towers.push_back(std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -220,14 +222,14 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 					else if (m_towers.at(j_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + j_wh,
-							std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+							std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;
 
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + j_wh,
-						std::make_unique<TowerDiv>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+						std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 					bTowerInsertedIntoVector = true;
 					break; // place first div tower immediately before strongest sub tower
 				}
@@ -242,7 +244,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 		{
 			if (m_towers.size() == k_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerSub>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+				m_towers.push_back(std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -265,7 +267,7 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::Re
 					else if (m_towers.at(k_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + k_wh,
-							std::make_unique<TowerSub>(window, m_dummyTower.getAttackType(), m_dummyTower.getStrength()));
+							std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;

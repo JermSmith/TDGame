@@ -12,14 +12,16 @@ namespace gui
 		setFont(ResourceHolder::get().fonts.get("arial"));
 	}
 
-	bool Widget::Rectangle::isRolledOn(const sf::RenderWindow& window) const
+	//bool Widget::Rectangle::isRolledOn(const sf::RenderWindow& window) const
+	/*bool Widget::isRolledOn(const sf::RenderWindow& window) const
 	{
 		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		
 		return getGlobalBounds().contains((float)pos.x, (float)pos.y);
-	}
+	}*/
 
-	bool Widget::Rectangle::isClicked(sf::Event e, const sf::RenderWindow& window)
+	//bool Widget::Rectangle::isClicked(sf::Event e, const sf::RenderWindow& window)
+	/*bool Widget::isClicked(sf::Event e, const sf::RenderWindow& window)
 	{
 		if (isRolledOn(window))
 		{
@@ -29,6 +31,6 @@ namespace gui
 			}
 		}
 		return false;
-	}
+	}*/
 }
 
