@@ -17,11 +17,11 @@ namespace gui
 		m_background.setSize(m_baseSize);
 		m_background.setPosition(m_basePosition.x - m_baseSize.x / 2, m_basePosition.y);
 
-		m_titleText.setPosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, m_basePosition.y - 35);
-		m_titleText.setOutlineColor(sf::Color::Black);
-		m_titleText.setOutlineThickness(1);
-		m_titleText.setCharacterSize(30);
-		m_titleText.setString("The Title Of The Game");
+		//m_titleText.setPosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, m_basePosition.y - 35);
+		//m_titleText.setOutlineColor(sf::Color::Black);
+		//m_titleText.setOutlineThickness(1);
+		//m_titleText.setCharacterSize(30);
+		//m_titleText.setString("The Title Of The Game");
 	}
 
 	//this constructor is called each time the playing menu or options menu is made
@@ -57,12 +57,6 @@ namespace gui
 		return *this;
 	}*/
 
-	void StackMenu::addWidget(std::unique_ptr<Widget> w)
-	{
-		initWidget(*w);
-		m_widgets.push_back(std::move(w));
-	}
-
 	void StackMenu::clearWidgets()
 	{
 		m_widgets.clear();
@@ -80,9 +74,32 @@ namespace gui
 		return bContains;
 	}
 
+	void StackMenu::updateWidgetText(int widgetPosInMenu, std::string newText)
+	{
+		// TODO: fix this, so that the number of lives remaining banner can be updated. the original idea was to erase
+		// the banner and redraw it each time with new text, but there were some problems. In stateplaying::update(),
+		// a button or banner (widget) had no way to access its own position in the menu, and after std::move(that widget)
+		// has been called in the constructor of stateplaying, there is no way to modify the widget because the pointer
+		// that points to the widget is null. I think what I should do is rethink the way widgets are created and added in
+		// one or both of stackmenu::addwidget and stateplaying.
+
+		//m_widgets.at(widgetPosInMenu)->setText(newText);
+		//m_widgets.erase(m_widgets.begin() + widgetPosInMenu);
+		
+	}
+
+	//void StackMenu::addWidget(std::unique_ptr<Widget> w)
+	void StackMenu::addWidget(Widget& w)
+	{
+		//w->setPositionInMenu(m_widgets.size());
+		initWidget(w);
+		//m_widgets.push_back(std::move(w));
+		m_widgets.push_back(&w);
+	}
+
 	// TODO: update to adjust to the fact that the base size doesn't really need to adjust for the playing menu and options menu, only for
 	// the main menu, since the playing menu base size is always the same height, but the main menu base size grows as buttons are added.
-	void StackMenu::initWidget(Widget& widget)
+	void StackMenu::initWidget(Widget &widget)
 	{
 		// widgets must be added consecutively in the order they are to appear on-screen, reading left to right in rows from top to bottom of menu
 		
@@ -195,10 +212,14 @@ namespace gui
 	{
 		renderer.draw(m_background);
 		//renderer.draw(m_titleText);
-		for (auto& widget : m_widgets)
+		for (unsigned int i = 0; i < m_widgets.size(); i++)
+		{
+			m_widgets.at(i)->render(renderer);
+		}
+		/*for (gui::Widget* widget : m_widgets)
 		{
 			widget->render(renderer);
-		}
+		}*/
 	}
 
 	//const sf::RenderWindow& StackMenu::getWindow() const
@@ -207,4 +228,5 @@ namespace gui
 	//}
 
 }
+
 

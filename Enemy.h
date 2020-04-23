@@ -18,6 +18,7 @@ public:
 	void setHealth(int health);
 
 	const bool& getbIsAlive() const;
+	const bool& getbReachedTheEnd() const;
 
 	const std::vector<sf::Vector2f>& getVertices() const;
 	void setVertices(std::vector<sf::Vector2f> vertices);
@@ -51,6 +52,7 @@ private:
 	sf::Color m_defaultFillColor = sf::Color::Red;
 
 	bool m_bIsAlive;
+	bool m_bReachedTheEnd;
 
 	float m_speed; // pixels per update
 	float m_theta; // direction of travel

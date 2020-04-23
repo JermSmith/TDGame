@@ -56,21 +56,15 @@ namespace gui
 				m_rect.getSize().y + m_label.getGlobalBounds().height };
 	}
 
-	int TextBox::getMaxNumInRow() const
-	{
-		return 1;
-	}
+	int TextBox::getMaxNumInRow() const { return 1; }
 
 	// first column has index=0
-	int TextBox::getPositionInRow() const
-	{
-		return m_positionInRow;
-	}
+	int TextBox::getPositionInRow() const { return m_positionInRow; }
 	// first column has index=0
-	void TextBox::setPositionInRow(const int num)
-	{
-		m_positionInRow = num;
-	}
+	void TextBox::setPositionInRow(const int num) { m_positionInRow = num; }
+
+	int TextBox::getPositionInMenu() const { return m_positionInMenu; }
+	void TextBox::setPositionInMenu(const int num) { m_positionInMenu = num; }
 
 	bool TextBox::isRolledOn(const sf::RenderWindow& window) const
 	{

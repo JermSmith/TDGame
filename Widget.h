@@ -9,6 +9,8 @@ namespace gui
 	class Widget
 	{
 	public:
+		void setText(const std::string& str);
+
 		virtual void handleEvent(sf::Event e, const sf::RenderWindow& window) = 0;
 
 		virtual void render(sf::RenderTarget& renderer) = 0;
@@ -23,6 +25,9 @@ namespace gui
 		virtual int getPositionInRow() const = 0;
 		// first column is index 0
 		virtual void setPositionInRow(const int) = 0;
+
+		//virtual int getPositionInMenu() const = 0;
+		//virtual void setPositionInMenu(const int) = 0;
 
 		virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
 
@@ -42,7 +47,10 @@ namespace gui
 		// class Circle... public convex shape?
 
 	protected:
+		Text m_text;
+		
 		int m_positionInRow = 0;
+		int m_positionInMenu = 0;
 	};
 }
 

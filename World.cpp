@@ -3,7 +3,7 @@
 
 World::World()
 {
-	m_numLives = 10;
+	//m_numLives = 10;
 }
 
 void World::handleEvent(sf::Event e, const sf::RenderWindow& window)
@@ -75,5 +75,11 @@ void World::handleInput()
 {
 
 }
+
+int World::getNumLives()
+{
+	return m_waveManager.getNumLives();
+}
+
 
 

@@ -14,47 +14,11 @@ namespace gui
 		Circle3, // placed in 3 columns
 	};
 
-	//class Button : public gui::Widget, public InteractableShape
-	//{
-	//public:
-		//Button();
-		//Button(ButtonSize s);
-
-		/*void setFunction(std::function<void(void)> func);
-		void setText(const std::string& str);
-		void setTexture(const sf::Texture& tex);*/
-
-		//void handleEvent(sf::Event e, const sf::RenderWindow& window) override;
-		//virtual void handleEvent(sf::Event e, const sf::RenderWindow& window) = 0;
-		/*void render(sf::RenderTarget& renderer) override;
-		void setPosition(const sf::Vector2f& pos) override;*/
-		//sf::Vector2f getPosition();
-		/*sf::Vector2f getSize() const override;
-		int getMaxNumInRow() const override;
-		int getPositionInRow() const override;
-		void setPositionInRow(const int) override;*/
-
-		//bool isRolledOn(const sf::RenderWindow& window) const override;
-		//virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
-
-	/*protected:
-		sf::ConvexShape m_button;
-		std::function<void(void)> m_function = []() {};
-		ButtonSize m_buttonSize;
-		sf::Vector2f m_position; // centre of shape for both rectangles and circles
-		Text m_text;
-	private:*/
-		//void updateText();
-
-		
-	//};
-
-
 	class CircularButton : public gui::Widget, public InteractableShape
 	{
 	public:
 		void setFunction(std::function<void(void)> func);
-		void setText(const std::string& str);
+		//void setText(const std::string& str);
 		void setTexture(const sf::Texture& tex);
 		void render(sf::RenderTarget& renderer) override;
 		void setPosition(const sf::Vector2f& pos) override;
@@ -62,6 +26,8 @@ namespace gui
 		int getMaxNumInRow() const override;
 		int getPositionInRow() const override;
 		void setPositionInRow(const int) override;
+		//int getPositionInMenu() const override;
+		//void setPositionInMenu(const int) override;
 		
 		CircularButton(ButtonSize s);
 
@@ -73,14 +39,16 @@ namespace gui
 		std::function<void(void)> m_function = []() {};
 		ButtonSize m_buttonSize;
 		sf::Vector2f m_position; // centre of shape for both rectangles and circles
-		Text m_text;
+		//Text m_text;
 	};
+
+
 
 	class RectangularButton : public gui::Widget, public InteractableShape
 	{
 	public:
 		void setFunction(std::function<void(void)> func);
-		void setText(const std::string& str);
+		//void setText(const std::string& str);
 		void setTexture(const sf::Texture& tex);
 		void render(sf::RenderTarget& renderer) override;
 		void setPosition(const sf::Vector2f& pos) override;
@@ -88,7 +56,8 @@ namespace gui
 		int getMaxNumInRow() const override;
 		int getPositionInRow() const override;
 		void setPositionInRow(const int) override;
-
+		//int getPositionInMenu() const override;
+		//void setPositionInMenu(const int) override;
 
 		RectangularButton(ButtonSize s);
 
@@ -100,12 +69,15 @@ namespace gui
 		std::function<void(void)> m_function = []() {};
 		ButtonSize m_buttonSize;
 		sf::Vector2f m_position; // centre of shape for both rectangles and circles
-		Text m_text;
+		//Text m_text;
 	}; 
 
 
-	inline std::unique_ptr<CircularButton> makeCircularButton(ButtonSize s) { return std::make_unique<CircularButton>(s); }
-	inline std::unique_ptr<RectangularButton> makeRectangularButton(ButtonSize s) { return std::make_unique<RectangularButton>(s); }
+	//inline std::unique_ptr<CircularButton> makeCircularButton(ButtonSize s) { return std::make_unique<CircularButton>(s); }
+	//inline std::unique_ptr<RectangularButton> makeRectangularButton(ButtonSize s) { return std::make_unique<RectangularButton>(s); }
+
+	inline CircularButton makeCircularButton(ButtonSize s) { return CircularButton(s); }
+	inline RectangularButton makeRectangularButton(ButtonSize s) { return RectangularButton(s); }
 
 }
 

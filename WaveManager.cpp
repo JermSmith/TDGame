@@ -46,6 +46,7 @@ void WaveManager::m_constructWaveGeneratingData()
 
 void WaveManager::reset()
 {
+	m_numLives = 10;
 	m_waveNumber = 0; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
 	m_bWaveOngoing = false;
 	m_bStartWaveRequested = false;
@@ -58,6 +59,7 @@ std::vector<std::unique_ptr<Enemy>>* WaveManager::getEnemiesVector() { return &m
 bool WaveManager::getbWaveOngoing() const { return m_bWaveOngoing; }
 void WaveManager::setbStartWaveRequested(bool tf) { m_bStartWaveRequested = tf; }
 
+const int WaveManager::getNumLives() const { return m_numLives; }
 const int WaveManager::getWaveNumber() const { return m_waveNumber; }
 
 void WaveManager::handleEvent(sf::Event e, const sf::RenderWindow& window)
@@ -81,7 +83,15 @@ void WaveManager::update(const std::vector<sf::Vector2f>& vertices, const sf::Re
 	for (unsigned int i = 0; i < m_enemies.size(); i++)
 	{
 		m_enemies.at(i)->update(window);
-		if (!m_enemies.at(i)->getbIsAlive()) { m_enemies.erase(m_enemies.begin() + i); }
+		if (!m_enemies.at(i)->getbIsAlive())
+		{
+			m_enemies.erase(m_enemies.begin() + i);
+		}
+		if (m_enemies.at(i)->getbReachedTheEnd())
+		{
+			m_numLives--;
+			m_enemies.erase(m_enemies.begin() + i);
+		}
 	}
 
 	if (m_enemies.size() > 0) { m_bWaveOngoing = true; }

@@ -6,7 +6,8 @@
 Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 {
 	m_bIsAlive = true;
-	
+	m_bReachedTheEnd = false;
+
 	/*m_sprite.setTexture(ResourceHolder::get().textures.get("golem-walk"));
 	m_sprite.setTextureRect(sf::IntRect(0, 0, 64, 64));*/
 
@@ -14,10 +15,6 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 
 	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
 	m_healthString.setFillColor(sf::Color::Yellow);
-
-	//m_circle.setRadius(16.);
-	//m_circle.setFillColor(m_defaultFillColor);
-	//m_circle.setOrigin(sf::Vector2f(m_circle.getRadius(), m_circle.getRadius()));
 
 	getCircle()->setRadius(16.);
 	getCircle()->setFillColor(m_defaultFillColor);
@@ -44,6 +41,7 @@ const int& Enemy::getHealth() const { return m_health; }
 void Enemy::setHealth(int health) { m_health = health; }
 
 const bool& Enemy::getbIsAlive() const { return m_bIsAlive; }
+const bool& Enemy::getbReachedTheEnd() const { return m_bReachedTheEnd; }
 
 const std::vector<sf::Vector2f>& Enemy::getVertices() const { return m_vertices; }
 void Enemy::setVertices(std::vector<sf::Vector2f> vertices) { m_vertices = vertices; }
@@ -56,9 +54,6 @@ void Enemy::setSpeed(float speed) { m_speed = speed; }
 const float& Enemy::getTheta() const { return m_theta; }
 
 //temporary for debugging
-//void Enemy::resetFillColor() { m_circle.setFillColor(m_defaultFillColor); }
-//void Enemy::setFillColor(sf::Color color) { m_circle.setFillColor(color); }
-
 void Enemy::resetFillColor() { getCircle()->setFillColor(m_defaultFillColor); }
 void Enemy::setFillColor(sf::Color color) { getCircle()->setFillColor(color); }
 
@@ -87,10 +82,10 @@ void Enemy::m_updatePosition()
 		{
 			// then cannot do m_vertices.at(m_nextVertex) because it is out of range
 			// this means enemy has arrived at final vertex
-			setSpeed(0);
-			//m_circle.setFillColor(sf::Color::Transparent);
-			getCircle()->setFillColor(sf::Color::Transparent);
+			//setSpeed(0);
+			//getCircle()->setFillColor(sf::Color::Transparent);
 			m_nextVertexIndex = 0;
+			m_bReachedTheEnd = true;
 		}
 		else
 		{

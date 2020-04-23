@@ -20,11 +20,14 @@ namespace gui
 
 		~StackMenu() = default;
 
-		void addWidget(std::unique_ptr<Widget> w);
 		void clearWidgets();
 		bool bContainsWidgets();
-		/*
-		template<typename T, typename... Args> void addWidget(Args&&... args)
+		//first pos is 0
+		void updateWidgetText(int widgetPosInMenu, std::string newText);
+		//void addWidget(std::unique_ptr<Widget> w);
+		void addWidget(Widget &w);
+		
+		/*template<typename T, typename... Args> void addWidget(Args&&... args)
 		{
 			auto w = std::make_unique<T>(std::forward<Args>(args)...);
 			initWidget(*w);
@@ -43,18 +46,19 @@ namespace gui
 		float m_origBasePositionY = 0;
 		//float m_origBaseSizeY;
 
-		void initWidget(Widget& w);
+		void initWidget(Widget &w);
 		bool m_bIsFirstWidgetInMenu = true;
 
 		//const sf::RenderWindow* m_pWindow;
 
-		std::vector<std::unique_ptr<Widget>> m_widgets;
+		//std::vector<std::unique_ptr<Widget>> m_widgets;
+		std::vector<Widget*> m_widgets;
 		sf::RectangleShape m_background;
 
 		sf::Vector2f m_basePosition; //top centre point of menu
 		sf::Vector2f m_baseSize; //(width, height) of menu
 
-		Widget::Text m_titleText;
+		//Widget::Text m_titleText;
 	};
 }
 

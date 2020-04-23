@@ -9,7 +9,7 @@ namespace gui
 	public:
 		Banner();
 
-		void setText(const std::string& str);
+		//void setText(const std::string& str);
 
 		void handleEvent(sf::Event e, const sf::RenderWindow& window) override;
 		void render(sf::RenderTarget& renderer) override;
@@ -18,16 +18,20 @@ namespace gui
 		int getMaxNumInRow() const override;
 		int getPositionInRow() const override; 
 		void setPositionInRow(const int) override;
+		//int getPositionInMenu() const override;
+		//void setPositionInMenu(const int) override;
 
 		bool isRolledOn(const sf::RenderWindow& window) const override;
 
 	private:
 		sf::Vector2f m_position;
 		sf::RectangleShape m_rect;
-		Text m_text;
+		//Text m_text;
 	};
 
-	inline std::unique_ptr<Banner> makeBanner() { return std::make_unique<Banner>(); }
+	//inline std::unique_ptr<Banner> makeBanner() { return std::make_unique<Banner>(); }
+	inline Banner makeBanner() { return Banner(); }
+	//Banner makeBanner() { return Banner(); }
 
 }
 

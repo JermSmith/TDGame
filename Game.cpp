@@ -5,7 +5,7 @@
 
 Game::Game() : m_window({ sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y }, "Prime TD")
 {
-	m_window.setPosition({ m_window.getPosition().x, 0 });
+	m_window.setPosition({ 0, 0 });// { m_window.getPosition().x, 0 });
 	m_window.setFramerateLimit(60);
 	pushState<StateMainMenu>(*this);
 }
@@ -37,7 +37,12 @@ void Game::run()
 
 		//Real time update
 		state.handleInput();
-		state.update(elapsed);
+		state.update();
+
+		state.playMusic(m_bMusicRequestStatus);
+		//if (m_bMusicRequestStatus) { state.unmuteMusic(); } // new
+		//else if (!m_bMusicRequestStatus) { state.muteMusic(); } // new
+
 		counter.update();
 
 		
@@ -74,13 +79,13 @@ void Game::tryPop()
 			m_states.clear();
 			return;
 		}
-		else if (m_shouldChangeState)
-		{
-			m_shouldChangeState = false;
-			m_states.pop_back();
-			pushState(std::move(m_change));
-			return;
-		}
+		//else if (m_shouldChangeState)
+		//{
+		//	m_shouldChangeState = false;
+		//	m_states.pop_back();
+		//	pushState(std::move(m_change));
+		//	return;
+		//}
 
 		m_states.pop_back();
 	}
@@ -107,6 +112,20 @@ void Game::handleEvent()
 			{
 				m_window.setSize(sf::Vector2u(sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y));
 				m_window.setView(m_window.getDefaultView());
+				m_window.setPosition({ 0, 0 });
+			}
+			break;
+		
+		case sf::Event::KeyPressed:
+			if (e.key.code == sf::Keyboard::F11)
+			{
+				m_window.create(sf::VideoMode(), "Prime TD", sf::Style::Fullscreen);
+				m_window.setFramerateLimit(60);
+			}
+			else if (e.key.code == sf::Keyboard::Escape)
+			{
+				m_window.create(sf::VideoMode(sizes::WORLD_SIZE_X, sizes::WORLD_SIZE_Y), "Prime TD", sf::Style::Default);
+				m_window.setFramerateLimit(60);
 				m_window.setPosition({ 0, 0 });
 			}
 			break;
@@ -154,14 +173,18 @@ StateBase& Game::getCurrentState()
 
 void Game::pushState(std::unique_ptr<StateBase> state)
 {
+	if (m_states.size() > 0)
+	{
+		m_states.back()->stopMusic();
+	}
 	m_states.push_back(std::move(state));
 }
 
 //Flags a boolean for the game to pop state
-void Game::popState()
-{
-	m_shouldPop = true;
-}
+//void Game::popState()
+//{
+//	m_shouldPop = true;
+//}
 
 void Game::exitGame()
 {
@@ -169,7 +192,6 @@ void Game::exitGame()
 	m_shouldExit = true;
 }
 
-//on tin
 const sf::RenderWindow& Game::getWindow() const
 {
 	return m_window;

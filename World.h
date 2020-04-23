@@ -28,17 +28,18 @@ public:
 
 	void setBoolTowerBeingPlaced(bool tf);
 	bool getBoolTowerBeingPlaced();
-	void setdummyTowerProperties(attackType type, int strength);
+	void setdummyTowerProperties(attackType type, int strength, sf::Vector2f position);
+
+	int getNumLives();
 
 
 private:
 
 	Path m_path;
-
 	WaveManager m_waveManager;
 	TowerManager m_towerManager;
 
-	std::vector<std::unique_ptr<Enemy>> m_enemies;
-	
+	//int m_numLives;
 
 };
+

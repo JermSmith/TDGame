@@ -16,10 +16,7 @@ namespace gui
 		m_text.setCharacterSize(30);
 	}
 
-	void Banner::setText(const std::string& str)
-	{
-		m_text.setString(str);
-	}
+	//void Banner::setText(const std::string& str) { m_text.setString(str); }
 
 	void Banner::handleEvent(sf::Event e, const sf::RenderWindow& window) {}
 
@@ -47,6 +44,9 @@ namespace gui
 	int Banner::getPositionInRow() const { return m_positionInRow; }
 	// first column has index=0
 	void Banner::setPositionInRow(const int num) { m_positionInRow = num; }
+
+	//int Banner::getPositionInMenu() const { return m_positionInMenu; }
+	//void Banner::setPositionInMenu(const int num) { m_positionInMenu = num; }
 
 	bool Banner::isRolledOn(const sf::RenderWindow& window) const
 	{

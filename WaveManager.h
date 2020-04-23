@@ -15,6 +15,7 @@ public:
 	bool getbWaveOngoing() const;
 	void setbStartWaveRequested(bool);
 
+	const int getNumLives() const;
 	const int getWaveNumber() const;
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
@@ -34,6 +35,7 @@ private:
 	sf::Time m_timePoint;
 	sf::Time m_enemyReleaseDelayTime = sf::milliseconds(500);
 
+	int m_numLives;
 	int m_waveNumber; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
 	int m_numOfEnemiesStarted;
 

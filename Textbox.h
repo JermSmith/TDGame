@@ -20,6 +20,8 @@ namespace gui
 		int getMaxNumInRow() const override;
 		int getPositionInRow() const override;
 		void setPositionInRow(const int) override;
+		int getPositionInMenu() const override;
+		void setPositionInMenu(const int) override;
 
 		bool isRolledOn(const sf::RenderWindow& window) const override;
 
@@ -34,7 +36,7 @@ namespace gui
 
 		//Rectangle m_rect;
 		sf::RectangleShape m_rect;
-		Text m_text;
+		//Text m_text;
 		Text m_label;
 		std::string* m_pModString; // pointer
 

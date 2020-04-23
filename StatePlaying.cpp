@@ -3,8 +3,6 @@
 
 #include "Util\Random.h"
 #include "Util\Math.h"
-#include "GUI\Button.h"
-#include "GUI\Banner.h"
 #include "Game.h"
 
 #include <iostream>
@@ -16,7 +14,7 @@ StatePlaying::StatePlaying(Game& game)
 {
 	m_musicFilenames = { "Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" };
 
-	generateButtons(game);
+	generateButtons(game);	
 
 	m_world.createRandomPath(0);
 
@@ -49,6 +47,11 @@ void StatePlaying::handleInput()
 void StatePlaying::update()
 {
 	m_world.update(m_pGame->getWindow());
+
+	//m_playingMenu.updateWidgetText(bnrNumLives->getPositionInMenu(), "Lives Remaining: " + std::to_string(m_world.getNumLives()));
+
+	bnrNumLives.setText("Lives Remaining: " + std::to_string(m_world.getNumLives()));
+
 	//if (m_bGameOver)
 	//{
 		// do something to end the game
@@ -72,16 +75,14 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 
 void StatePlaying::generateButtons(Game& game)
 {
-	auto btnStartWave = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	btnStartWave->setText("Start Next Wave");
-	btnStartWave->setFunction([&]()
+	btnStartWave.setText("Start Next Wave");
+	btnStartWave.setFunction([&]()
 	{
 		m_world.requestStartWave();
 	});
 
-	auto btnPlaceTower1 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower1->setText("-1");
-	btnPlaceTower1->setFunction([&]()
+	btnPlaceTower1.setText("-1");
+	btnPlaceTower1.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -92,9 +93,9 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower2 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower2->setText("+1");
-	btnPlaceTower2->setFunction([&]()
+	
+	btnPlaceTower2.setText("+1");
+	btnPlaceTower2.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -105,9 +106,8 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower3 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower3->setText("/2");
-	btnPlaceTower3->setFunction([&]()
+	btnPlaceTower3.setText("/2");
+	btnPlaceTower3.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -118,9 +118,8 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower4 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower4->setText("/3");
-	btnPlaceTower4->setFunction([&]()
+	btnPlaceTower4.setText("/3");
+	btnPlaceTower4.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -131,9 +130,8 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower5 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower5->setText("/5");
-	btnPlaceTower5->setFunction([&]()
+	btnPlaceTower5.setText("/5");
+	btnPlaceTower5.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -144,9 +142,8 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower6 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower6->setText("/7");
-	btnPlaceTower6->setFunction([&]()
+	btnPlaceTower6.setText("/7");
+	btnPlaceTower6.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -158,9 +155,8 @@ void StatePlaying::generateButtons(Game& game)
 	});
 
 	// TODO: figure out where wave stats, tower stats, shop, inventory, etc. will be displayed
-	auto btnPlaceTower7 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	btnPlaceTower7->setText("/11");
-	btnPlaceTower7->setFunction([&]()
+	btnPlaceTower7.setText("/11");
+	btnPlaceTower7.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -171,9 +167,8 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPlaceTower8 = gui::makeCircularButton(gui::ButtonSize::Circle2);
-	btnPlaceTower8->setText("sqrt");
-	btnPlaceTower8->setFunction([&]()
+	btnPlaceTower8.setText("sqrt");
+	btnPlaceTower8.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -183,10 +178,9 @@ void StatePlaying::generateButtons(Game& game)
 			m_world.setdummyTowerProperties(attackType::root, 2, mousePos);
 		}
 	});
-
-	auto btnPlaceTower9 = gui::makeCircularButton(gui::ButtonSize::Circle2);
-	btnPlaceTower9->setText("cbrt");
-	btnPlaceTower9->setFunction([&]()
+ 
+	btnPlaceTower9.setText("cbrt");
+	btnPlaceTower9.setFunction([&]()
 	{
 		if (m_world.getBoolTowerBeingPlaced()) { m_world.setBoolTowerBeingPlaced(false); }
 		else
@@ -197,16 +191,14 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto btnPrevWaveStats = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	btnPrevWaveStats->setText("Previous Wave Stats");
-	btnPrevWaveStats->setFunction([&]()
+	btnPrevWaveStats.setText("Previous Wave Stats");
+	btnPrevWaveStats.setFunction([&]()
 	{
 
 	});
 
-	auto btnRestartGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	btnRestartGame->setText("Restart Game");
-	btnRestartGame->setFunction([&]()
+	btnRestartGame.setText("Restart Game");
+	btnRestartGame.setFunction([&]()
 	{
 		m_world.clearScene();
 
@@ -224,16 +216,14 @@ void StatePlaying::generateButtons(Game& game)
 
 	});
 
-	auto btnMainMenu = gui::makeRectangularButton(gui::ButtonSize::Small);
-	btnMainMenu->setText("Main Menu");
-	btnMainMenu->setFunction([&]()
+	btnMainMenu.setText("Main Menu");
+	btnMainMenu.setFunction([&]()
 	{
 		game.pushState<StateMainMenu>(game);
 	});
 
-	auto btnToggleMusic = gui::makeRectangularButton(gui::ButtonSize::Small);
-	btnToggleMusic->setText("Toggle Music");
-	btnToggleMusic->setFunction([&]()
+	btnToggleMusic.setText("Toggle Music");
+	btnToggleMusic.setFunction([&]()
 	{
 		if (game.getMusicRequestStatus())
 		{
@@ -245,29 +235,27 @@ void StatePlaying::generateButtons(Game& game)
 		}
 	});
 
-	auto bnrNumLives = gui::makeBanner();
-	bnrNumLives->setText("Lives Remaining: 10");
-	// TODO: make it so the lives remaining decreases when an enemy reaches the end
-	// (included in this: removing enemies that reach the end.. creating a "lives" integer in world or stateplaying.. etc.)
+	bnrNumLives.setText("Lives Remaining: " + std::to_string(m_world.getNumLives()));
 
+	m_playingMenu.addWidget(btnStartWave);
+	m_playingMenu.addWidget(btnPlaceTower1);
+	m_playingMenu.addWidget(btnPlaceTower2);
+	m_playingMenu.addWidget(btnPlaceTower3);
+	m_playingMenu.addWidget(btnPlaceTower4);
+	m_playingMenu.addWidget(btnPlaceTower5);
+	m_playingMenu.addWidget(btnPlaceTower6);
+	m_playingMenu.addWidget(btnPlaceTower7);
+	m_playingMenu.addWidget(btnPlaceTower8);
+	m_playingMenu.addWidget(btnPlaceTower9);
+	m_playingMenu.addWidget(btnPrevWaveStats);
+	m_playingMenu.addWidget(btnRestartGame);
+	m_playingMenu.addWidget(btnMainMenu);
+	m_playingMenu.addWidget(btnToggleMusic);
+	m_playingMenu.addWidget(bnrNumLives);
+	
 
-
-
-
-	m_playingMenu.addWidget(std::move(btnStartWave));
-	m_playingMenu.addWidget(std::move(btnPlaceTower1));
-	m_playingMenu.addWidget(std::move(btnPlaceTower2));
-	m_playingMenu.addWidget(std::move(btnPlaceTower3));
-	m_playingMenu.addWidget(std::move(btnPlaceTower4));
-	m_playingMenu.addWidget(std::move(btnPlaceTower5));
-	m_playingMenu.addWidget(std::move(btnPlaceTower6));
-	m_playingMenu.addWidget(std::move(btnPlaceTower7));
-	m_playingMenu.addWidget(std::move(btnPlaceTower8));
-	m_playingMenu.addWidget(std::move(btnPlaceTower9));
-	m_playingMenu.addWidget(std::move(btnPrevWaveStats));
-	m_playingMenu.addWidget(std::move(btnRestartGame));
-	m_playingMenu.addWidget(std::move(btnMainMenu));
-	m_playingMenu.addWidget(std::move(btnToggleMusic));
-	m_playingMenu.addWidget(std::move(bnrNumLives));
+	
 }
+
+
 

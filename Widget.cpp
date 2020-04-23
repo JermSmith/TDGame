@@ -12,6 +12,8 @@ namespace gui
 		setFont(ResourceHolder::get().fonts.get("arial"));
 	}
 
+	void Widget::setText(const std::string& str) { m_text.setString(str); }
+
 	//bool Widget::Rectangle::isRolledOn(const sf::RenderWindow& window) const
 	/*bool Widget::isRolledOn(const sf::RenderWindow& window) const
 	{
