@@ -37,7 +37,7 @@ void Game::run()
 
 		//Real time update
 		state.handleInput();
-		state.update();
+		state.update(m_window);
 
 		state.playMusic(m_bMusicRequestStatus);
 		//if (m_bMusicRequestStatus) { state.unmuteMusic(); } // new

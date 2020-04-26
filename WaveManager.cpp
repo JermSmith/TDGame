@@ -21,7 +21,7 @@ void WaveManager::m_constructWaveGeneratingData()
 
 	m_waveGeneratingData =
 	{
-		std::make_pair<std::vector<int>, int>({ 888 }, 50),
+		std::make_pair<std::vector<int>, int>({ 75 }, 10),
 		std::make_pair<std::vector<int>, int>({ 28 }, 10),
 		std::make_pair<std::vector<int>, int>({ 3 }, 10),
 		std::make_pair<std::vector<int>, int>({ 4 }, 10),
@@ -46,6 +46,7 @@ void WaveManager::m_constructWaveGeneratingData()
 
 void WaveManager::reset()
 {
+	m_enemies.clear();
 	m_numLives = 10;
 	m_waveNumber = 0; // waveNumber value is 1 less than wave # known by player (0 is wave #1, 1 is wave #2, etc)
 	m_bWaveOngoing = false;
@@ -87,7 +88,7 @@ void WaveManager::update(const std::vector<sf::Vector2f>& vertices, const sf::Re
 		{
 			m_enemies.erase(m_enemies.begin() + i);
 		}
-		if (m_enemies.at(i)->getbReachedTheEnd())
+		else if (m_enemies.at(i)->getbReachedTheEnd())
 		{
 			m_numLives--;
 			m_enemies.erase(m_enemies.begin() + i);

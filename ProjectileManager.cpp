@@ -56,6 +56,9 @@ void ProjectileManager::createProjectile(const std::unique_ptr<Enemy>& enemy, sf
 		};
 	}
 	
+	// TODO: make the enemy being attacked match the colour for a brief moment of the
+	// projectile that attacks it (which could also match the colour of the attacking
+	// tower?  This would make it more clear which enemies are being attacked by which towers
 	m_projectiles.push_back(std::make_unique<Projectile>(towerPos, endPos, m_defaultProjSpeed, colour));
 
 }

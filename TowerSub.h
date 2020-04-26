@@ -16,6 +16,6 @@ private:
 	const targetPriority DEFAULT_PRIORITY = targetPriority::first;
 	const int DEFAULT_MAX_NUM_TARGETS = 4;
 
-
 };
+
 

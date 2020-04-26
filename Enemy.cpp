@@ -3,7 +3,7 @@
 #include <iostream>
 #include "ResourceManager\ResourceHolder.h"
 
-Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
+Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed) : InteractableShape(16.f, 50)
 {
 	m_bIsAlive = true;
 	m_bReachedTheEnd = false;
@@ -15,10 +15,7 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed)
 
 	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
 	m_healthString.setFillColor(sf::Color::Yellow);
-
-	getCircle()->setRadius(16.);
-	getCircle()->setFillColor(m_defaultFillColor);
-	getCircle()->setOrigin(sf::Vector2f(getCircle()->getRadius(), getCircle()->getRadius()));
+	InteractableShape::setFillColour(m_defaultFillColor);
 
 	m_vertices = vertices;
 	m_health = health;
@@ -54,8 +51,8 @@ void Enemy::setSpeed(float speed) { m_speed = speed; }
 const float& Enemy::getTheta() const { return m_theta; }
 
 //temporary for debugging
-void Enemy::resetFillColor() { getCircle()->setFillColor(m_defaultFillColor); }
-void Enemy::setFillColor(sf::Color color) { getCircle()->setFillColor(color); }
+void Enemy::resetFillColor() { InteractableShape::setFillColour(m_defaultFillColor); }
+void Enemy::setFillColor(sf::Color color) { InteractableShape::setFillColour(color); }
 
 void Enemy::m_updatePosition()
 {
@@ -138,11 +135,11 @@ void Enemy::update(const sf::RenderWindow& window)
 
 	if (isRolledOn(window))
 	{
-		getCircle()->setFillColor(sf::Color(51, 51, 51));
+		InteractableShape::setFillColour(sf::Color(51, 51, 51));
 	}
 	else
 	{
-		getCircle()->setFillColor(m_defaultFillColor);
+		InteractableShape::setFillColour(m_defaultFillColor);
 	}
 	
 	//if (bIsPrime(m_health))
@@ -158,10 +155,8 @@ void Enemy::update(const sf::RenderWindow& window)
 
 void Enemy::render(sf::RenderTarget& renderer)
 {
-	//m_circle.setPosition(m_position);
-	//renderer.draw(m_circle);
-	getCircle()->setPosition(m_position);
-	renderer.draw(*getCircle());
+	InteractableShape::setPosition(m_position);
+	InteractableShape::render(renderer);
 	renderer.draw(m_healthString);
 }
 

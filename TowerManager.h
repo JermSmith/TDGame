@@ -4,7 +4,7 @@
 #include "TowerDiv.h"
 #include "TowerRoot.h"
 #include "Tower.h"
-#include "GUI\Cursor.h"
+#include "Cursor.h"
 
 class TowerManager
 {
@@ -15,7 +15,7 @@ public:
 	void handleEvent(sf::Event e, const sf::RenderWindow& window, const Path& path);
 	void render(sf::RenderTarget& renderer);
 
-	std::vector<std::unique_ptr<Tower>>* getTowersVector();
+	void reset();
 	Cursor* getDummyTower();
 
 	const bool& getbTowerBeingPlaced() const;
@@ -30,8 +30,10 @@ private:
 
 	bool m_bTowerBeingPlaced = false;
 
-	void m_handleEvent_TowerSelection(const sf::RenderWindow&);
-	void m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::RenderWindow&);
+	void m_handleEvent_TowerSelection(const sf::Vector2f& clickPos);
+	void m_handleEvent_InsertDummyTowerIntoVectorOfTowers();
 };
+
+//inline Cursor makeCursor() { return Cursor(); }
 
 

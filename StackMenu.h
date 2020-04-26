@@ -22,10 +22,9 @@ namespace gui
 
 		void clearWidgets();
 		bool bContainsWidgets();
-		//first pos is 0
-		void updateWidgetText(int widgetPosInMenu, std::string newText);
-		//void addWidget(std::unique_ptr<Widget> w);
 		void addWidget(Widget &w);
+
+		std::vector<Widget*> getWidgets() const;
 		
 		/*template<typename T, typename... Args> void addWidget(Args&&... args)
 		{
@@ -51,7 +50,6 @@ namespace gui
 
 		//const sf::RenderWindow* m_pWindow;
 
-		//std::vector<std::unique_ptr<Widget>> m_widgets;
 		std::vector<Widget*> m_widgets;
 		sf::RectangleShape m_background;
 

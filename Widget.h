@@ -14,6 +14,8 @@ namespace gui
 		virtual void handleEvent(sf::Event e, const sf::RenderWindow& window) = 0;
 
 		virtual void render(sf::RenderTarget& renderer) = 0;
+		
+		virtual void update(const sf::RenderWindow& window) = 0;
 
 		virtual void setPosition(const sf::Vector2f& pos) = 0;
 
@@ -26,23 +28,11 @@ namespace gui
 		// first column is index 0
 		virtual void setPositionInRow(const int) = 0;
 
-		//virtual int getPositionInMenu() const = 0;
-		//virtual void setPositionInMenu(const int) = 0;
-
-		virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
-
 		class Text : public sf::Text
 		{
 		public:
 			Text();
 		};
-
-		//class Rectangle : public sf::RectangleShape
-		//{
-		//public:
-		//virtual bool isRolledOn(const sf::RenderWindow& window) const = 0;
-			//bool isClicked(sf::Event, const sf::RenderWindow& window);
-		//};
 
 		// class Circle... public convex shape?
 

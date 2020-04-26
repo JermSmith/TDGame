@@ -15,10 +15,13 @@ enum class attackType
 	root,
 };
 
-class Tower : public InteractableCircle
+class Tower : public InteractableShape
 {
 public:
 	Tower();
+
+	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines.
+	void setBasicProperties(attackType type, int strength, sf::Vector2f position);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	virtual void update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window);
@@ -27,8 +30,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	void setPosition(sf::Vector2f& position);
 
-	const float& getRadius() const;
-	void setRadius(float radius);
+	const float getRadius() const;
 
 	const attackType& getAttackType() const;
 	void setAttackType(attackType&);
@@ -45,18 +47,13 @@ public:
 	const bool& getbIsClickedOn() const;
 	void setbIsClickedOn(bool);
 
-	// sets AttackType, Strength, Position, Radius, and Range, as well as graphics.
-	void setBasicProperties(attackType type, int strength, sf::Vector2f position);
-
 protected:
 	// these are accessible by TowerSub/Div/Root and Cursor, but not others
 
 	sf::Vector2f m_position;
 	int m_strength;
-	float m_radius;
 	float m_range;
 
-	//sf::CircleShape m_towerCircle;
 	sf::CircleShape m_rangeCircle;
 	sf::Text m_strengthString;
 
@@ -91,8 +88,7 @@ protected:
 	ProjectileManager m_projectileManager;
 
 	bool m_bIsClickedOn = true;
-
-private:
+	bool m_bWasOriginallyClickedOn = true;
 
 };
 

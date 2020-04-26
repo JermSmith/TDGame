@@ -28,9 +28,16 @@ void StateMainMenu::handleInput()
 
 }
 
-void StateMainMenu::update()
+void StateMainMenu::update(const sf::RenderWindow& window)
 {
-	
+	for (auto& b : m_mainMenu.getWidgets())
+	{
+		b->update(window);
+	}
+	for (auto& b : m_optionsMenu.getWidgets())
+	{
+		b->update(window);
+	}
 }
 
 void StateMainMenu::render(sf::RenderTarget& renderer)

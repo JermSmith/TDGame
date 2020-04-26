@@ -16,7 +16,7 @@ namespace gui
 		m_text.setCharacterSize(30);
 	}
 
-	//void Banner::setText(const std::string& str) { m_text.setString(str); }
+	void Banner::setText(const std::string& str) { m_text.setString(str); }
 
 	void Banner::handleEvent(sf::Event e, const sf::RenderWindow& window) {}
 
@@ -24,6 +24,11 @@ namespace gui
 	{
 		renderer.draw(m_rect);
 		renderer.draw(m_text);
+	}
+
+	void Banner::update(const sf::RenderWindow& window)
+	{
+
 	}
 
 	void Banner::setPosition(const sf::Vector2f& pos)
@@ -45,15 +50,6 @@ namespace gui
 	// first column has index=0
 	void Banner::setPositionInRow(const int num) { m_positionInRow = num; }
 
-	//int Banner::getPositionInMenu() const { return m_positionInMenu; }
-	//void Banner::setPositionInMenu(const int num) { m_positionInMenu = num; }
-
-	bool Banner::isRolledOn(const sf::RenderWindow& window) const
-	{
-		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-		return m_rect.getGlobalBounds().contains((float)pos.x, (float)pos.y);
-	}
 }
 
 

@@ -1,7 +1,7 @@
 #include "Cursor.h"
 #include "Util\Math.h"
 
-Cursor::Cursor()
+Cursor::Cursor() : Tower()
 {
 	
 }
@@ -25,14 +25,13 @@ void Cursor::update(const sf::RenderWindow& window, const Path& path,
 	}
 	else
 	{
-		hide(); //do not show a circle around radius, since no tower is being placed
+		hide(); //do not show a cursor, since no tower is being placed
 	}
 }
 
 void Cursor::render(sf::RenderTarget& renderer)
 {
-	//renderer.draw(m_towerCircle);
-	renderer.draw(*getCircle());
+	InteractableShape::render(renderer);
 	renderer.draw(m_rangeCircle);
 }
 
@@ -51,8 +50,8 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 	for (int angle = (-numOfPointsOnCircle / 2 + 1); angle <= numOfPointsOnCircle; angle++)
 	{
 		corners.push_back(sf::Vector2f(
-			m_position.x + cos(angle * PI * 2 / numOfPointsOnCircle) * m_radius,
-			m_position.y + sin(angle * PI * 2 / numOfPointsOnCircle) * m_radius)); // e.g. for increments of PI/4, # of divisions is 8
+			m_position.x + cos(angle * PI * 2 / numOfPointsOnCircle) * getPrimaryDim(),
+			m_position.y + sin(angle * PI * 2 / numOfPointsOnCircle) * getPrimaryDim())); // e.g. for increments of PI/4, # of divisions is 8
 	}
 
 	/* could specify different "corners" for a square, diamond, etc. */
@@ -140,7 +139,7 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 	for (unsigned int i = 0; i < towers.size(); i++)
 	{
 		if (distanceBetweenPoints(m_position, towers.at(i)->getPosition()) <
-			(m_radius + towers.at(i)->getRadius()))
+			(getPrimaryDim() + towers.at(i)->getRadius()))
 		{
 			return true;
 		}
@@ -148,10 +147,10 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 	// below here is checking for interference with menu
 
-	if (m_position.x > sizes::WORLD_SIZE_X - (sizes::PLAYINGMENU_X + m_radius) || // menu width + 1/2 tower radius
-		(m_position.x < m_radius) ||
-		m_position.y < m_radius ||
-		m_position.y > sizes::WORLD_SIZE_Y - m_radius)
+	if (m_position.x > sizes::WORLD_SIZE_X - (sizes::PLAYINGMENU_X + getPrimaryDim()) || // menu width + 1/2 tower radius
+		(m_position.x < getPrimaryDim()) ||
+		m_position.y < getPrimaryDim() ||
+		m_position.y > sizes::WORLD_SIZE_Y - getPrimaryDim())
 	{
 		return true;
 	}
@@ -164,22 +163,17 @@ bool Cursor::bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& tow
 
 void Cursor::hide()
 {
-	//m_towerCircle.setRadius(0);
-	getCircle()->setRadius(0);
+	InteractableShape::setFillColour(sf::Color::Transparent);
+	InteractableShape::setOutlineThickness(0);
 	m_rangeCircle.setRadius(0);
 }
 
 void Cursor::updatePositive()
 {
-	/*m_towerCircle.setRadius(m_radius);
-	m_towerCircle.setOutlineThickness(-2);
-	m_towerCircle.setOutlineColor(sf::Color::Cyan);
-	m_towerCircle.setPosition(m_position);*/
-	
-	getCircle()->setRadius(m_radius);
-	getCircle()->setOutlineThickness(-2);
-	getCircle()->setOutlineColor(sf::Color::Cyan);
-	getCircle()->setPosition(m_position);
+	InteractableShape::defineShape(32.f, 50); // TODO: need to make this match original size of tower
+	InteractableShape::setOutlineThickness(-2);
+	InteractableShape::setOutlineColour(sf::Color::Cyan);
+	InteractableShape::setPosition(m_position);
 
 	m_rangeCircle.setRadius(m_range);
 	m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
@@ -190,17 +184,11 @@ void Cursor::updatePositive()
 
 void Cursor::updateNegative()
 {
-	/*m_towerCircle.setRadius(m_radius);
-	m_towerCircle.setFillColor(sf::Color::Transparent);
-	m_towerCircle.setOutlineThickness(-2);
-	m_towerCircle.setOutlineColor(sf::Color::Red);
-	m_towerCircle.setPosition(m_position);*/
-
-	getCircle()->setRadius(m_radius);
-	getCircle()->setFillColor(sf::Color::Transparent);
-	getCircle()->setOutlineThickness(-2);
-	getCircle()->setOutlineColor(sf::Color::Red);
-	getCircle()->setPosition(m_position);
+	InteractableShape::defineShape(32.f, 50);
+	InteractableShape::setFillColour(sf::Color::Transparent);
+	InteractableShape::setOutlineThickness(-2);
+	InteractableShape::setOutlineColour(sf::Color::Red);
+	InteractableShape::setPosition(m_position);
 
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);

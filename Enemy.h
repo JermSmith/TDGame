@@ -1,9 +1,10 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>
-#include "GUI\InteractableCircle.h"
+//#include "GUI\InteractableCircle.h"
+#include "GUI\InteractableShape.h"
 
-class Enemy : public InteractableCircle
+class Enemy : public InteractableShape
 {
 public:
 	Enemy(std::vector<sf::Vector2f> path, int health, float speed);

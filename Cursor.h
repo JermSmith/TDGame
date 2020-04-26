@@ -2,24 +2,23 @@
 #include <SFML\Graphics.hpp>
 #include "GameObjects\Tower.h"
 
+/* The main function of Cursor is its ability to check for interference of the scene and a new tower. */
 class Cursor : public Tower
 {
 public:
 	Cursor();
-
-	//void handleEvent(sf::Event e, const sf::RenderWindow& window);
 
 	void update(const sf::RenderWindow& window, const Path& path, const std::vector<std::unique_ptr<Tower>>& towers,
 		bool bTowerBeingPlaced); // NOT inherited from tower class
 
 	void render(sf::RenderTarget& renderer);
 
-	bool bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path, const sf::RenderWindow& window);
+	bool bInterferesWithScene(const std::vector<std::unique_ptr<Tower>>& towers, const Path& path);
 
 
 private:
-	void updatePositive(const sf::RenderWindow& window);
-	void updateNegative(const sf::RenderWindow& window);
+	void updatePositive();
+	void updateNegative();
 	void hide();
 
 };

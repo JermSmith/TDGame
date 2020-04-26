@@ -6,14 +6,14 @@
 
 namespace colours
 {
-	sf::Color towerTextColour = sf::Color::Black;
-	sf::Color towerFillColour = sf::Color::Cyan;
-	sf::Color towerRangeFillColour = sf::Color(255, 255, 255, 63);
+	const sf::Color towerTextColour = sf::Color::Black;
+	const sf::Color towerFillColour = sf::Color::Cyan;
+	const sf::Color towerRangeFillColour = sf::Color(255, 255, 255, 63);
 
-	sf::Color defaultButtonFillColour = sf::Color::Black;
-	sf::Color buttonHoverColour = sf::Color(155, 155, 155);
+	const sf::Color defaultButtonFillColour = sf::Color::Black;
+	const sf::Color buttonHoverColour = sf::Color(155, 155, 155);
 
-	sf::Color selectRandomColor()
+	const sf::Color selectRandomColor()
 	{
 		std::vector<sf::Color> coloursVector = {
 		sf::Color(0, 51, 102), sf::Color(0, 51, 153), sf::Color(0, 51, 204), sf::Color(0, 51, 255),

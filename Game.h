@@ -22,11 +22,14 @@ public:
 
 	template<typename T, typename... Args> void pushState(Args&&... args);
 	void pushState(std::unique_ptr<StateBase> state);
-	void popState();
+	//void popState();
 	void exitGame();
 	//template <typename T, typename... Args> void changeState(Args&&... args);
 
 	const sf::RenderWindow& getWindow() const;
+
+	bool getMusicRequestStatus() { return m_bMusicRequestStatus; } // new
+	void setMusicRequestStatus(bool tf) { m_bMusicRequestStatus = tf; } // new
 
 private:
 	void handleEvent();
@@ -41,8 +44,10 @@ private:
 
 	bool m_shouldPop = false;
 	bool m_shouldExit = false;
-	bool m_shouldChangeState = false;
+	//bool m_shouldChangeState = false;
 	std::unique_ptr<StateBase> m_change;
+
+	bool m_bMusicRequestStatus = true;
 };
 
 template<typename T, typename... Args> inline void Game::pushState(Args&&... args)
@@ -57,3 +62,4 @@ template<typename T, typename... Args> inline void Game::changeState(Args&&... a
 	m_shouldPop = true;
 	m_shouldChangeState = true;
 }*/
+

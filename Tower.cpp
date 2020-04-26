@@ -4,7 +4,10 @@
 #include "Util\ColourManager.h"
 #include <algorithm>
 
-Tower::Tower() {} // Cursor inherits this constructor
+Tower::Tower() : InteractableShape(32.f, 50) {} // Cursor inherits this constructor, TODO: clean this up
+// TODO: make it so there is only one place in the entire solution where potential tower sizes are set (probably
+// when creating the buttons in world.cpp), and then when a tower is made it just "checks" (or something) the
+// button size to generate the correct size of cursor and then button.
 
 void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position)
 {
@@ -16,32 +19,21 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
-		m_radius = 32.f;
 		m_range = 200.f;
 		break;
 
 	case attackType::divide:
-		m_radius = 32.f;
 		m_range = 150.f;
 		break;
 
 	case attackType::root:
-		m_radius = 20.f;
 		m_range = 200.f;
 		break;
 	}
 
-	//m_towerCircle.setRadius(m_radius);
-	//m_towerCircle.setOrigin(sf::Vector2f(m_radius, m_radius));
-	//origin is relative to the top left corner of the circle's surrounding "box"; here it is set to be the centre of circle
-	//m_towerCircle.setPosition(m_position); //origin of the circle goes to this position, which is location of click
-	//m_towerCircle.setFillColor(colours::selectRandomColor());
-
-	getCircle()->setRadius(m_radius);
-	getCircle()->setOrigin(sf::Vector2f(m_radius, m_radius));
-	//origin is relative to the top left corner of the circle's surrounding "box"; here it is set to be the centre of circle
-	getCircle()->setPosition(m_position); //origin of the circle goes to this position, which is location of click
-	getCircle()->setFillColor(colours::selectRandomColor());
+	//origin is relative to the top left corner of the circle's surrounding "box"
+	InteractableShape::setPosition(m_position); //origin of the circle goes to this position, which is location of click
+	InteractableShape::setFillColour(colours::selectRandomColor());
 
 	m_rangeCircle.setRadius(m_range);
 	m_rangeCircle.setOrigin(sf::Vector2f(m_range, m_range));
@@ -50,7 +42,7 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 
 	// m_strengthString.setFontResourceHolder::get().fonts.get("stkaiti"));
 	m_strengthString.setFont(ResourceHolder::get().fonts.get("arial"));
-	m_strengthString.setPosition(sf::Vector2f(m_position.x - m_radius / (float)2, m_position.y - m_radius / (float)2));
+	m_strengthString.setPosition(sf::Vector2f(m_position.x - getPrimaryDim() / (float)2, m_position.y - getPrimaryDim() / (float)2));
 	m_strengthString.setFillColor(colours::towerTextColour);
 }
 
@@ -67,12 +59,31 @@ void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::Rende
 void Tower::render(sf::RenderTarget& renderer)
 {
 	renderer.draw(m_rangeCircle);
-	//renderer.draw(m_towerCircle);
-	renderer.draw(*getCircle());
+	InteractableShape::render(renderer);
 	renderer.draw(m_strengthString);
 
 	m_projectileManager.render(renderer);
 }
+
+const sf::Vector2f& Tower::getPosition() const { return m_position; }
+void Tower::setPosition(sf::Vector2f& position) { m_position = position; }
+
+const float Tower::getRadius() const { return getPrimaryDim(); }
+
+const attackType& Tower::getAttackType() const { return m_attackType; }
+void Tower::setAttackType(attackType& type) { m_attackType = type; }
+
+const float& Tower::getRange() const { return m_range; }
+void Tower::setRange(float& range) { m_range = range; }
+
+//const sf::Time& Tower::getCooldown() const { return m_cooldownTime; }
+//void Tower::setCooldown(sf::Time& cooldown) { m_cooldownTime = cooldown; }
+
+const int& Tower::getStrength() const { return m_strength; }
+void Tower::setStrength(int& strength) { m_strength = strength; }
+
+const bool& Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
+void Tower::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
 
 /* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of
 the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"
@@ -627,26 +638,6 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 }
 
 
-const sf::Vector2f& Tower::getPosition() const { return m_position; }
-void Tower::setPosition(sf::Vector2f& position) { m_position = position; }
-
-const float& Tower::getRadius() const { return m_radius; }
-void Tower::setRadius(float radius) { m_radius = radius; }
-
-const attackType& Tower::getAttackType() const { return m_attackType; }
-void Tower::setAttackType(attackType& type) { m_attackType = type; }
-
-const float& Tower::getRange() const { return m_range; }
-void Tower::setRange(float& range) { m_range = range; }
-
-//const sf::Time& Tower::getCooldown() const { return m_cooldownTime; }
-//void Tower::setCooldown(sf::Time& cooldown) { m_cooldownTime = cooldown; }
-
-const int& Tower::getStrength() const { return m_strength; }
-void Tower::setStrength(int& strength) { m_strength = strength; }
-
-const bool& Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
-void Tower::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
 
 
 

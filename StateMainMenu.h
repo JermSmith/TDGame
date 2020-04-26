@@ -13,25 +13,26 @@ public:
 	
 	void handleEvent	(sf::Event e)	override;
 	void handleInput	()				override;
-	void update			()				override;
+	void update			(const sf::RenderWindow& window)	override;
 	void render			(sf::RenderTarget& renderer) override;
-	void generateButtons(Game& game) override;
+	void generateButtons(Game& game);
 
 private:
 	gui::StackMenu m_mainMenu;
 	gui::StackMenu m_optionsMenu;
 
-	gui::RectangularButton btnNewGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnLoadGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnOptions = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnHowToPlay = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnHighScores = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnExit = gui::makeRectangularButton(gui::ButtonSize::Wide);
+	gui::Button btnNewGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnLoadGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnHowToPlay = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnHighScores = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnExit = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 
-	gui::RectangularButton btnToggleMusic = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnColourScheme = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnMainMenu = gui::makeRectangularButton(gui::ButtonSize::Wide);
+	gui::Button btnToggleMusic = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnColourScheme = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 
 	void m_generateOptionsButtons(Game& game);
 };
+
 

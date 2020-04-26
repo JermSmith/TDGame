@@ -16,7 +16,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 
 	for (auto& tower : m_towers)
 	{
-		tower->update(enemies, window);// , window); // each tower is updated
+		tower->update(enemies, window); // each tower is updated
 
 		// the following several lines update all div/root towers each time a sub tower is updated
 		if (tower->getAttackType() == attackType::subtract)
@@ -25,7 +25,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 			{
 				if (tow->getAttackType() != attackType::subtract)
 				{
-					tow->update(enemies, window);// , window);
+					tow->update(enemies, window);
 				}
 			}
 		}
@@ -55,11 +55,11 @@ void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, cons
 
 				m_bTowerBeingPlaced = false;
 
-				std::cout << "tower strengths in tower vector are: " << std::endl;
-				for (auto& tower : m_towers)
-				{
-					std::cout << tower->getStrength() << std::endl;
-				}
+				//std::cout << "tower strengths in tower vector are: " << std::endl;
+				//for (auto& tower : m_towers)
+				//{
+				//	std::cout << tower->getStrength() << std::endl;
+				//}
 			}
 		}
 	}
@@ -75,7 +75,10 @@ void TowerManager::render(sf::RenderTarget& renderer)
 	m_dummyTower.render(renderer);
 }
 
-std::vector<std::unique_ptr<Tower>>* TowerManager::getTowersVector() { return &m_towers; }
+void TowerManager::reset()
+{
+	m_towers.clear();
+}
 
 Cursor* TowerManager::getDummyTower() { return &m_dummyTower; }
 
@@ -93,6 +96,8 @@ void TowerManager::setbTowerBeingPlaced(bool tf)
 // clicked on, and modifies the "isClickedOn" property of all towers accordingly.
 void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 {
+	//sf::Vector2f clickPos = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+
 	bool bClickedOffOfTower = true; // will remain true until a tower is clicked on
 	// (or more accurately, until a tower is found that "contains" the click)
 
