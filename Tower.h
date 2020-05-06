@@ -88,7 +88,7 @@ protected:
 	ProjectileManager m_projectileManager;
 
 	bool m_bIsClickedOn = true;
-	bool m_bWasOriginallyClickedOn = true;
+	//bool m_bWasOriginallyClickedOn = true;
 
 };
 

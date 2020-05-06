@@ -17,10 +17,10 @@ public:
 
 	void createProjectile(const std::unique_ptr<Enemy>& enemy, sf::Vector2f towerPos, sf::Color colour);
 
-
 private:
 	std::vector<std::unique_ptr<Projectile>> m_projectiles;
 	float m_defaultProjSpeed;
 
 };
+
 

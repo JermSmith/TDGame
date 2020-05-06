@@ -15,7 +15,8 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed) : Inte
 
 	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
 	m_healthString.setFillColor(sf::Color::Yellow);
-	InteractableShape::setFillColour(m_defaultFillColor);
+	//InteractableShape::setFillColour(m_defaultFillColor);
+	InteractableShape::setFillColour(sf::Color::Red);
 
 	m_vertices = vertices;
 	m_health = health;
@@ -31,8 +32,7 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed) : Inte
 const sf::Vector2f& Enemy::getPosition() const { return m_position; }
 void Enemy::setPosition(sf::Vector2f& position) { m_position = position; }
 
-const sf::Vector2f& Enemy::getSize() const { return m_size; }
-void Enemy::setSize(sf::Vector2f& size) { m_size = size; }
+const float& Enemy::getRadius() const { return InteractableShape::getPrimaryDim(); }
 
 const int& Enemy::getHealth() const { return m_health; }
 void Enemy::setHealth(int health) { m_health = health; }
@@ -50,9 +50,8 @@ void Enemy::setSpeed(float speed) { m_speed = speed; }
 
 const float& Enemy::getTheta() const { return m_theta; }
 
-//temporary for debugging
-void Enemy::resetFillColor() { InteractableShape::setFillColour(m_defaultFillColor); }
-void Enemy::setFillColor(sf::Color color) { InteractableShape::setFillColour(color); }
+const bool& Enemy::getbIsClickedOn() const { return m_bIsClickedOn; }
+void Enemy::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
 
 void Enemy::m_updatePosition()
 {
@@ -80,7 +79,6 @@ void Enemy::m_updatePosition()
 			// then cannot do m_vertices.at(m_nextVertex) because it is out of range
 			// this means enemy has arrived at final vertex
 			//setSpeed(0);
-			//getCircle()->setFillColor(sf::Color::Transparent);
 			m_nextVertexIndex = 0;
 			m_bReachedTheEnd = true;
 		}
@@ -132,14 +130,23 @@ void Enemy::update(const sf::RenderWindow& window)
 	
 	m_updatePosition();
 	m_updateText();
-
-	if (isRolledOn(window))
+	
+	if (m_bIsClickedOn)
 	{
-		InteractableShape::setFillColour(sf::Color(51, 51, 51));
+		InteractableShape::setClickedAppearance();
 	}
 	else
 	{
-		InteractableShape::setFillColour(m_defaultFillColor);
+		InteractableShape::removeClickedAppearance();
+	}
+
+	if (isRolledOn(window))
+	{
+		InteractableShape::setRolledAppearance();
+	}
+	else if (!m_bIsClickedOn)
+	{
+		InteractableShape::removeRolledAppearance();
 	}
 	
 	//if (bIsPrime(m_health))

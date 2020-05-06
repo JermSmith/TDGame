@@ -12,10 +12,6 @@ public:
 private:
 	void m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies);
 
-	const int DEFAULT_COOLDOWN = 1000;
-	const targetPriority DEFAULT_PRIORITY = targetPriority::first;
-	const int DEFAULT_MAX_NUM_TARGETS = 4;
-
 };
 
 

@@ -29,10 +29,10 @@ void InteractableShape::defineShape(const float& radius, const int& pointCount)
 void InteractableShape::defineShape(const float& width, const float& height)
 {
 	m_shape.setPointCount(4);
-	m_shape.setPoint(0, sf::Vector2f(width / 2., -height / 2.)); // top right
-	m_shape.setPoint(1, sf::Vector2f(-width / 2., -height / 2.)); // top left
-	m_shape.setPoint(2, sf::Vector2f(-width / 2., height / 2.)); // bottom left
-	m_shape.setPoint(3, sf::Vector2f(width / 2., height / 2.)); // bottom right
+	m_shape.setPoint(0, sf::Vector2f(width / 2.f, -height / 2.f)); // top right
+	m_shape.setPoint(1, sf::Vector2f(-width / 2.f, -height / 2.f)); // top left
+	m_shape.setPoint(2, sf::Vector2f(-width / 2.f, height / 2.f)); // bottom left
+	m_shape.setPoint(3, sf::Vector2f(width / 2.f, height / 2.f)); // bottom right
 }
 
 int InteractableShape::getPointCount() const
@@ -71,7 +71,7 @@ float InteractableShape::getPrimaryDim() const
 	}
 	else
 	{
-		//throw "Cannot compute InteractableShape::getPrimaryDim(). InteractableShape is made up of fewer than 4 points.";
+		throw "Cannot compute InteractableShape::getPrimaryDim(). InteractableShape is made up of fewer than 4 points.";
 	}
 }
 
@@ -97,7 +97,35 @@ sf::Color InteractableShape::getFillColour() const
 
 void InteractableShape::setFillColour(const sf::Color& colour)
 {
+	if (m_shape.getFillColor() == sf::Color(-1, -1, -1)) // initialized in InteractableShape.h
+	{
+		m_originalFillColour = colour; // sets the original fill colour, since it has not been set yet
+	}
 	m_shape.setFillColor(colour);
+}
+
+void InteractableShape::setRolledAppearance()
+{
+	m_shape.setOutlineColor(sf::Color::White);
+	m_shape.setOutlineThickness(-2);
+}
+
+void InteractableShape::removeRolledAppearance()
+{
+	m_shape.setOutlineThickness(0);
+}
+
+void InteractableShape::setClickedAppearance()
+{
+	m_shape.setFillColor(sf::Color(100, 100, 100));
+	m_shape.setOutlineColor(sf::Color::Black);
+	m_shape.setOutlineThickness(-1);
+}
+
+void InteractableShape::removeClickedAppearance()
+{
+	m_shape.setFillColor(m_originalFillColour);
+	m_shape.setOutlineThickness(0);
 }
 
 void InteractableShape::setOutlineThickness(const float& thickness)

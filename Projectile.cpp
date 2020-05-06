@@ -57,3 +57,5 @@ const sf::Vector2f& Projectile::getEndPos() const
 {
 	return m_endPos;
 }
+
+

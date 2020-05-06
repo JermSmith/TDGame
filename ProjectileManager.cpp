@@ -2,7 +2,7 @@
 
 ProjectileManager::ProjectileManager()
 {
-	m_defaultProjSpeed = 10.f;
+	m_defaultProjSpeed = 5.f; // TODO: fix the problem where div and root towers shoot super fast projectiles, since they need to shoot the enemy before the sub towers shoot
 }
 
 void ProjectileManager::update()
@@ -47,6 +47,7 @@ void ProjectileManager::createProjectile(const std::unique_ptr<Enemy>& enemy, sf
 	if (distanceBetweenPoints(enemy->getPosition(), enemy->getNextDest()) < speedRatio * OGdistanceTowerToEnemy)
 	{
 		endPos = enemy->getNextDest();
+		// if the enemy will pass the dest before the projectile arrives, just shoot at the dest (this is just for looks anyways)
 	}
 	else
 	{
@@ -62,4 +63,5 @@ void ProjectileManager::createProjectile(const std::unique_ptr<Enemy>& enemy, sf
 	m_projectiles.push_back(std::make_unique<Projectile>(towerPos, endPos, m_defaultProjSpeed, colour));
 
 }
+
 

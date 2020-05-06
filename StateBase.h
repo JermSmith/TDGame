@@ -49,6 +49,8 @@ protected:
 	std::vector<std::string> m_musicFilenames;
 	
 private:
+	virtual void generateButtons(Game& game) = 0;
+
 	sf::Music m_music;
 	int musicIterator = 0;
 	//bool m_bMusicRequested = true;

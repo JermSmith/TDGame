@@ -23,7 +23,7 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 		break;
 
 	case attackType::divide:
-		m_range = 150.f;
+		m_range = 200.f;
 		break;
 
 	case attackType::root:

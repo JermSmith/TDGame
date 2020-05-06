@@ -15,9 +15,10 @@ public:
 	void handleInput	()				override;
 	void update			(const sf::RenderWindow& window)	override;
 	void render			(sf::RenderTarget& renderer) override;
-	void generateButtons(Game& game);
 
 private:
+	void generateButtons(Game& game) override;
+
 	gui::StackMenu m_mainMenu;
 	gui::StackMenu m_optionsMenu;
 

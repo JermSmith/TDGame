@@ -11,7 +11,7 @@ TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector
 
 	m_cooldownTime = sf::milliseconds(1000);
 	m_priority = targetPriority::largestPrime;
-	m_maxNumTargets = 1;
+	m_maxNumTargets = 2;
 
 	if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }
@@ -38,16 +38,21 @@ void TowerSub::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::Re
 	if (m_bIsClickedOn)
 	{
 		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	}
-	else { m_rangeCircle.setFillColor(sf::Color::Transparent); }
-
-	if (isRolledOn(window))
-	{
-		InteractableShape::setFillColour(sf::Color(51, 51, 51));
+		InteractableShape::setClickedAppearance();
 	}
 	else
 	{
-		InteractableShape::setFillColour(sf::Color::White);
+		m_rangeCircle.setFillColor(sf::Color::Transparent);
+		InteractableShape::removeClickedAppearance();
+	}
+
+	if (isRolledOn(window))
+	{
+		InteractableShape::setRolledAppearance();
+	}
+	else if (!m_bIsClickedOn)
+	{
+		InteractableShape::removeRolledAppearance();
 	}
 }
 
@@ -77,11 +82,17 @@ void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
-			m_numofAttacksInWave++; // for stats purposes
+			m_numofAttacksInWave++; // for wave stats
 			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, InteractableShape::getFillColour());
 
 			enemies->at(enemyIndicesToAttack.at(i))->setHealth(enemies->at(enemyIndicesToAttack.at(i))->getHealth() - m_strength);
+			// TODO: fix the horrid "get enemies" function in WorldManager by changing the way enemy health is decreased:
+			// do not decrease health when a projectile is fired, but rather when the projectile reaches the enemy:
+			// when updating enemies (in Enemy.cpp), check if a projectile has arrived, and if so, modify the enemy health
+			// This could be challenging b/c all ProjectileManagers are currently owned by each individual Tower, but
+			// this may possibly be overcome by making towermanager a friend of a bunch of classes?? or something??
 		}
 	}
 }
+
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "StateBase.h"
-//#include "GUI\StackMenu.h"
-#include "GameObjects\World.h"
-//#include "GUI\Button.h"
-//#include "GUI\Banner.h"
+#include "GUI\StackMenu.h"
+#include "GameObjects\WorldManager.h"
+#include "GUI\Button.h"
+#include "GUI\Banner.h"
 
 //Game state for the main part of the game
 
@@ -18,34 +18,37 @@ public:
 	void update			(const sf::RenderWindow& window)	override;
 	//void fixedUpdate	(sf::Time deltaTime) override;
 	void render			(sf::RenderTarget& renderer) override;
-	//void generateButtons(Game& game) override;
 
 private:
+	WorldManager m_worldManager;
+	gui::StackMenu m_playingMenu;
+
+	bool m_bShouldPushMainMenu = false;
+
+	void generateButtons(Game& game) override;
+
+	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnPlaceTower1 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower2 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower3 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower4 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower5 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower6 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower7 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower9 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+
+	gui::Banner bnrNumLives = gui::makeBanner();
+
 	sf::Texture m_backgroundTexture;
 	sf::Sprite m_backgroundSpriteLeft;
 	sf::Sprite m_backgroundSpriteRight;
 
-	//gui::StackMenu m_playingMenu;
-
-	World m_world;
-
 	bool m_bGameOver = false;
-
-	/*gui::RectangularButton btnStartWave = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::CircularButton btnPlaceTower1 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower2 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower3 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower4 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower5 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower6 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower7 = gui::makeCircularButton(gui::ButtonSize::Circle3);
-	gui::CircularButton btnPlaceTower8 = gui::makeCircularButton(gui::ButtonSize::Circle2);
-	gui::CircularButton btnPlaceTower9 = gui::makeCircularButton(gui::ButtonSize::Circle2);
-	gui::RectangularButton btnPrevWaveStats = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnRestartGame = gui::makeRectangularButton(gui::ButtonSize::Wide);
-	gui::RectangularButton btnMainMenu = gui::makeRectangularButton(gui::ButtonSize::Small);
-	gui::RectangularButton btnToggleMusic = gui::makeRectangularButton(gui::ButtonSize::Small);
-	gui::Banner bnrNumLives = gui::makeBanner();*/
 
 };
 

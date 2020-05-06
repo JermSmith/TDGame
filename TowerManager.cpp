@@ -54,12 +54,6 @@ void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, cons
 				// root4 > sqrt > /13 > /2 > -2 > -1 > +1 > +2
 
 				m_bTowerBeingPlaced = false;
-
-				//std::cout << "tower strengths in tower vector are: " << std::endl;
-				//for (auto& tower : m_towers)
-				//{
-				//	std::cout << tower->getStrength() << std::endl;
-				//}
 			}
 		}
 	}
@@ -96,10 +90,7 @@ void TowerManager::setbTowerBeingPlaced(bool tf)
 // clicked on, and modifies the "isClickedOn" property of all towers accordingly.
 void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 {
-	//sf::Vector2f clickPos = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-
-	bool bClickedOffOfTower = true; // will remain true until a tower is clicked on
-	// (or more accurately, until a tower is found that "contains" the click)
+	bool bClickedOffOfTower = true; // will remain true unless a tower is found that was clicked on
 
 	for (unsigned int i = 0; i < m_towers.size(); i++)
 	{

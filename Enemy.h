@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include <vector>
-//#include "GUI\InteractableCircle.h"
 #include "GUI\InteractableShape.h"
 
 class Enemy : public InteractableShape
@@ -12,8 +11,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	void setPosition(sf::Vector2f& position);
 
-	const sf::Vector2f& getSize() const;
-	void setSize(sf::Vector2f& size);
+	const float& getRadius() const;
 
 	const int& getHealth() const;
 	void setHealth(int health);
@@ -31,15 +29,12 @@ public:
 
 	const float& getTheta() const;
 
-	// temporary for debugging
-	void resetFillColor();
-	void setFillColor(sf::Color color);
+	const bool& getbIsClickedOn() const;
+	void setbIsClickedOn(bool);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	void update(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
-
-
 
 
 private:
@@ -50,7 +45,7 @@ private:
 
 	sf::Text m_healthString;
 
-	sf::Color m_defaultFillColor = sf::Color::Red;
+	//sf::Color m_defaultFillColor = sf::Color::Red;
 
 	bool m_bIsAlive;
 	bool m_bReachedTheEnd;
@@ -64,6 +59,8 @@ private:
 	std::vector<sf::Vector2f> m_vertices;
 	
 	unsigned int m_nextVertexIndex; // 1 is for its first destination vertex, and increases after arriving at each vertex
+
+	bool m_bIsClickedOn = false;
 
 	/*sf::Sprite m_sprite;*/
 	//sf::CircleShape m_circle;

@@ -7,10 +7,8 @@
 
 StateMainMenu::StateMainMenu(Game& game)
 	: StateBase(game)
-	//, m_mainMenu(game.getWindow(), 100)
 	, m_mainMenu(game.getWindow(), 100)
-	, m_optionsMenu(100)// sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), 0),
-		//sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))
+	, m_optionsMenu(100)
 {
 	m_musicFilenames = { "Kai_Engel_-_04_-_Moonlight_Reprise" , "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" };
 
@@ -119,4 +117,5 @@ void StateMainMenu::m_generateOptionsButtons(Game& game)
 	m_optionsMenu.addWidget(btnColourScheme);
 	m_optionsMenu.addWidget(btnMainMenu);
 }
+
 

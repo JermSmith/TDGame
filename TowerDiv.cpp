@@ -35,16 +35,21 @@ void TowerDiv::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::Re
 	if (m_bIsClickedOn)
 	{
 		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-	}
-	else { m_rangeCircle.setFillColor(sf::Color::Transparent); }
-
-	if (isRolledOn(window))
-	{
-		InteractableShape::setFillColour(sf::Color(51, 51, 51));
+		InteractableShape::setClickedAppearance();
 	}
 	else
 	{
-		InteractableShape::setFillColour(sf::Color::White);
+		m_rangeCircle.setFillColor(sf::Color::Transparent);
+		InteractableShape::removeClickedAppearance();
+	}
+
+	if (isRolledOn(window))
+	{
+		InteractableShape::setRolledAppearance();
+	}
+	else if (!m_bIsClickedOn)
+	{
+		InteractableShape::removeRolledAppearance();
 	}
 }
 
@@ -74,7 +79,7 @@ void TowerDiv::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
-			m_numofAttacksInWave++; // for stat collection purposes
+			m_numofAttacksInWave++; // for wave stats
 			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, InteractableShape::getFillColour());
 
 			enemies->at(enemyIndicesToAttack.at(i))->setHealth(enemies->at(enemyIndicesToAttack.at(i))->getHealth() / m_strength);

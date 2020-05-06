@@ -16,8 +16,8 @@ public:
 	void render(sf::RenderTarget& renderer);
 
 	void reset();
-	Cursor* getDummyTower();
 
+	Cursor* getDummyTower();
 	const bool& getbTowerBeingPlaced() const;
 	void setbTowerBeingPlaced(bool tf);
 
@@ -34,6 +34,5 @@ private:
 	void m_handleEvent_InsertDummyTowerIntoVectorOfTowers();
 };
 
-//inline Cursor makeCursor() { return Cursor(); }
 
 
