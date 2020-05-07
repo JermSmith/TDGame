@@ -9,50 +9,24 @@ TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector
 {
 	setBasicProperties(type, strength, position);
 
-	m_cooldownTime = sf::milliseconds(1000);
-	m_priority = targetPriority::largestPrime;
-	m_maxNumTargets = 2;
-
 	if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }
 }
 
-void TowerSub::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window)
+void TowerSub::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies)
 {
-	m_elapsedTime = m_timer.getElapsedTime() - m_timePoint;
+	m_timeElapsedSinceAttack = m_timer.getElapsedTime() - m_timeOfLastAttack;
 
-	if (m_elapsedTime > m_cooldownTime)
+	if (m_timeElapsedSinceAttack > m_cooldownTime)
 	{
 		// projectiles also created in this function
 		m_attackEnemies(enemies);
 
 		if (m_bShouldResetElapsedTime) // essentially reset m_elapsedTime to 0 (see above)
 		{
-			m_timePoint = m_timer.getElapsedTime();
+			m_timeOfLastAttack = m_timer.getElapsedTime();
 			m_bShouldResetElapsedTime = false;
 		}
-	}
-
-	m_projectileManager.update();
-
-	if (m_bIsClickedOn)
-	{
-		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-		InteractableShape::setClickedAppearance();
-	}
-	else
-	{
-		m_rangeCircle.setFillColor(sf::Color::Transparent);
-		InteractableShape::removeClickedAppearance();
-	}
-
-	if (isRolledOn(window))
-	{
-		InteractableShape::setRolledAppearance();
-	}
-	else if (!m_bIsClickedOn)
-	{
-		InteractableShape::removeRolledAppearance();
 	}
 }
 

@@ -5,6 +5,11 @@
 // store is the available towers; inventory is towers that have been purchased/accumulated; world is what has been placed along the path.
 // towers go from store --> inventory --> world
 
+// TODO: make it so there is a money system for the store (maybe?) BUT definitely a "points system" in the playing space, 
+// where you can only place up to a certain total "value" of towers in the space (diff. towers taking more or less value)
+
+// TODO: implement sell tower, move tower, etc. buttons when tower is clicked on
+
 TowerManager::TowerManager()
 {
 
@@ -16,19 +21,47 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 
 	for (auto& tower : m_towers)
 	{
-		tower->update(enemies, window); // each tower is updated
+		// each time a div tower is updated, we update all root towers
+		// each time a sub tower is updated, we update all div/root towers
+		// consider the situation where sqrt, /2 and -1 all want to attack "32":
+		// if not using these nested loops, then sqrt can't attack -> 32/2 = 16 -> 16-1=15 -> sqrt still can't attack
 
-		// the following several lines update all div/root towers each time a sub tower is updated
-		if (tower->getAttackType() == attackType::subtract)
+		tower->updateAttackLogic(enemies); // each tower is updated
+		
+		if (tower->getAttackType() == attackType::divide) // e.g. 32 is invulnerable to sqrt, but not after "/2"
 		{
-			for (auto& tow : m_towers)
+			for (auto& t_r : m_towers) // update all root towers
 			{
-				if (tow->getAttackType() != attackType::subtract)
+				if (t_r->getAttackType() == attackType::root)
 				{
-					tow->update(enemies, window);
+					t_r->updateAttackLogic(enemies);
 				}
 			}
 		}
+		
+		else if (tower->getAttackType() == attackType::subtract) // e.g. 17 is invulnerable to sqrt, but not after "-1"
+		{
+			for (auto& tow : m_towers)
+			{
+				if (tow->getAttackType() != attackType::subtract) // tow is either root or div tower
+				{
+					tow->updateAttackLogic(enemies);
+
+					if (tow->getAttackType() == attackType::divide) // e.g. 33 is invulnerable to sqrt, but not after "-1" then "/2"
+					{
+						for (auto& t_r : m_towers) // update all root towers
+						{
+							if (t_r->getAttackType() == attackType::root)
+							{
+								t_r->updateAttackLogic(enemies);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		tower->updateProjectilesAndAppearance(window);
 	}
 }
 

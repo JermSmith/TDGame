@@ -19,15 +19,24 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
-		m_range = 200.f;
+		m_range = 500.f;
+		m_cooldownTime = sf::milliseconds(1000);
+		m_priority = targetPriority::first;
+		m_maxNumTargets = 2;
 		break;
 
 	case attackType::divide:
-		m_range = 200.f;
+		m_range = 500.f;
+		m_cooldownTime = sf::milliseconds(1000);
+		m_priority = targetPriority::strong;
+		m_maxNumTargets = 2;
 		break;
 
 	case attackType::root:
-		m_range = 200.f;
+		m_range = 500.f;
+		m_cooldownTime = sf::milliseconds(1000);
+		m_priority = targetPriority::strong;
+		m_maxNumTargets = 1;
 		break;
 	}
 
@@ -51,9 +60,12 @@ void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	
 }
 
-void Tower::update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window)
+void Tower::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies) {}
+
+void Tower::updateProjectilesAndAppearance(const sf::RenderWindow& window)
 {
-	
+	m_projectileManager.update();
+	m_bUpdateAppearance(m_bIsClickedOn, InteractableShape::isRolledOn(window));
 }
 
 void Tower::render(sf::RenderTarget& renderer)
@@ -76,14 +88,34 @@ void Tower::setAttackType(attackType& type) { m_attackType = type; }
 const float& Tower::getRange() const { return m_range; }
 void Tower::setRange(float& range) { m_range = range; }
 
-//const sf::Time& Tower::getCooldown() const { return m_cooldownTime; }
-//void Tower::setCooldown(sf::Time& cooldown) { m_cooldownTime = cooldown; }
-
 const int& Tower::getStrength() const { return m_strength; }
 void Tower::setStrength(int& strength) { m_strength = strength; }
 
 const bool& Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Tower::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
+
+void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
+{
+	if (bIsClicked)
+	{
+		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+		InteractableShape::setClickedAppearance();
+	}
+	else
+	{
+		m_rangeCircle.setFillColor(sf::Color::Transparent);
+		InteractableShape::removeClickedAppearance();
+	}
+
+	if (bIsRolled)
+	{
+		InteractableShape::setRolledAppearance();
+	}
+	else if (!bIsClicked)
+	{
+		InteractableShape::removeRolledAppearance();
+	}
+}
 
 /* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of
 the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"

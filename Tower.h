@@ -20,11 +20,12 @@ class Tower : public InteractableShape
 public:
 	Tower();
 
-	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines.
+	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines
 	void setBasicProperties(attackType type, int strength, sf::Vector2f position);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
-	virtual void update(std::vector<std::unique_ptr<Enemy>>* enemies, const sf::RenderWindow& window);
+	virtual void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies);
+	void updateProjectilesAndAppearance(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
@@ -38,9 +39,6 @@ public:
 	const float& getRange() const;
 	void setRange(float&);
 
-	//const sf::Time& getCooldown() const;
-	//void setCooldown(sf::Time&);
-
 	const int& getStrength() const;
 	void setStrength(int&);
 
@@ -50,6 +48,8 @@ public:
 protected:
 	// these are accessible by TowerSub/Div/Root and Cursor, but not others
 
+	void m_bUpdateAppearance(bool bIsClicked, bool bIsRolled);
+
 	sf::Vector2f m_position;
 	int m_strength;
 	float m_range;
@@ -58,8 +58,8 @@ protected:
 	sf::Text m_strengthString;
 
 	sf::Clock m_timer;
-	sf::Time m_elapsedTime;
-	sf::Time m_timePoint = m_timer.restart();
+	sf::Time m_timeElapsedSinceAttack;
+	sf::Time m_timeOfLastAttack = m_timer.restart();
 	sf::Time m_cooldownTime; //depends on m_rate
 	bool m_bShouldResetElapsedTime = false;
 
@@ -88,7 +88,6 @@ protected:
 	ProjectileManager m_projectileManager;
 
 	bool m_bIsClickedOn = true;
-	//bool m_bWasOriginallyClickedOn = true;
 
 };
 
