@@ -48,6 +48,7 @@ private:
 	std::unique_ptr<StateBase> m_change;
 
 	bool m_bMusicRequestStatus = true;
+	bool m_bRandomizeMusic = true;
 };
 
 template<typename T, typename... Args> inline void Game::pushState(Args&&... args)

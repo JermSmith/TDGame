@@ -15,7 +15,11 @@ StatePlaying::StatePlaying(Game& game)
 	m_worldManager.createRandomPath(0);
 	generateButtons(game);
 
-	m_musicFilenames = { "Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" };
+	m_musicFilenames = { "Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" , 
+	"Chad_Crouch_-_Algorithms" , "Kai_Engel_-_04_-_Moonlight_Reprise", "Koona_-_02_-_Starkey" , 
+	"Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud", "Lee_Rosevere_-_13_-_All_I_Have_Left_Are_These_Photographs", 
+	"Lee_Rosevere_-_15_-_Where_Was_I", "Lee_Rosevere_-_16_-_The_Little_Painter_Man", 
+	"Lee_Rosevere_-_17_-_We_Dont_Know_How_it_Ends", "Obsibilo_-_03_-_Soixante-8", "Podington_Bear_-_Starling"};
 
 	m_backgroundTexture = ResourceHolder::get().textures.get("space");
 	m_backgroundTexture.setRepeated(true);
@@ -91,7 +95,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, 1, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, 1, mousePos, btnPlaceTower1.getPrimaryDim());
 			}
 		});
 
@@ -103,7 +107,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, -1, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, -1, mousePos, btnPlaceTower2.getPrimaryDim());
 			}
 		});
 
@@ -115,7 +119,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 2, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 2, mousePos, btnPlaceTower3.getPrimaryDim());
 			}
 		});
 
@@ -127,7 +131,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 3, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 3, mousePos, btnPlaceTower4.getPrimaryDim());
 			}
 		});
 
@@ -139,7 +143,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 5, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 5, mousePos, btnPlaceTower5.getPrimaryDim());
 			}
 		});
 
@@ -151,7 +155,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 7, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 7, mousePos, btnPlaceTower6.getPrimaryDim());
 			}
 		});
 
@@ -163,7 +167,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 11, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 11, mousePos, btnPlaceTower7.getPrimaryDim());
 			}
 		});
 
@@ -175,7 +179,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 2, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 2, mousePos, btnPlaceTower8.getPrimaryDim());
 			}
 		});
 
@@ -187,7 +191,7 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 3, mousePos);
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 3, mousePos, btnPlaceTower9.getPrimaryDim());
 			}
 		});
 
@@ -197,7 +201,19 @@ void StatePlaying::generateButtons(Game& game)
 
 		});
 
-	btnRestartGame.setText("Restart Game");
+	btnOptions.setText("Options");
+	btnOptions.setFunction([&]()
+		{
+			// include here toggle music, colour scheme, ...
+		});
+
+	btnMainMenu.setText("Main Menu");
+	btnMainMenu.setFunction([&]()
+		{
+			game.pushState<StateMainMenu>(game);
+		});
+
+	btnRestartGame.setText("Reset game");
 	btnRestartGame.setFunction([&]()
 		{
 			m_worldManager.reset();
@@ -216,18 +232,6 @@ void StatePlaying::generateButtons(Game& game)
 
 		});
 
-	btnMainMenu.setText("Main Menu");
-	btnMainMenu.setFunction([&]()
-		{
-			game.pushState<StateMainMenu>(game);
-		});
-
-	btnOptions.setText("Options");
-	btnOptions.setFunction([&]()
-		{
-			// include here toggle music, colour scheme, ...
-		});
-
 	bnrNumLives.setText("Lives Remaining: " + std::to_string(m_worldManager.getNumLives()));
 
 	m_playingMenu.addWidget(btnStartWave);
@@ -241,9 +245,9 @@ void StatePlaying::generateButtons(Game& game)
 	m_playingMenu.addWidget(btnPlaceTower8);
 	m_playingMenu.addWidget(btnPlaceTower9);
 	m_playingMenu.addWidget(btnPrevWaveStats);
-	m_playingMenu.addWidget(btnRestartGame);
-	m_playingMenu.addWidget(btnMainMenu);
 	m_playingMenu.addWidget(btnOptions);
+	m_playingMenu.addWidget(btnMainMenu);
+	m_playingMenu.addWidget(btnRestartGame);
 	m_playingMenu.addWidget(bnrNumLives);
 
 }

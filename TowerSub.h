@@ -5,7 +5,7 @@
 class TowerSub : public Tower
 {
 public:
-	TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position);
+	TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius);
 
 	void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies) override;
 

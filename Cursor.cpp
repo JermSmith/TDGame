@@ -3,7 +3,7 @@
 
 Cursor::Cursor() : Tower()
 {
-	
+
 }
 
 void Cursor::update(const sf::RenderWindow& window, const Path& path,
@@ -170,7 +170,7 @@ void Cursor::hide()
 
 void Cursor::updatePositive()
 {
-	InteractableShape::defineShape(32.f, 50); // TODO: need to make this match original size of tower
+	//InteractableShape::defineShape(m_radius, 50); // TODO: need to make this match original size of tower
 	InteractableShape::setOutlineThickness(-2);
 	InteractableShape::setOutlineColour(sf::Color::Cyan);
 	InteractableShape::setPosition(m_position);
@@ -184,7 +184,7 @@ void Cursor::updatePositive()
 
 void Cursor::updateNegative()
 {
-	InteractableShape::defineShape(32.f, 50);
+	//InteractableShape::defineShape(m_radius, 50);
 	InteractableShape::setFillColour(sf::Color::Transparent);
 	InteractableShape::setOutlineThickness(-2);
 	InteractableShape::setOutlineColour(sf::Color::Red);
@@ -193,4 +193,5 @@ void Cursor::updateNegative()
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);
 }
+
 

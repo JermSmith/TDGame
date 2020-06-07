@@ -4,17 +4,19 @@
 #include "Util\ColourManager.h"
 #include <algorithm>
 
-Tower::Tower() : InteractableShape(32.f, 50) {} // Cursor inherits this constructor, TODO: clean this up
+Tower::Tower() : InteractableShape(0.f, 0) {} // Cursor inherits this constructor, TODO: clean this up
 // TODO: make it so there is only one place in the entire solution where potential tower sizes are set (probably
 // when creating the buttons in world.cpp), and then when a tower is made it just "checks" (or something) the
 // button size to generate the correct size of cursor and then button.
 
-void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position)
+void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius)
 {
 	//position where the mouse is clicked; want this to be centre of circle
 	m_position = position;
 	m_attackType = type;
 	m_strength = strength;
+	InteractableShape::defineShape(radius, 50);
+	//m_radius = radius; // passed to Inter..Shape::defineShape in Cursor.cpp
 	
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{

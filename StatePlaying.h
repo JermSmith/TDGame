@@ -38,9 +38,10 @@ private:
 	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
 	gui::Button btnPlaceTower9 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
 	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	
 
 	gui::Banner bnrNumLives = gui::makeBanner();
 

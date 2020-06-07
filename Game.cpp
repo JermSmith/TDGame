@@ -39,9 +39,9 @@ void Game::run()
 		state.handleInput();
 		state.update(m_window);
 
-		state.playMusic(m_bMusicRequestStatus);
-		//if (m_bMusicRequestStatus) { state.unmuteMusic(); } // new
-		//else if (!m_bMusicRequestStatus) { state.muteMusic(); } // new
+		state.playMusic(m_bRandomizeMusic);// , m_bMusicRequestStatus);
+		//if (m_bMusicRequestStatus) { state.unmuteMusic(); }
+		//else if (!m_bMusicRequestStatus) { state.muteMusic(); }
 
 		counter.update();
 

@@ -169,13 +169,16 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 		switch (m_dummyTower.getAttackType())
 		{
 		case attackType::root:
-			m_towers.push_back(std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+			m_towers.push_back(std::make_unique<TowerRoot>(
+				m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 			break;
 		case attackType::divide:
-			m_towers.push_back(std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+			m_towers.push_back(std::make_unique<TowerDiv>(
+				m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 			break;
 		case attackType::subtract:
-			m_towers.push_back(std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+			m_towers.push_back(std::make_unique<TowerSub>(
+				m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 			break;
 		}
 		return; // leave the function
@@ -189,7 +192,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 			if (m_towers.size() == i_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 				// (and as a result, there must only be root towers in the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+				m_towers.push_back(std::make_unique<TowerRoot>(
+					m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -204,20 +208,23 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					else if (m_towers.at(i_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + i_wh,
-							std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+							std::make_unique<TowerRoot>(
+								m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;
 
 				case attackType::divide:
 					m_towers.insert(m_towers.begin() + i_wh,
-						std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+						std::make_unique<TowerRoot>(
+							m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 					bTowerInsertedIntoVector = true;
 					break; // placed the first root tower before the strongest div tower
 
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + i_wh,
-						std::make_unique<TowerRoot>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+						std::make_unique<TowerRoot>(
+							m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 					bTowerInsertedIntoVector = true;
 					break; // placed the first root tower before the strongest sub tower
 				}
@@ -232,7 +239,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 		{
 			if (m_towers.size() == j_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+				m_towers.push_back(std::make_unique<TowerDiv>(
+					m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -251,14 +259,16 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					else if (m_towers.at(j_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + j_wh,
-							std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+							std::make_unique<TowerDiv>(
+								m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;
 
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + j_wh,
-						std::make_unique<TowerDiv>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+						std::make_unique<TowerDiv>(
+							m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 					bTowerInsertedIntoVector = true;
 					break; // place first div tower immediately before strongest sub tower
 				}
@@ -273,7 +283,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 		{
 			if (m_towers.size() == k_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
-				m_towers.push_back(std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+				m_towers.push_back(std::make_unique<TowerSub>(
+					m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 				bTowerInsertedIntoVector = true;
 			}
 			else
@@ -296,7 +307,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					else if (m_towers.at(k_wh)->getStrength() <= m_dummyTower.getStrength()) // equivalent to ELSE
 					{
 						m_towers.insert(m_towers.begin() + k_wh,
-							std::make_unique<TowerSub>(m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition()));
+							std::make_unique<TowerSub>(
+								m_dummyTower.getAttackType(), m_dummyTower.getStrength(), m_dummyTower.getPosition(), m_dummyTower.getRadius()));
 						bTowerInsertedIntoVector = true;
 					}
 					break;

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Util/NonCopyable.h"
+#include "Util\Random.h"
 
 class Game;
 
@@ -19,25 +20,35 @@ public:
 	//virtual void fixedUpdate(sf::Time deltaTime) {}
 	virtual void render(sf::RenderTarget& renderer) = 0;
 
-	void playMusic(bool bMusicRequestStatus)
+	void playMusic(bool bRandomize)//, bool bMusicRequestStatus)
 	{
 		if (m_musicFilenames.size() > 0)
 		{
-			if (musicIterator == m_musicFilenames.size())
-			{
-				musicIterator = 0; //reset to the beginning
-			}
-
 			if (m_music.getStatus() != sf::Music::Status::Playing)
 			{
-				m_music.openFromFile("res/audio_wav/" + m_musicFilenames.at(musicIterator) + ".wav");
-				m_music.play();
-				musicIterator++;
+				if (bRandomize) // play music from m_musicFilenames in random order
+				{
+					static Random<> rand;
+					int musicIterator = rand.getIntInRange(0, m_musicFilenames.size() - 1);
+					m_music.openFromFile("res/audio_wav/" + m_musicFilenames.at(musicIterator) + ".wav");
+					m_music.play();
+				}
+
+				else // play music in order it appears in m_musicFilenames
+				{
+					m_music.openFromFile("res/audio_wav/" + m_musicFilenames.at(musicIterator) + ".wav");
+					m_music.play();
+					musicIterator++;
+
+					if (musicIterator == m_musicFilenames.size())
+					{
+						musicIterator = 0; // reset to the beginning
+					}
+				}
 			}
 		}
-
-		if (bMusicRequestStatus) { m_music.setVolume(100); }
-		else { m_music.setVolume(0); }
+		//if (bMusicRequestStatus) { m_music.setVolume(100); }
+		//else { m_music.setVolume(0); }
 	}
 
 	void stopMusic() { m_music.stop(); }

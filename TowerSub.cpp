@@ -5,9 +5,10 @@
 #include <iostream>
 
 // (1)attack type, (2)strength, (3)position
-TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position) // this constructor gets called when tower is actually placed in m_towers in World.cpp
+TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius)
+// this constructor gets called when tower is actually placed in m_towers in TowerManager.cpp
 {
-	setBasicProperties(type, strength, position);
+	setBasicProperties(type, strength, position, radius);
 
 	if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }

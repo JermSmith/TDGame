@@ -10,7 +10,11 @@ StateMainMenu::StateMainMenu(Game& game)
 	, m_mainMenu(game.getWindow(), 100)
 	, m_optionsMenu(100)
 {
-	m_musicFilenames = { "Kai_Engel_-_04_-_Moonlight_Reprise" , "Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud" };
+	m_musicFilenames = { "Kai_Engel_-_04_-_Moonlight_Reprise", "Lee_Rosevere_-_09_-_Compassion_keys_version" ,
+	"Chad_Crouch_-_Algorithms" , "Koona_-_02_-_Starkey" , "Chan_Wai_Fat_-_05_-_Dream_instrumental" ,
+	"Lee_Rosevere_-_12_-_Dont_Trust_the_Cloud", "Lee_Rosevere_-_13_-_All_I_Have_Left_Are_These_Photographs",
+	"Lee_Rosevere_-_15_-_Where_Was_I", "Lee_Rosevere_-_16_-_The_Little_Painter_Man",
+	"Lee_Rosevere_-_17_-_We_Dont_Know_How_it_Ends", "Obsibilo_-_03_-_Soixante-8", "Podington_Bear_-_Starling" };
 
 	generateButtons(game);
 }

@@ -5,7 +5,7 @@
 class TowerDiv : public Tower
 {
 public:
-	TowerDiv(const attackType& type, const int& strength, const sf::Vector2f& position);
+	TowerDiv(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius);
 
 	void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies) override;
 

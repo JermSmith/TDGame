@@ -21,7 +21,7 @@ public:
 	Tower();
 
 	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines
-	void setBasicProperties(attackType type, int strength, sf::Vector2f position);
+	void setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	virtual void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies);
@@ -53,6 +53,7 @@ protected:
 	sf::Vector2f m_position;
 	int m_strength;
 	float m_range;
+	//float m_radius; // passed to Inter..Shape::defineShape in Cursor.cpp
 
 	sf::CircleShape m_rangeCircle;
 	sf::Text m_strengthString;
