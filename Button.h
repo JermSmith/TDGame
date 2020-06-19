@@ -2,8 +2,6 @@
 
 #include <functional>
 #include "Widget.h"
-//#include "InteractableCircle.h"
-//#include "InteractableRectangle.h"
 #include "InteractableShape.h"
 
 namespace gui
@@ -17,7 +15,7 @@ namespace gui
 
 		constexpr float CIRC_LG_R = 40.f;
 		constexpr float CIRC_SM_R = 32.f;
-		constexpr int CIRC_NUMPTS = 50;
+		constexpr int CIRC_NUMPTS = 25;
 	}
 
 	class Button : public InteractableShape, public gui::Widget

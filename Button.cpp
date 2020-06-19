@@ -83,7 +83,7 @@ namespace gui
 	int Button::getMaxNumInRow() const
 	{
 		int numColumns;
-		if (InteractableShape::getPointCount() == 4) // for a rectangle
+		/*if (InteractableShape::getPointCount() == 4) // for a rectangle
 		{
 			if (getPrimaryDim() > ButtonSizes::RECT_SM_W / 2.)
 			{
@@ -104,7 +104,21 @@ namespace gui
 			{
 				numColumns = 3;
 			}
+		}*/
+
+		if (InteractableShape::bIsRegularPolygon())
+		{
+			numColumns = 3;
 		}
+		else if (InteractableShape::getPrimaryDim() > ButtonSizes::RECT_SM_W / 2.) // long rectangle
+		{
+			numColumns = 1;
+		}
+		else // shorter rectangle
+		{
+			numColumns = 2;
+		}
+
 		return numColumns;
 	}
 

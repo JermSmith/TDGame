@@ -28,14 +28,14 @@ private:
 	void generateButtons(Game& game) override;
 
 	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnPlaceTower1 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower2 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower3 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower4 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower5 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower6 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower7 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
+	gui::Button btnPlaceTower1 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 3);
+	gui::Button btnPlaceTower2 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 4);
+	gui::Button btnPlaceTower3 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 5);
+	gui::Button btnPlaceTower4 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 6);
+	gui::Button btnPlaceTower5 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 7);
+	gui::Button btnPlaceTower6 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 8);
+	gui::Button btnPlaceTower7 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 9);
+	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, 10);
 	gui::Button btnPlaceTower9 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
 	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);

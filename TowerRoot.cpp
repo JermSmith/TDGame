@@ -3,10 +3,10 @@
 #include "ResourceManager\ResourceHolder.h"
 
 // (1)attack type, (2)strength, (3)position
-TowerRoot::TowerRoot(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius)
+TowerRoot::TowerRoot(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius, const int& pointCount)
 // this constructor gets called when tower is actually placed in m_towers in TowerManager.cpp
 {
-	setBasicProperties(type, strength, position, radius);
+	setBasicProperties(type, strength, position, radius, pointCount);
 
 	if (m_strength == 2)
 	{
@@ -39,7 +39,7 @@ void TowerRoot::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies)
 	}
 }
 
-void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
+void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies) // TODO: might be able to make not pointer, make this const
 {
 	std::vector<int> enemyIndicesToAttack = {};
 
@@ -70,9 +70,14 @@ void TowerRoot::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
 			m_numofAttacksInWave++; // for wave stats
-			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, InteractableShape::getFillColour());
-
-			enemies->at(enemyIndicesToAttack.at(i))->setHealth((int)std::round(std::pow(enemies->at(enemyIndicesToAttack.at(i))->getHealth(), 1. / float(m_strength))));
+			m_projectileManager.createProjectile
+			( enemies->at(enemyIndicesToAttack.at(i))
+			, m_position
+			, m_attackType
+			, m_strength
+			, InteractableShape::getFillColour()
+			, InteractableShape::getPrimaryDim()
+			, InteractableShape::getPointCount());
 		}
 	}
 }

@@ -5,10 +5,10 @@
 #include <iostream>
 
 // (1)attack type, (2)strength, (3)position
-TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius)
+TowerSub::TowerSub(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius, const int& pointCount)
 // this constructor gets called when tower is actually placed in m_towers in TowerManager.cpp
 {
-	setBasicProperties(type, strength, position, radius);
+	setBasicProperties(type, strength, position, radius, pointCount);
 
 	if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
 	else { m_strengthString.setString("- " + std::to_string(m_strength)); }
@@ -31,7 +31,7 @@ void TowerSub::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies)
 	}
 }
 
-void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
+void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies) // TODO: might be able to make not pointer, make this const
 {
 	std::vector<int> enemyIndicesToAttack = {};
 
@@ -50,7 +50,7 @@ void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 		}
 	}
 
-	// this is the part of the function where we actually attack enemies
+	// this is the part of the function where projectile is actually fired (and where enemy health used to be changed)
 	if (enemyIndicesToAttack.size() > 0) // we found (at least) one enemy to attack
 	{
 		m_bShouldResetElapsedTime = true;
@@ -58,14 +58,14 @@ void TowerSub::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
 			m_numofAttacksInWave++; // for wave stats
-			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, InteractableShape::getFillColour());
-
-			enemies->at(enemyIndicesToAttack.at(i))->setHealth(enemies->at(enemyIndicesToAttack.at(i))->getHealth() - m_strength);
-			// TODO: fix the horrid "get enemies" function in WorldManager by changing the way enemy health is decreased:
-			// do not decrease health when a projectile is fired, but rather when the projectile reaches the enemy:
-			// when updating enemies (in Enemy.cpp), check if a projectile has arrived, and if so, modify the enemy health
-			// This could be challenging b/c all ProjectileManagers are currently owned by each individual Tower, but
-			// this may possibly be overcome by making towermanager a friend of a bunch of classes?? or something??
+			m_projectileManager.createProjectile
+			(enemies->at(enemyIndicesToAttack.at(i))
+				, m_position
+				, m_attackType
+				, m_strength
+				, InteractableShape::getFillColour()
+				, InteractableShape::getPrimaryDim()
+				, InteractableShape::getPointCount());
 		}
 	}
 }

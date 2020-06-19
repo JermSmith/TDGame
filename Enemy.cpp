@@ -3,8 +3,10 @@
 #include <iostream>
 #include "ResourceManager\ResourceHolder.h"
 
-Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed) : InteractableShape(16.f, 50)
+Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed, int staticIndex) : InteractableShape(16.f, 20)
 {
+	m_staticIndex = staticIndex;
+
 	m_bIsAlive = true;
 	m_bReachedTheEnd = false;
 
@@ -15,8 +17,8 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed) : Inte
 
 	m_healthString.setFont(ResourceHolder::get().fonts.get("arial"));
 	m_healthString.setFillColor(sf::Color::Yellow);
-	//InteractableShape::setFillColour(m_defaultFillColor);
-	InteractableShape::setFillColour(sf::Color::Red);
+	InteractableShape::setFillColour(m_defaultFillColour);
+	//InteractableShape::setFillColour(sf::Color::Red);
 
 	m_vertices = vertices;
 	m_health = health;
@@ -53,6 +55,8 @@ const float& Enemy::getTheta() const { return m_theta; }
 const bool& Enemy::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Enemy::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
 
+const int& Enemy::getStaticIndex() const { return m_staticIndex; }
+
 void Enemy::m_updatePosition()
 {
 	m_position.x = m_position.x + cosf(m_theta) * m_speed;
@@ -78,7 +82,6 @@ void Enemy::m_updatePosition()
 		{
 			// then cannot do m_vertices.at(m_nextVertex) because it is out of range
 			// this means enemy has arrived at final vertex
-			//setSpeed(0);
 			m_nextVertexIndex = 0;
 			m_bReachedTheEnd = true;
 		}
@@ -127,7 +130,7 @@ void Enemy::update(const sf::RenderWindow& window)
 	{
 		m_bIsAlive = false;
 	}
-	
+
 	m_updatePosition();
 	m_updateText();
 	

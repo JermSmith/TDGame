@@ -25,8 +25,10 @@ public:
 	void setOutlineThickness(const float& thickness);
 	void setOutlineColour(const sf::Color& colour);
 	void setTexture(const sf::Texture& tex);
+	bool bIsRegularPolygon() const;
 
 private:
+
 	sf::ConvexShape m_shape;
 	sf::Color m_originalFillColour = sf::Color(-1, -1, -1);
 

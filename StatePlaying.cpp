@@ -95,7 +95,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, 1, mousePos, btnPlaceTower1.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, 1, mousePos, 
+					btnPlaceTower1.getPrimaryDim(), btnPlaceTower1.getPointCount());
 			}
 		});
 
@@ -107,7 +108,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, -1, mousePos, btnPlaceTower2.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::subtract, -1, mousePos, 
+					btnPlaceTower2.getPrimaryDim(), btnPlaceTower2.getPointCount());
 			}
 		});
 
@@ -119,7 +121,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 2, mousePos, btnPlaceTower3.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 2, mousePos, 
+					btnPlaceTower3.getPrimaryDim(), btnPlaceTower3.getPointCount());
 			}
 		});
 
@@ -131,7 +134,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 3, mousePos, btnPlaceTower4.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 3, mousePos, 
+					btnPlaceTower4.getPrimaryDim(), btnPlaceTower4.getPointCount());
 			}
 		});
 
@@ -143,7 +147,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 5, mousePos, btnPlaceTower5.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 5, mousePos, 
+					btnPlaceTower5.getPrimaryDim(), btnPlaceTower5.getPointCount());
 			}
 		});
 
@@ -155,7 +160,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 7, mousePos, btnPlaceTower6.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 7, mousePos, 
+					btnPlaceTower6.getPrimaryDim(), btnPlaceTower6.getPointCount());
 			}
 		});
 
@@ -167,7 +173,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 11, mousePos, btnPlaceTower7.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::divide, 11, mousePos, 
+					btnPlaceTower7.getPrimaryDim(), btnPlaceTower7.getPointCount());
 			}
 		});
 
@@ -179,7 +186,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 2, mousePos, btnPlaceTower8.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 2, mousePos, 
+					btnPlaceTower8.getPrimaryDim(), btnPlaceTower8.getPointCount());
 			}
 		});
 
@@ -191,7 +199,8 @@ void StatePlaying::generateButtons(Game& game)
 			{
 				m_worldManager.setbTowerBeingPlaced(true);
 				sf::Vector2f mousePos = sf::Vector2f(game.getWindow().mapPixelToCoords(sf::Mouse::getPosition(game.getWindow())));
-				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 3, mousePos, btnPlaceTower9.getPrimaryDim());
+				m_worldManager.getDummyTower()->setBasicProperties(attackType::root, 3, mousePos, 
+					btnPlaceTower9.getPrimaryDim(), btnPlaceTower9.getPointCount());
 			}
 		});
 

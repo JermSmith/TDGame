@@ -185,7 +185,7 @@ void WorldManager::instantiateEnemies(std::vector<std::unique_ptr<Enemy>> *enemi
 		// this would look better if instead of first and second, we selected "health" and "speed" as members of a struct
 
 		enemies->push_back(std::make_unique<Enemy>(vertices, m_currWave.at(m_numOfEnemiesStarted).first,
-			m_currWave.at(m_numOfEnemiesStarted).second)); // instantiate an enemy
+			m_currWave.at(m_numOfEnemiesStarted).second, m_numOfEnemiesStarted)); // instantiate an enemy
 		m_numOfEnemiesStarted++;
 	}
 

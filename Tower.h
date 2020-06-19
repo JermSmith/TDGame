@@ -6,14 +6,7 @@
 #include "Path.h"
 #include "Enemy.h"
 #include "ProjectileManager.h"
-
-
-enum class attackType
-{
-	divide,
-	subtract,
-	root,
-};
+#include "Util\AttackTypes.h"
 
 class Tower : public InteractableShape
 {
@@ -21,11 +14,13 @@ public:
 	Tower();
 
 	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines
-	void setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius);
+	void setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
+
 	virtual void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies);
-	void updateProjectilesAndAppearance(const sf::RenderWindow& window);
+	void updateProjectiles(std::vector<std::unique_ptr<Enemy>>* enemies);
+	void updateAppearance(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
@@ -53,7 +48,6 @@ protected:
 	sf::Vector2f m_position;
 	int m_strength;
 	float m_range;
-	//float m_radius; // passed to Inter..Shape::defineShape in Cursor.cpp
 
 	sf::CircleShape m_rangeCircle;
 	sf::Text m_strengthString;

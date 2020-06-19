@@ -6,7 +6,7 @@
 class Enemy : public InteractableShape
 {
 public:
-	Enemy(std::vector<sf::Vector2f> path, int health, float speed);
+	Enemy(std::vector<sf::Vector2f> path, int health, float speed, int staticIndex);
 	
 	const sf::Vector2f& getPosition() const;
 	void setPosition(sf::Vector2f& position);
@@ -32,12 +32,16 @@ public:
 	const bool& getbIsClickedOn() const;
 	void setbIsClickedOn(bool);
 
+	const int& getStaticIndex() const;
+
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	void update(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 
 private:
+	int m_staticIndex;
+
 	sf::Vector2f m_position;
 	sf::Vector2f m_size;
 
@@ -45,7 +49,7 @@ private:
 
 	sf::Text m_healthString;
 
-	//sf::Color m_defaultFillColor = sf::Color::Red;
+	sf::Color m_defaultFillColour = sf::Color::Red;
 
 	bool m_bIsAlive;
 	bool m_bReachedTheEnd;

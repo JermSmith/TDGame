@@ -14,7 +14,19 @@ InteractableShape::InteractableShape(const float& width, const float& height)
 void InteractableShape::defineShape(const float& radius, const int& pointCount)
 {
 	m_shape.setPointCount(pointCount);
-	float theta = 0; // angle in radians
+	float theta;
+	switch (pointCount)
+	{
+	case 3: { theta = -PI / 2.; break; } // angle in radians
+	case 4: { theta = -PI / 4.; break; }
+	case 5: { theta = -PI / 2.; break; }
+	case 6: { theta = -PI / 2.; break; }
+	case 7: { theta = -PI / 2.; break; }
+	case 8: { theta = -PI / 8.; break; }
+	case 9: { theta = -PI / 2.; break; }
+	default: { theta = 0.; break; }
+	}
+
 	for (int p = 0; p < (signed)m_shape.getPointCount(); p++)
 	{
 		float x = radius * cosf(theta);
@@ -22,7 +34,7 @@ void InteractableShape::defineShape(const float& radius, const int& pointCount)
 
 		m_shape.setPoint(p, sf::Vector2f(x, y));
 
-		theta = theta + 2 * PI / m_shape.getPointCount(); // incrementing the angle getPointCount times makes one revolution
+		theta = theta + 2 * PI / m_shape.getPointCount(); // incrementing theta "getPointCount" times makes one revolution
 	}
 }
 
@@ -44,7 +56,7 @@ bool InteractableShape::isRolledOn(const sf::RenderWindow& window) const
 {
 	auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-	if (m_shape.getPointCount() > 4) // for a >5-gon
+	if (bIsRegularPolygon()) // regular polygon
 	{
 		return (distanceBetweenPoints(pos, m_shape.getPosition()) < getPrimaryDim());
 	}
@@ -61,18 +73,18 @@ void InteractableShape::render(sf::RenderTarget& renderer)
 
 float InteractableShape::getPrimaryDim() const
 {
-	if (m_shape.getPointCount() > 4) // for a circle, or at least a pentagon
+	if (bIsRegularPolygon()) // for a regular polygon
 	{
 		return distanceBetweenPoints(m_shape.getOrigin(), m_shape.getPoint(0)); // from centre to a point
 	}
-	else if (m_shape.getPointCount() == 4)
+	else// if (m_shape.getPointCount() == 4)
 	{
 		return distanceBetweenPoints(m_shape.getPoint(0), m_shape.getPoint(1)) / 2; // half of width of rectangle
 	}
-	else
-	{
-		throw "Cannot compute InteractableShape::getPrimaryDim(). InteractableShape is made up of fewer than 4 points.";
-	}
+	//else
+	//{
+		//throw "Cannot compute InteractableShape::getPrimaryDim(). InteractableShape is made up of fewer than 4 points.";
+	//}
 }
 
 sf::FloatRect InteractableShape::getGlobalBounds() const
@@ -143,7 +155,20 @@ void InteractableShape::setTexture(const sf::Texture& tex)
 	m_shape.setTexture(&tex);
 }
 
-
+bool InteractableShape::bIsRegularPolygon() const
+{
+	bool b;
+	if ((m_shape.getGlobalBounds().width / m_shape.getGlobalBounds().height > 1.2f) ||
+		(m_shape.getGlobalBounds().width / m_shape.getGlobalBounds().height < 0.8f)) // more rectangular than square
+	{
+		b = false;
+	}
+	else
+	{
+		b = true;
+	}
+	return b;
+}
 
 
 

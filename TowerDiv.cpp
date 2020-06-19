@@ -3,10 +3,10 @@
 #include "ResourceManager\ResourceHolder.h"
 
 // (1)attack type, (2)strength, (3)position
-TowerDiv::TowerDiv(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius)
+TowerDiv::TowerDiv(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius, const int& pointCount)
 // this constructor gets called when tower is actually placed in m_towers in TowerManager.cpp
 {
-	setBasicProperties(type, strength, position, radius);
+	setBasicProperties(type, strength, position, radius, pointCount);
 
 	m_strengthString.setString("/ " + std::to_string(m_strength));
 }
@@ -28,7 +28,7 @@ void TowerDiv::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies)
 	}
 }
 
-void TowerDiv::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
+void TowerDiv::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies) // TODO: might be able to make not pointer, make this const
 {
 	std::vector<int> enemyIndicesToAttack = {};
 
@@ -55,9 +55,14 @@ void TowerDiv::m_attackEnemies(std::vector<std::unique_ptr<Enemy>>* enemies)
 		for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 		{
 			m_numofAttacksInWave++; // for wave stats
-			m_projectileManager.createProjectile(enemies->at(enemyIndicesToAttack.at(i)), m_position, InteractableShape::getFillColour());
-
-			enemies->at(enemyIndicesToAttack.at(i))->setHealth(enemies->at(enemyIndicesToAttack.at(i))->getHealth() / m_strength);
+			m_projectileManager.createProjectile
+			( enemies->at(enemyIndicesToAttack.at(i))
+			, m_position
+			, m_attackType
+			, m_strength
+			, InteractableShape::getFillColour()
+			, InteractableShape::getPrimaryDim()
+			, InteractableShape::getPointCount());
 		}
 	}
 }
