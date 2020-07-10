@@ -15,7 +15,7 @@ TowerManager::TowerManager()
 
 }
 
-void TowerManager::update(const sf::RenderWindow& window, const Path& path, std::vector<std::unique_ptr<Enemy>>* enemies)
+void TowerManager::update(const sf::RenderWindow& window, const Path& path, std::vector<std::unique_ptr<Enemy>>& enemies)
 {
 	m_dummyTower.update(window, path, m_towers, m_bTowerBeingPlaced);
 
@@ -26,7 +26,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 		// consider the situation where sqrt, /2 and -1 all want to attack "32":
 		// if not using these nested loops, then sqrt can't attack -> 32/2 = 16 -> 16-1=15 -> sqrt still can't attack
 
-		tower->updateAttackLogic(enemies); // each tower is updated
+		tower->updateAtakTimer_FindEnems_CreateProj(enemies); // each tower is updated
 		
 		if (tower->getAttackType() == attackType::divide) // e.g. 32 is invulnerable to sqrt, but not after "/2"
 		{
@@ -34,7 +34,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 			{
 				if (t_r->getAttackType() == attackType::root)
 				{
-					t_r->updateAttackLogic(enemies);
+					t_r->updateAtakTimer_FindEnems_CreateProj(enemies);
 				}
 			}
 		}
@@ -45,7 +45,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 			{
 				if (tow->getAttackType() != attackType::subtract) // tow is either root or div tower
 				{
-					tow->updateAttackLogic(enemies);
+					tow->updateAtakTimer_FindEnems_CreateProj(enemies);
 
 					if (tow->getAttackType() == attackType::divide) // e.g. 33 is invulnerable to sqrt, but not after "-1" then "/2"
 					{
@@ -53,7 +53,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 						{
 							if (t_r->getAttackType() == attackType::root)
 							{
-								t_r->updateAttackLogic(enemies);
+								t_r->updateAtakTimer_FindEnems_CreateProj(enemies);
 							}
 						}
 					}

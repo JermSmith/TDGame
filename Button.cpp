@@ -43,7 +43,7 @@ namespace gui
 			switch (e.mouseButton.button)
 			{
 			case sf::Mouse::Left:
-				if (isRolledOn(window)) // if distance is less than radius
+				if (isRolledOn(window)) // checks if the button is rolled on
 				{
 					m_function();
 				}

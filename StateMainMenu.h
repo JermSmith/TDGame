@@ -17,10 +17,12 @@ public:
 	void render			(sf::RenderTarget& renderer) override;
 
 private:
-	void generateButtons(Game& game) override;
-
 	gui::StackMenu m_mainMenu;
 	gui::StackMenu m_optionsMenu;
+	
+	void generateButtons(Game& game) override;
+	void m_populateMainMenu();
+	void m_populateOptionsMenu();
 
 	gui::Button btnNewGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 	gui::Button btnLoadGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
@@ -33,7 +35,6 @@ private:
 	gui::Button btnColourScheme = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 
-	void m_generateOptionsButtons(Game& game);
 };
 
 

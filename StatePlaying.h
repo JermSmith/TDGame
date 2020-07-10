@@ -22,10 +22,13 @@ public:
 private:
 	WorldManager m_worldManager;
 	gui::StackMenu m_playingMenu;
+	gui::StackMenu m_towersMenu;
 
 	bool m_bShouldPushMainMenu = false;
 
 	void generateButtons(Game& game) override;
+	void m_populatePlayingMenu();
+	void m_populateTowersMenu();
 
 	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 	gui::Button btnPlaceTower1 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 3);
@@ -42,14 +45,13 @@ private:
 	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	
-
 	gui::Banner bnrNumLives = gui::makeBanner();
 
 	sf::Texture m_backgroundTexture;
 	sf::Sprite m_backgroundSpriteLeft;
 	sf::Sprite m_backgroundSpriteRight;
 
-	bool m_bGameOver = false;
+
 
 };
 

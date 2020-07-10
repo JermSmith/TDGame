@@ -4,48 +4,28 @@
 
 namespace gui
 {
-	// TODO: consolidate these two constructors into one constructor for both main menu and other menus
-
-	//this constructor is called each time the main menu is made
-	StackMenu::StackMenu(const sf::RenderWindow& window, float basePositionY)
-		: m_basePosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, basePositionY)
-		, m_baseSize((float)sizes::MAINMENU_BASESIZE_X, 0)
+	// 1) sf::Vector2f topCentrePoint, 2) float menuWidth, 3) bool bOutline
+	StackMenu::StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, bool bOutline)
+		: m_topCentrePoint(topCentrePoint)
+		, m_outerDim(menuWidth, 0)
+		, m_origBasePositionY(m_topCentrePoint.y)
 	{
-		m_background.setOutlineThickness(2);
 		m_background.setOutlineColor(sf::Color::Green);
-		m_background.setFillColor({ 100, 100, 100, 230 });
-		m_background.setSize(m_baseSize);
-		m_background.setPosition(m_basePosition.x - m_baseSize.x / 2, m_basePosition.y);
-
-		//m_titleText.setPosition(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X) / 2.0f, m_basePosition.y - 35);
-		//m_titleText.setOutlineColor(sf::Color::Black);
-		//m_titleText.setOutlineThickness(1);
-		//m_titleText.setCharacterSize(30);
-		//m_titleText.setString("The Title Of The Game");
-	}
-
-	//this constructor is called each time the playing menu or options menu is made
-	StackMenu::StackMenu(float basePositionY)//const sf::Vector2f& basePosition, const sf::Vector2f& baseSize)
-		: m_basePosition(sf::Vector2f(((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2), basePositionY))
-		, m_baseSize(sf::Vector2f((float)sizes::PLAYINGMENU_X, 0))//baseSize)
-		, m_origBasePositionY(basePositionY)
-	{
-		//m_origBasePositionY = basePosition.y;
-		//m_origBaseSizeY = baseSize.y;
-
-		m_background.setFillColor({ 100, 100, 100, 128 });
-		m_background.setSize(m_baseSize);
-		m_background.setPosition(m_basePosition.x - m_baseSize.x / 2, m_basePosition.y);
+		m_background.setFillColor({ 100, 100, 100, 168 });
+		m_background.setSize(m_outerDim);
+		m_background.setPosition(m_topCentrePoint.x - m_outerDim.x / 2, m_topCentrePoint.y);
 		// background position is based on its top left corner
+
+		if (bOutline) { m_background.setOutlineThickness(2); }
+		else { m_background.setOutlineThickness(0); }
 	}
+
 
 	/*StackMenu::StackMenu(StackMenu&& other)
 		: m_widgets(std::move(other.m_widgets))
 		, m_background(std::move(other.m_background))
 		, m_basePosition(other.m_basePosition)
-		, m_baseSize(other.m_baseSize)
-	{
-	}
+		, m_baseSize(other.m_baseSize) {}
 
 	StackMenu& StackMenu::operator=(StackMenu&& other)
 	{
@@ -60,9 +40,9 @@ namespace gui
 	void StackMenu::clearWidgets()
 	{
 		m_widgets.clear();
-		m_basePosition.y = m_origBasePositionY;
-		m_baseSize.y = 0;
-		m_background.setSize(m_baseSize);
+		m_topCentrePoint.y = m_origBasePositionY;
+		m_outerDim.y = 0;
+		m_background.setSize(m_outerDim);
 		m_bIsFirstWidgetInMenu = true;
 	}
 
@@ -100,30 +80,30 @@ namespace gui
 
 		float xPos = 0; //this initialization value is meaningless
 		float n_ = 0.8f;
-		float a_ = (m_baseSize.x - widget.getMaxNumInRow() * widget.getSize().x) / (2.f + (float)(widget.getMaxNumInRow() - 1) * n_);
+		float a_ = (m_outerDim.x - widget.getMaxNumInRow() * widget.getSize().x) / (2.f + (float)(widget.getMaxNumInRow() - 1) * n_);
 
 		if (m_bIsFirstWidgetInMenu)
 		{
 			m_bIsFirstWidgetInMenu = false;
 
-			m_basePosition.y += WIDGET_SPACER; // first widget will appear at a small gap under the top border
-			m_baseSize.y += widget.getSize().y + WIDGET_SPACER * 2; // expand the base from 0 to widgetSize + 2*space
-			m_background.setSize(m_baseSize);
+			m_topCentrePoint.y += WIDGET_SPACER; // first widget will appear at a small gap under the top border
+			m_outerDim.y += widget.getSize().y + WIDGET_SPACER * 2; // expand the base from 0 to widgetSize + 2*space
+			m_background.setSize(m_outerDim);
 
 			switch (widget.getMaxNumInRow())
 			{
 			case 1:
-				xPos = m_basePosition.x; // centre of row
+				xPos = m_topCentrePoint.x; // centre of row
 				break;
 			case 2:
-				xPos = m_basePosition.x - n_ * a_ / 2.f - widget.getSize().x / 2.f; // x-coord of centre of left-most drawing position
+				xPos = m_topCentrePoint.x - n_ * a_ / 2.f - widget.getSize().x / 2.f; // x-coord of centre of left-most drawing position
 				break;
 			case 3:
-				xPos = m_basePosition.x - widget.getSize().x - a_ * n_; // x-coord of centre of left-most drawing position
+				xPos = m_topCentrePoint.x - widget.getSize().x - a_ * n_; // x-coord of centre of left-most drawing position
 				break;
 			}
 			// widgets have their origin at their centre
-			widget.setPosition({ xPos, m_basePosition.y + widget.getSize().y / 2 });
+			widget.setPosition({ xPos, m_topCentrePoint.y + widget.getSize().y / 2 });
 			widget.setPositionInRow(0);
 		}
 		else
@@ -131,14 +111,14 @@ namespace gui
 			if ((widget.getMaxNumInRow() != m_widgets.back()->getMaxNumInRow()) || // new widget has different row layout than last widget
 				(m_widgets.back()->getMaxNumInRow() == m_widgets.back()->getPositionInRow() + 1)) // last widget completed a row
 			{
-				m_basePosition.y += m_widgets.back()->getSize().y + WIDGET_SPACER;
-				m_baseSize.y += widget.getSize().y + WIDGET_SPACER;
-				m_background.setSize(m_baseSize);
+				m_topCentrePoint.y += m_widgets.back()->getSize().y + WIDGET_SPACER;
+				m_outerDim.y += widget.getSize().y + WIDGET_SPACER;
+				m_background.setSize(m_outerDim);
 			}
 			switch (widget.getMaxNumInRow())
 			{
 			case 1:
-				xPos = m_basePosition.x; // centre of row
+				xPos = m_topCentrePoint.x; // centre of row
 				widget.setPositionInRow(0);
 				break;
 
@@ -147,12 +127,12 @@ namespace gui
 
 				if (m_widgets.back()->getMaxNumInRow() == 2 && m_widgets.back()->getPositionInRow() == 0)
 				{
-					xPos = m_basePosition.x + n_ * a_ / 2.f + widget.getSize().x / 2.f; // (top-centre of) right circle
+					xPos = m_topCentrePoint.x + n_ * a_ / 2.f + widget.getSize().x / 2.f; // (top-centre of) right circle
 					widget.setPositionInRow(1);
 				}
 				else // this will be the first (left-most) object in the a new row
 				{
-					xPos = m_basePosition.x - n_ * a_ / 2.f - widget.getSize().x / 2.f; // (top-centre of) left circle
+					xPos = m_topCentrePoint.x - n_ * a_ / 2.f - widget.getSize().x / 2.f; // (top-centre of) left circle
 					widget.setPositionInRow(0);
 				}
 
@@ -163,30 +143,24 @@ namespace gui
 
 				if (m_widgets.back()->getMaxNumInRow() == 3 && m_widgets.back()->getPositionInRow() == 1)
 				{// prev widget was placed in middle spot
-					xPos = m_basePosition.x + widget.getSize().x + a_ * n_; // (top-centre of) right-most spot
+					xPos = m_topCentrePoint.x + widget.getSize().x + a_ * n_; // (top-centre of) right-most spot
 					widget.setPositionInRow(2);
 				}
 				else if (m_widgets.back()->getMaxNumInRow() == 3 && m_widgets.back()->getPositionInRow() == 0)
 				{// prev widget was placed in left-most spot
-					xPos = m_basePosition.x; // (top-centre of) middle circle
+					xPos = m_topCentrePoint.x; // (top-centre of) middle circle
 					widget.setPositionInRow(1);
 				}
 				else
 				{// last widget either had a different "max num in row" scheme, or was placed in the right-most spot (finishing the row)
-					xPos = m_basePosition.x - widget.getSize().x - a_ * n_; // (top-centre of) left-most spot
+					xPos = m_topCentrePoint.x - widget.getSize().x - a_ * n_; // (top-centre of) left-most spot
 					widget.setPositionInRow(0);
 				}
 				break;
 			}
-			widget.setPosition({ xPos, m_basePosition.y + widget.getSize().y / 2 });
+			widget.setPosition({ xPos, m_topCentrePoint.y + widget.getSize().y / 2 });
 		}
 	}
-
-	//void StackMenu::setTitle(const std::string& title)
-	//{
-	//	m_titleText.setString(title);
-	//	m_titleText.setPosition(getWindow().getSize().x - m_titleText.getGlobalBounds().width / 2, m_titleText.getPosition().y);
-	//}
 
 	void StackMenu::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	{
@@ -199,22 +173,11 @@ namespace gui
 	void StackMenu::render(sf::RenderTarget& renderer)
 	{
 		renderer.draw(m_background);
-		//renderer.draw(m_titleText);
 		for (unsigned int i = 0; i < m_widgets.size(); i++)
 		{
 			m_widgets.at(i)->render(renderer);
 		}
-		/*for (gui::Widget* widget : m_widgets)
-		{
-			widget->render(renderer);
-		}*/
 	}
-
-	//const sf::RenderWindow& StackMenu::getWindow() const
-	//{
-	//	return *m_pWindow;
-	//}
-
 }
 
 

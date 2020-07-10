@@ -7,13 +7,21 @@
 
 #include <iostream>
 
-StatePlaying::StatePlaying(Game& game)
-	: StateBase(game)
-	, m_playingMenu(0)
+StatePlaying::StatePlaying(Game& game) : StateBase(game)
+	,
+	m_playingMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 400)
+		, (float)sizes::PLAYINGMENU_X
+		, false)
+	,
+	m_towersMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 0)
+		, (float)sizes::PLAYINGMENU_X
+		, false)
 {
 	m_worldManager.reset();
 	m_worldManager.createRandomPath(0);
 	generateButtons(game);
+	m_populatePlayingMenu();
+	m_populateTowersMenu();
 
 	m_musicFilenames = { "Chan_Wai_Fat_-_05_-_Dream_instrumental" , "Lee_Rosevere_-_09_-_Compassion_keys_version" , 
 	"Chad_Crouch_-_Algorithms" , "Kai_Engel_-_04_-_Moonlight_Reprise", "Koona_-_02_-_Starkey" , 
@@ -38,7 +46,9 @@ StatePlaying::StatePlaying(Game& game)
 void StatePlaying::handleEvent(sf::Event e)
 {
 	m_worldManager.handleEvent(e, m_pGame->getWindow());
+
 	m_playingMenu.handleEvent(e, m_pGame->getWindow());
+	m_towersMenu.handleEvent(e, m_pGame->getWindow());
 }
 
 void StatePlaying::handleInput()
@@ -57,10 +67,10 @@ void StatePlaying::update(const sf::RenderWindow& window)
 		b->update(window);
 	}
 
-	//if (m_bGameOver)
-	//{
-		// do something to end the game
-	//}
+	for (auto& b : m_towersMenu.getWidgets())
+	{
+		b->update(window);
+	}
 }
 
 /*void StatePlaying::fixedUpdate(sf::Time deltaTime)
@@ -75,6 +85,7 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 
 	m_worldManager.render(renderer);
 	m_playingMenu.render(renderer);
+	m_towersMenu.render(renderer);
 }
 
 void StatePlaying::generateButtons(Game& game)
@@ -243,22 +254,31 @@ void StatePlaying::generateButtons(Game& game)
 
 	bnrNumLives.setText("Lives Remaining: " + std::to_string(m_worldManager.getNumLives()));
 
+}
+
+void StatePlaying::m_populatePlayingMenu()
+{
 	m_playingMenu.addWidget(btnStartWave);
-	m_playingMenu.addWidget(btnPlaceTower1);
-	m_playingMenu.addWidget(btnPlaceTower2);
-	m_playingMenu.addWidget(btnPlaceTower3);
-	m_playingMenu.addWidget(btnPlaceTower4);
-	m_playingMenu.addWidget(btnPlaceTower5);
-	m_playingMenu.addWidget(btnPlaceTower6);
-	m_playingMenu.addWidget(btnPlaceTower7);
-	m_playingMenu.addWidget(btnPlaceTower8);
-	m_playingMenu.addWidget(btnPlaceTower9);
 	m_playingMenu.addWidget(btnPrevWaveStats);
 	m_playingMenu.addWidget(btnOptions);
 	m_playingMenu.addWidget(btnMainMenu);
 	m_playingMenu.addWidget(btnRestartGame);
 	m_playingMenu.addWidget(bnrNumLives);
-
 }
+
+void StatePlaying::m_populateTowersMenu()
+{
+	m_towersMenu.addWidget(btnPlaceTower1);
+	m_towersMenu.addWidget(btnPlaceTower2);
+	m_towersMenu.addWidget(btnPlaceTower3);
+	m_towersMenu.addWidget(btnPlaceTower4);
+	m_towersMenu.addWidget(btnPlaceTower5);
+	m_towersMenu.addWidget(btnPlaceTower6);
+	m_towersMenu.addWidget(btnPlaceTower7);
+	m_towersMenu.addWidget(btnPlaceTower8);
+	m_towersMenu.addWidget(btnPlaceTower9);
+}
+
+
 
 

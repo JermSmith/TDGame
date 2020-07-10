@@ -109,7 +109,7 @@ void WorldManager::render(sf::RenderTarget& renderer)
 
 void WorldManager::update(const sf::RenderWindow& window)
 {
-	m_towerManager.update(window, m_path, &m_enemies);
+	m_towerManager.update(window, m_path, m_enemies);
 
 	for (unsigned int i = 0; i < m_enemies.size(); i++)
 	{

@@ -32,30 +32,30 @@ Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed, int st
 }
 
 const sf::Vector2f& Enemy::getPosition() const { return m_position; }
-void Enemy::setPosition(sf::Vector2f& position) { m_position = position; }
+void Enemy::setPosition(const sf::Vector2f& position) { m_position = position; }
 
-const float& Enemy::getRadius() const { return InteractableShape::getPrimaryDim(); }
+float Enemy::getRadius() const { return InteractableShape::getPrimaryDim(); }
 
-const int& Enemy::getHealth() const { return m_health; }
+int Enemy::getHealth() const { return m_health; }
 void Enemy::setHealth(int health) { m_health = health; }
 
-const bool& Enemy::getbIsAlive() const { return m_bIsAlive; }
-const bool& Enemy::getbReachedTheEnd() const { return m_bReachedTheEnd; }
+bool Enemy::getbIsAlive() const { return m_bIsAlive; }
+bool Enemy::getbReachedTheEnd() const { return m_bReachedTheEnd; }
 
 const std::vector<sf::Vector2f>& Enemy::getVertices() const { return m_vertices; }
-void Enemy::setVertices(std::vector<sf::Vector2f> vertices) { m_vertices = vertices; }
+void Enemy::setVertices(const std::vector<sf::Vector2f>& vertices) { m_vertices = vertices; }
 
 const sf::Vector2f& Enemy::getNextDest() const { return m_vertices.at(m_nextVertexIndex); }
 
-const float& Enemy::getSpeed() const { return m_speed; }
+float Enemy::getSpeed() const { return m_speed; }
 void Enemy::setSpeed(float speed) { m_speed = speed; }
 
-const float& Enemy::getTheta() const { return m_theta; }
+float Enemy::getTheta() const { return m_theta; }
 
-const bool& Enemy::getbIsClickedOn() const { return m_bIsClickedOn; }
+bool Enemy::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Enemy::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
 
-const int& Enemy::getStaticIndex() const { return m_staticIndex; }
+int Enemy::getStaticIndex() const { return m_staticIndex; }
 
 void Enemy::m_updatePosition()
 {

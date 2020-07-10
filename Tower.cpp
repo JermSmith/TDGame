@@ -4,7 +4,16 @@
 #include "Util\ColourManager.h"
 #include <algorithm>
 
-Tower::Tower() : InteractableShape(0.f, 0) {} // Cursor inherits this constructor, TODO: clean this up
+Tower::Tower(const sf::RenderWindow& window) : InteractableShape(0.f, 0) // TODO: start working here
+	,
+	m_hoverMenu(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))
+		, (float)sizes::HOVERMENU_X
+		, false)
+	,
+	m_detailStatsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 200)
+		, (float)sizes::PLAYINGMENU_X
+		, false)
+{}
 
 void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount)
 {
@@ -13,29 +22,32 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 	m_attackType = type;
 	m_strength = strength;
 	InteractableShape::defineShape(radius, pointCount);
-	//m_radius = radius; // passed to Inter..Shape::defineShape in Cursor.cpp
+	//m_radius = radius; // passed to InteractableShape::defineShape in Cursor.cpp
 	
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
-		m_range = 500.f;
-		m_cooldownTime = sf::milliseconds(1000);
+		m_range = 300.f;
+		m_cooldownTime = sf::milliseconds(2000);
 		m_priority = targetPriority::first;
-		m_maxNumTargets = 2;
+		m_maxNumTargets = m_defaultMaxNumTargets;
+		m_projSpeed = m_defaultProjSpeed;
 		break;
 
 	case attackType::divide:
 		m_range = 500.f;
 		m_cooldownTime = sf::milliseconds(1000);
 		m_priority = targetPriority::strong;
-		m_maxNumTargets = 2;
+		m_maxNumTargets = m_defaultMaxNumTargets;
+		m_projSpeed = m_defaultProjSpeed;
 		break;
 
 	case attackType::root:
 		m_range = 500.f;
-		m_cooldownTime = sf::milliseconds(1000);
+		m_cooldownTime = sf::milliseconds(500);
 		m_priority = targetPriority::strong;
-		m_maxNumTargets = 1;
+		m_maxNumTargets = m_defaultMaxNumTargets;
+		m_projSpeed = m_defaultProjSpeed;
 		break;
 	}
 
@@ -59,9 +71,9 @@ void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 	
 }
 
-void Tower::updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies) {}
+void Tower::updateAtakTimer_FindEnems_CreateProj(const std::vector<std::unique_ptr<Enemy>>& enemies) {}
 
-void Tower::updateProjectiles(std::vector<std::unique_ptr<Enemy>>* enemies)
+void Tower::updateProjectiles(std::vector<std::unique_ptr<Enemy>>& enemies)
 {
 	m_projectileManager.update(enemies);
 }
@@ -83,19 +95,19 @@ void Tower::render(sf::RenderTarget& renderer)
 const sf::Vector2f& Tower::getPosition() const { return m_position; }
 void Tower::setPosition(sf::Vector2f& position) { m_position = position; }
 
-const float Tower::getRadius() const { return getPrimaryDim(); }
+float Tower::getRadius() const { return getPrimaryDim(); }
 
 const attackType& Tower::getAttackType() const { return m_attackType; }
 void Tower::setAttackType(attackType& type) { m_attackType = type; }
 
-const float& Tower::getRange() const { return m_range; }
-void Tower::setRange(float& range) { m_range = range; }
+float Tower::getRange() const { return m_range; }
+void Tower::setRange(const float range) { m_range = range; }
 
-const int& Tower::getStrength() const { return m_strength; }
-void Tower::setStrength(int& strength) { m_strength = strength; }
+int Tower::getStrength() const { return m_strength; }
+void Tower::setStrength(const int strength) { m_strength = strength; }
 
-const bool& Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
-void Tower::setbIsClickedOn(bool tf) { m_bIsClickedOn = tf; }
+bool Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
+void Tower::setbIsClickedOn(const bool tf) { m_bIsClickedOn = tf; }
 
 void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
 {
@@ -103,11 +115,16 @@ void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
 	{
 		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
 		InteractableShape::setClickedAppearance();
+		// TODO: add line here for displaying tower stats/options-upgrade menu, e.g. m_infoAndUpdgradesMenu.display();
+		// m_infoAndUpgradesMenu can contain banners that show lifetime damage dealt, last round damage dealt, 
+		// (for sub towers lifetime/last round kills), stats such as type, strength, range, cooldown, num targets,
+		// as well as upgrade buttons and priority buttons
 	}
 	else
 	{
 		m_rangeCircle.setFillColor(sf::Color::Transparent);
 		InteractableShape::removeClickedAppearance();
+		// can add line here for hiding tower stats/options-upgrade menu, e.g. m_infoAndUpgradesMenu.display();
 	}
 
 	if (bIsRolled)
@@ -124,7 +141,7 @@ void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
 the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"
 vector at the proper position to maintain the sorting of most prioritized towers to least prioritized towers in the vector,
 or else it does not change "enemyIndices" if the enemy does not exceed priority criteria. Returns vector of enemy indices. */
-std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::unique_ptr<Enemy>>* enemies, int a_enemyIndex, std::vector<int> a_enemyIndicesToAttack)
+std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int a_enemyIndex, std::vector<int> a_enemyIndicesToAttack)
 {
 	int i_e = a_enemyIndex;
 	std::vector<int> enemyIndicesToAttack = a_enemyIndicesToAttack;
@@ -138,7 +155,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 		enemy, and the index at position "maxNumTargets - 1" (or otherwise at the back, if num enemies in range is less than
 		maxNumTargets) is the furthest enemy. This way, the furthest enemy can be easily popped if a closer enemy is found. */
 
-		enemyDistance = distanceBetweenPoints(enemies->at(i_e)->getPosition(), m_position);
+		enemyDistance = distanceBetweenPoints(enemies.at(i_e)->getPosition(), m_position);
 
 		if (enemyIndicesToAttack.size() == 0) // first enemy to be added
 		{
@@ -161,7 +178,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 					enemyIndicesToAttack.push_back(i_e);
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (enemyDistance < distanceBetweenPoints(enemies->at(enemyIndicesToAttack.at(j_v))->getPosition(), m_position))
+				else if (enemyDistance < distanceBetweenPoints(enemies.at(enemyIndicesToAttack.at(j_v))->getPosition(), m_position))
 				{
 					/* if here, then the enemy being checked (not yet in index vector, at "enemyDistance" from tower) is closer to
 					the tower than the enemy at position j_v in index vector */
@@ -180,7 +197,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 		{
 			/* On the following line, we perform a check that guarantees that the if statement inside the while loop that follows will
 			eventually successfully add the new tower. Otherwise, the iterator for enemyIndicesToAttack will go out of range. */
-			if (enemyDistance < distanceBetweenPoints(enemies->at(enemyIndicesToAttack.back())->getPosition(), m_position))
+			if (enemyDistance < distanceBetweenPoints(enemies.at(enemyIndicesToAttack.back())->getPosition(), m_position))
 				// the vector will only change if enemy is closer than last enemy in enemyIndicesToAttack
 			{
 				bool bIndexInsertedIntoVector = false;
@@ -188,7 +205,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 
 				while (!bIndexInsertedIntoVector)
 				{// compare distance of enemy (i_e) with distances of enemies already stored (j_v)
-					if (enemyDistance < distanceBetweenPoints(enemies->at(enemyIndicesToAttack.at(j_v))->getPosition(), m_position))
+					if (enemyDistance < distanceBetweenPoints(enemies.at(enemyIndicesToAttack.at(j_v))->getPosition(), m_position))
 					{
 						/* If here, then the distance from tower to enemy (enemyDistance) (not yet in index vector) is less than the
 						distance from tower to enemy at position j_v (which is already in index vector), so add the new enemy, but that
@@ -397,7 +414,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 					enemyIndicesToAttack.push_back(i_e);
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (enemies->at(i_e)->getHealth() > enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+				else if (enemies.at(i_e)->getHealth() > enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 				{
 					/* if here, then the enemy being checked (not yet in index vector, at position i_e in enemies) is
 					stronger than the enemy at position j_v in index vector, so gets put in */
@@ -416,7 +433,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 		{
 			/* On the following line, we perform a check that guarantees that the if statement inside the while loop that follows will
 			eventually successfully add the new tower. Otherwise, the iterator for enemyIndicesToAttack will go out of range. */
-			if (enemies->at(i_e)->getHealth() > enemies->at(enemyIndicesToAttack.back())->getHealth())
+			if (enemies.at(i_e)->getHealth() > enemies.at(enemyIndicesToAttack.back())->getHealth())
 				// the vector will only change if enemy is stronger than last enemy in enemyIndicesToAttack
 			{
 				bool bIndexInsertedIntoVector = false;
@@ -424,7 +441,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 
 				while (!bIndexInsertedIntoVector)
 				{// compare strength of enemy (i_e) with strengths of enemies already stored (j_v)
-					if (enemies->at(i_e)->getHealth() > enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+					if (enemies.at(i_e)->getHealth() > enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 					{
 						/* If here, then the health of enemy being checked (not yet in index vector) is greater than the
 						health of enemy at position j_v (which is already in index vector), so add the new enemy, but that
@@ -477,7 +494,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 					enemyIndicesToAttack.push_back(i_e);
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (enemies->at(i_e)->getHealth() < enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+				else if (enemies.at(i_e)->getHealth() < enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 				{
 					/* if here, then the enemy being checked (not yet in index vector, at position i_e in enemies) is
 					weaker than the enemy at position j_v in index vector, so gets put in */
@@ -496,7 +513,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 		{
 			/* On the following line, we perform a check that guarantees that the if statement inside the while loop that follows will
 			eventually successfully add the new tower. Otherwise, the iterator for enemyIndicesToAttack will go out of range. */
-			if (enemies->at(i_e)->getHealth() < enemies->at(enemyIndicesToAttack.back())->getHealth())
+			if (enemies.at(i_e)->getHealth() < enemies.at(enemyIndicesToAttack.back())->getHealth())
 				// the vector will only change if enemy is weaker than last enemy in enemyIndicesToAttack
 			{
 				bool bIndexInsertedIntoVector = false;
@@ -504,7 +521,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 
 				while (!bIndexInsertedIntoVector)
 				{// compare strength of enemy (i_e) with strengths of enemies already stored (j_v)
-					if (enemies->at(i_e)->getHealth() < enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+					if (enemies.at(i_e)->getHealth() < enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 					{
 						/* If here, then the health of enemy being checked (not yet in index vector) is less than the
 						health of enemy at position j_v (which is already in index vector), so add the new enemy, but that
@@ -539,7 +556,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 		since the enemies are searched from first enemy to last enemy, and an enemy's health must be strictly greater than
 		an existing enemy's health for it to be added to the vector of enemies to attack. */
 
-		bool bNewEnemyIsPrime = bIsPrime(enemies->at(i_e)->getHealth());
+		bool bNewEnemyIsPrime = bIsPrime(enemies.at(i_e)->getHealth());
 
 		if (enemyIndicesToAttack.size() == 0) // first enemy to be added
 		{
@@ -562,21 +579,21 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 					enemyIndicesToAttack.push_back(i_e);
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (bNewEnemyIsPrime && !bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (bNewEnemyIsPrime && !bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// new enemy is prime but existing enemy is not prime, so add the new enemy
 					enemyIndicesToAttack.insert(enemyIndicesToAttack.begin() + j_v, i_e); // insert index i_e at position j_v
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (!bNewEnemyIsPrime && bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (!bNewEnemyIsPrime && bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// new enemy is not prime but existing enemy is prime, so cannot add here
 					j_v++;
 				}
-				else if (bNewEnemyIsPrime && bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (bNewEnemyIsPrime && bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// the new enemy and existing enemy are both prime, so compare their health
-					if (enemies->at(i_e)->getHealth() > enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+					if (enemies.at(i_e)->getHealth() > enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 					{
 						// new enemy is stronger, so add the new enemy
 						enemyIndicesToAttack.insert(enemyIndicesToAttack.begin() + j_v, i_e); // insert index i_e at position j_v
@@ -588,7 +605,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 						j_v++;
 					}
 				}
-				else if (!bNewEnemyIsPrime && !bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (!bNewEnemyIsPrime && !bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// neither enemy is prime, so compare their position
 					if (i_e < enemyIndicesToAttack.at(j_v))
@@ -619,22 +636,22 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 				{
 					break; // exit the while - i_e will not be added to enemyIndices, since we couldn't find a place to add it
 				}
-				else if (bNewEnemyIsPrime && !bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (bNewEnemyIsPrime && !bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// new enemy is prime but existing enemy is not prime, so add the new enemy
 					enemyIndicesToAttack.insert(enemyIndicesToAttack.begin() + j_v, i_e);
 					enemyIndicesToAttack.pop_back();
 					bIndexInsertedIntoVector = true; // leave this while loop
 				}
-				else if (!bNewEnemyIsPrime && bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (!bNewEnemyIsPrime && bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// new enemy is not prime but existing enemy is prime, so cannot add here
 					j_v++;
 				}
-				else if (bNewEnemyIsPrime && bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (bNewEnemyIsPrime && bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// the new enemy and existing enemy are both prime, so compare their health
-					if (enemies->at(i_e)->getHealth() > enemies->at(enemyIndicesToAttack.at(j_v))->getHealth())
+					if (enemies.at(i_e)->getHealth() > enemies.at(enemyIndicesToAttack.at(j_v))->getHealth())
 					{
 						// new enemy is stronger, so add the new enemy
 						enemyIndicesToAttack.insert(enemyIndicesToAttack.begin() + j_v, i_e);
@@ -647,7 +664,7 @@ std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::
 						j_v++;
 					}
 				}
-				else if (!bNewEnemyIsPrime && !bIsPrime(enemies->at(enemyIndicesToAttack.at(j_v))->getHealth()))
+				else if (!bNewEnemyIsPrime && !bIsPrime(enemies.at(enemyIndicesToAttack.at(j_v))->getHealth()))
 				{
 					// neither enemy is prime, so compare their position
 					if (i_e < enemyIndicesToAttack.at(j_v))

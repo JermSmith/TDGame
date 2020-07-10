@@ -11,7 +11,7 @@ class TowerManager
 public:
 	TowerManager();
 
-	void update(const sf::RenderWindow& window, const Path& path, std::vector<std::unique_ptr<Enemy>>* enemies);
+	void update(const sf::RenderWindow& window, const Path& path, std::vector<std::unique_ptr<Enemy>>& enemies);
 	void handleEvent(sf::Event e, const sf::RenderWindow& window, const Path& path);
 	void render(sf::RenderTarget& renderer);
 

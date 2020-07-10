@@ -8,37 +8,41 @@
 #include "ProjectileManager.h"
 #include "Util\AttackTypes.h"
 
+#include "GUI\StackMenu.h"
+#include "GUI\Button.h"
+#include "GUI\Banner.h"
+
 class Tower : public InteractableShape
 {
 public:
-	Tower();
+	Tower(const sf::RenderWindow& window);
 
 	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines
 	void setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount);
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 
-	virtual void updateAttackLogic(std::vector<std::unique_ptr<Enemy>>* enemies);
-	void updateProjectiles(std::vector<std::unique_ptr<Enemy>>* enemies);
+	virtual void updateAtakTimer_FindEnems_CreateProj(const std::vector<std::unique_ptr<Enemy>>& enemies);
+	void updateProjectiles(std::vector<std::unique_ptr<Enemy>>& enemies);
 	void updateAppearance(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
 	void setPosition(sf::Vector2f& position);
 
-	const float getRadius() const;
+	float getRadius() const;
 
 	const attackType& getAttackType() const;
 	void setAttackType(attackType&);
 
-	const float& getRange() const;
-	void setRange(float&);
+	float getRange() const;
+	void setRange(const float);
 
-	const int& getStrength() const;
-	void setStrength(int&);
+	int getStrength() const;
+	void setStrength(const int);
 
-	const bool& getbIsClickedOn() const;
-	void setbIsClickedOn(bool);
+	bool getbIsClickedOn() const;
+	void setbIsClickedOn(const bool);
 
 protected:
 	// these are accessible by TowerSub/Div/Root and Cursor, but not others
@@ -46,8 +50,9 @@ protected:
 	void m_bUpdateAppearance(bool bIsClicked, bool bIsRolled);
 
 	sf::Vector2f m_position;
-	int m_strength;
-	float m_range;
+	int m_strength = 1; // meaningless initialization
+	float m_range = 0; // meaningless initialization
+	float m_projSpeed = 8.f;
 
 	sf::CircleShape m_rangeCircle;
 	sf::Text m_strengthString;
@@ -70,19 +75,27 @@ protected:
 		largestPrime,
 	};
 
-	attackType m_attackType;
-	targetPriority m_priority;
-	unsigned int m_maxNumTargets;
+	attackType m_attackType = attackType::subtract; // meaningless initialization
+	targetPriority m_priority = targetPriority::first; // meaningless initialization
+	unsigned int m_maxNumTargets = 1; // meaningless initialization
+	unsigned int m_defaultMaxNumTargets = 1;
+	float m_defaultProjSpeed = 8.f;
 
 	/* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of
 	the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"
 	vector at the proper position to maintain the sorting of most prioritized towers to least prioritized towers in the vector,
 	or else it does not change "enemyIndices" if the enemy does not exceed priority criteria. Returns vector of enemy indices. */
-	std::vector<int> m_possiblyAddEnemyIndexToVectorAndSort(std::vector<std::unique_ptr<Enemy>>* enemies, int enemyIndex, std::vector<int> enemyIndicesToAttack);
+	std::vector<int> m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int enemyIndex, std::vector<int> enemyIndicesToAttack);
 
 	ProjectileManager m_projectileManager;
 
 	bool m_bIsClickedOn = true;
+
+	gui::StackMenu m_hoverMenu; // TODO: implement these
+	gui::StackMenu m_detailStatsMenu; // TODO: implement these
+	void m_generateButtons(sf::RenderWindow&);
+	void m_populateHoverMenu();
+	void m_populateDetailStatsMenu();
 
 };
 

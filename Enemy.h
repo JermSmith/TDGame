@@ -9,30 +9,30 @@ public:
 	Enemy(std::vector<sf::Vector2f> path, int health, float speed, int staticIndex);
 	
 	const sf::Vector2f& getPosition() const;
-	void setPosition(sf::Vector2f& position);
+	void setPosition(const sf::Vector2f& position);
 
-	const float& getRadius() const;
+	float getRadius() const;
 
-	const int& getHealth() const;
+	int getHealth() const;
 	void setHealth(int health);
 
-	const bool& getbIsAlive() const;
-	const bool& getbReachedTheEnd() const;
+	bool getbIsAlive() const;
+	bool getbReachedTheEnd() const;
 
 	const std::vector<sf::Vector2f>& getVertices() const;
-	void setVertices(std::vector<sf::Vector2f> vertices);
+	void setVertices(const std::vector<sf::Vector2f>& vertices);
 
 	const sf::Vector2f& getNextDest() const;
 
-	const float& getSpeed() const;
+	float getSpeed() const;
 	void setSpeed(float speed);
 
-	const float& getTheta() const;
+	float getTheta() const;
 
-	const bool& getbIsClickedOn() const;
+	bool getbIsClickedOn() const;
 	void setbIsClickedOn(bool);
 
-	const int& getStaticIndex() const;
+	int getStaticIndex() const;
 
 	void handleEvent(sf::Event e, const sf::RenderWindow& window);
 	void update(const sf::RenderWindow& window);
