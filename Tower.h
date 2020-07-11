@@ -15,7 +15,8 @@
 class Tower : public InteractableShape
 {
 public:
-	Tower(const sf::RenderWindow& window);
+	Tower(const sf::RenderWindow& window); // cursor uses this constructor
+	Tower(const sf::RenderWindow& window, const attackType& type, int strength, const sf::Vector2f& position, float radius, int pointCount);
 
 	// sets AttackType, Strength, Position, Radius, and Range, as well as colours/outlines
 	void setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount);
@@ -60,7 +61,7 @@ protected:
 	sf::Clock m_timer;
 	sf::Time m_timeElapsedSinceAttack;
 	sf::Time m_timeOfLastAttack = m_timer.restart();
-	sf::Time m_cooldownTime; //depends on m_rate
+	sf::Time m_cooldownTime;
 	bool m_bShouldResetElapsedTime = false;
 
 	int m_numofAttacksInWave = 0;
@@ -91,11 +92,36 @@ protected:
 
 	bool m_bIsClickedOn = true;
 
-	gui::StackMenu m_hoverMenu; // TODO: implement these
-	gui::StackMenu m_detailStatsMenu; // TODO: implement these
-	void m_generateButtons(sf::RenderWindow&);
-	void m_populateHoverMenu();
-	void m_populateDetailStatsMenu();
+	// vv MENUS vv
+
+	virtual void generateWidgets(const sf::RenderWindow&) = 0;
+
+	virtual void populateHoverMenu() = 0;
+	virtual void populateStatsMenu() = 0;
+	gui::StackMenu m_hoverMenu;
+	gui::StackMenu m_statsMenu;
+
+	gui::Banner bnrCursorNote = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+
+	// HOVER MENU
+
+	gui::Banner bnrRange = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+	gui::Banner bnrCooldown = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+	gui::Banner bnrProjSpeed = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+	gui::Banner bnrNumTargets = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+	gui::Banner bnrPriority = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+
+	// STATS MENU
+
+	gui::Button btnUpgrade1 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnUpgrade2 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnUpgrade3 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnUpgrade4 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+
+
+private:
+	void m_hideHoverMenu();
+	void m_hideStatsMenu();
 
 };
 

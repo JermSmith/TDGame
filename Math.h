@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 
 constexpr float PI = 3.14159265f;
 constexpr float MIN_PI = 3.14f;
@@ -40,6 +41,25 @@ float distanceBetweenPoints(T v1, T v2) // for vector2f
 	return (sqrt((v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y)));
 }
 
+//template <typename T>
+//double math_round(T value, int decimalPlaces)
+//{
+//	return floor(value * std::pow(10, decimalPlaces) + 0.5) / std::pow(10, decimalPlaces);
+//}
+
+template <typename T>
+std::string roundToString(T value, int decimalPlaces)
+{
+	std::stringstream ss;
+	ss.precision(decimalPlaces);
+	ss << std::fixed << value;
+	
+	std::string str;
+	ss >> str;
+
+	return str;
+}
+
 template <typename T>
 bool bIsPrime(T input)
 {
@@ -63,4 +83,6 @@ bool bIsPrime(T input)
 	
 	return bResult;
 }
+
+
 

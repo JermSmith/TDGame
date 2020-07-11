@@ -20,7 +20,7 @@ private:
 	gui::StackMenu m_mainMenu;
 	gui::StackMenu m_optionsMenu;
 	
-	void generateButtons(Game& game) override;
+	void generateWidgets(Game& game) override;
 	void m_populateMainMenu();
 	void m_populateOptionsMenu();
 

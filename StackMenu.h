@@ -12,7 +12,7 @@ namespace gui
 	class StackMenu : public NonCopyable
 	{
 	public:
-		StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, bool bOutline);
+		StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness, sf::Uint8 backgroundTransparency);
 
 		//StackMenu(StackMenu&& other);
 		//StackMenu& operator =(StackMenu&& other);
@@ -35,6 +35,9 @@ namespace gui
 		void handleEvent(sf::Event e, const sf::RenderWindow& window);
 		void render(sf::RenderTarget& renderer);
 
+		void hideOutline();
+		void showOutline();
+
 		static const int WIDGET_SPACER = 15;
 
 	private:
@@ -48,7 +51,10 @@ namespace gui
 
 		sf::Vector2f m_topCentrePoint;
 		sf::Vector2f m_outerDim;
+
+		sf::Color m_origOutlineColour = sf::Color::Green;
 	};
 }
+
 
 

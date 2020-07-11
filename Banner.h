@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Widget.h"
+#include "InteractableShape.h"
 
 namespace gui
 {
-	class Banner : public gui::Widget
+	class Banner : public InteractableShape, public gui::Widget
 	{
 	public:
-		Banner();
+		Banner(float width, float height);
 
 		void setText(const std::string& str);
 
@@ -22,10 +23,10 @@ namespace gui
 
 	private:
 		sf::Vector2f m_position;
-		sf::RectangleShape m_rect;
 		Text m_text;
 	};
 
-	inline Banner makeBanner() { return Banner(); }
+	inline Banner makeBanner(float width, float height) { return Banner(width, height); }
 }
+
 

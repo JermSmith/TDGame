@@ -4,50 +4,76 @@
 #include "Util\ColourManager.h"
 #include <algorithm>
 
-Tower::Tower(const sf::RenderWindow& window) : InteractableShape(0.f, 0) // TODO: start working here
+Tower::Tower(const sf::RenderWindow& window) // for cursor
+	:
+	InteractableShape(0.f, 0)
 	,
 	m_hoverMenu(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))
 		, (float)sizes::HOVERMENU_X
-		, false)
+		, 1.f, 50)
 	,
-	m_detailStatsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 200)
+	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
 		, (float)sizes::PLAYINGMENU_X
-		, false)
+		, 2.f, 155)
 {}
+
+Tower::Tower(const sf::RenderWindow& window, const attackType& type, int strength, const sf::Vector2f& position
+	, float radius, int pointCount) // for placed towers
+	:
+	InteractableShape(radius, pointCount)
+	,
+	m_hoverMenu(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))
+		, (float)sizes::HOVERMENU_X
+		, 1.f, 50)
+	,
+	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
+		, (float)sizes::PLAYINGMENU_X
+		, 2.f, 155)
+{
+	setBasicProperties(type, strength, position, radius, pointCount);
+}
 
 void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount)
 {
-	//position where the mouse is clicked; want this to be centre of circle
-	m_position = position;
+	m_position = position; //position where the mouse is clicked; want this to be centre of circle
 	m_attackType = type;
 	m_strength = strength;
 	InteractableShape::defineShape(radius, pointCount);
-	//m_radius = radius; // passed to InteractableShape::defineShape in Cursor.cpp
+	// radius set in InteractableShape::defineShape in Cursor.cpp
 	
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
-		m_range = 300.f;
-		m_cooldownTime = sf::milliseconds(2000);
-		m_priority = targetPriority::first;
+		m_range = 333.33333f;
+		m_cooldownTime = sf::milliseconds(2121);
+		m_priority = targetPriority::close;
 		m_maxNumTargets = m_defaultMaxNumTargets;
 		m_projSpeed = m_defaultProjSpeed;
+
+		if (m_strength < 0) { m_strengthString.setString("+ " + std::to_string(m_strength)); }
+		else { m_strengthString.setString("- " + std::to_string(m_strength)); }
 		break;
 
 	case attackType::divide:
-		m_range = 500.f;
-		m_cooldownTime = sf::milliseconds(1000);
-		m_priority = targetPriority::strong;
+		m_range = 512.345678f;
+		m_cooldownTime = sf::milliseconds(999);
+		m_priority = targetPriority::close;
 		m_maxNumTargets = m_defaultMaxNumTargets;
 		m_projSpeed = m_defaultProjSpeed;
+
+		m_strengthString.setString("/ " + std::to_string(m_strength));
 		break;
 
 	case attackType::root:
-		m_range = 500.f;
+		m_range = 223.45678f;
 		m_cooldownTime = sf::milliseconds(500);
 		m_priority = targetPriority::strong;
 		m_maxNumTargets = m_defaultMaxNumTargets;
-		m_projSpeed = m_defaultProjSpeed;
+		m_projSpeed = 12.66666f;
+
+		if (m_strength == 2) { m_strengthString.setString("Sqrt"); }
+		else if (m_strength == 3) { m_strengthString.setString("Cbrt"); }
+		else { m_strengthString.setString(std::to_string(m_strength) + "th root"); }
 		break;
 	}
 
@@ -90,6 +116,9 @@ void Tower::render(sf::RenderTarget& renderer)
 	renderer.draw(m_strengthString);
 
 	m_projectileManager.render(renderer);
+
+	m_hoverMenu.render(renderer);
+	m_statsMenu.render(renderer);
 }
 
 const sf::Vector2f& Tower::getPosition() const { return m_position; }
@@ -115,6 +144,11 @@ void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
 	{
 		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
 		InteractableShape::setClickedAppearance();
+		if (!m_statsMenu.bContainsWidgets())
+		{
+			populateStatsMenu();
+		}
+		
 		// TODO: add line here for displaying tower stats/options-upgrade menu, e.g. m_infoAndUpdgradesMenu.display();
 		// m_infoAndUpgradesMenu can contain banners that show lifetime damage dealt, last round damage dealt, 
 		// (for sub towers lifetime/last round kills), stats such as type, strength, range, cooldown, num targets,
@@ -124,17 +158,39 @@ void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
 	{
 		m_rangeCircle.setFillColor(sf::Color::Transparent);
 		InteractableShape::removeClickedAppearance();
-		// can add line here for hiding tower stats/options-upgrade menu, e.g. m_infoAndUpgradesMenu.display();
+
+		m_hideStatsMenu();
 	}
 
 	if (bIsRolled)
 	{
 		InteractableShape::setRolledAppearance();
+		if (!m_hoverMenu.bContainsWidgets())
+		{
+			populateHoverMenu();
+		}
 	}
-	else if (!bIsClicked)
+	else if (!bIsClicked) // enters here when NOT rolled and NOT clicked
 	{
 		InteractableShape::removeRolledAppearance();
 	}
+	
+	if (!bIsRolled)
+	{
+		m_hideHoverMenu();
+	}
+}
+
+void Tower::m_hideHoverMenu()
+{
+	m_hoverMenu.clearWidgets();
+	m_hoverMenu.hideOutline();
+}
+
+void Tower::m_hideStatsMenu()
+{
+	m_statsMenu.clearWidgets();
+	m_statsMenu.hideOutline();
 }
 
 /* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of

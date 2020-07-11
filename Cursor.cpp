@@ -1,10 +1,7 @@
 #include "Cursor.h"
 #include "Util\Math.h"
 
-Cursor::Cursor() : Tower()
-{
-
-}
+Cursor::Cursor(const sf::RenderWindow& window) : Tower(window) {}
 
 void Cursor::update(const sf::RenderWindow& window, const Path& path,
 	const std::vector<std::unique_ptr<Tower>>& towers, bool bTowerBeingPlaced)
@@ -190,6 +187,31 @@ void Cursor::updateNegative()
 
 	m_rangeCircle.setOutlineColor(sf::Color::Transparent);
 	m_rangeCircle.setFillColor(sf::Color::Transparent);
+}
+
+
+
+void Cursor::generateWidgets(const sf::RenderWindow& window)
+{
+	bnrCursorNote.setText("Click to place tower");
+}
+
+void Cursor::populateHoverMenu()
+{
+	m_hoverMenu.addWidget(bnrCursorNote);
+
+	m_hoverMenu.showOutline();
+}
+
+void Cursor::populateStatsMenu()
+{
+
+}
+
+void Cursor::hideHoverMenu()
+{
+	m_hoverMenu.clearWidgets();
+	m_hoverMenu.hideOutline();
 }
 
 

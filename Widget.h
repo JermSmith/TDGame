@@ -42,5 +42,22 @@ namespace gui
 		int m_positionInRow = 0;
 		int m_positionInMenu = 0;
 	};
+
+
+	namespace ButtonSizes
+	{
+		constexpr float HOVER_W = 128.f;
+		constexpr float HOVER_H = 24.f;
+
+		constexpr float RECT_LG_W = 256.f;
+		constexpr float RECT_LG_H = 36.f;
+		constexpr float RECT_SM_W = 150.f;
+		constexpr float RECT_SM_H = 36.f;
+
+		constexpr float CIRC_LG_R = 40.f;
+		constexpr float CIRC_SM_R = 32.f;
+		constexpr int CIRC_NUMPTS = 25;
+	}
 }
+
 

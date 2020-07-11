@@ -5,7 +5,7 @@
 
 namespace gui
 {
-	Button::Button(const float& radius, const int& numPts)
+	Button::Button(float radius, int numPts)
 		: InteractableShape(radius, numPts) // this line calls InteractableShape constructor
 	{
 		InteractableShape::setOutlineThickness(-2);
@@ -13,7 +13,7 @@ namespace gui
 		InteractableShape::setFillColour(sf::Color::Black);
 	}
 
-	Button::Button(const float& width, const float& height)
+	Button::Button(float width, float height)
 		: InteractableShape(width, height) // this line calls InteractableShape constructor
 	{
 		InteractableShape::setOutlineThickness(-2);
@@ -74,7 +74,7 @@ namespace gui
 		m_text.setPosition(m_position);
 	}
 
-	sf::Vector2f Button::getSize() const
+	sf::Vector2f Button::getSize() const // TODO: make this function return closer fit for other polygons
 	{
 		return sf::Vector2f(InteractableShape::getGlobalBounds().width
 			, InteractableShape::getGlobalBounds().height);
@@ -83,28 +83,6 @@ namespace gui
 	int Button::getMaxNumInRow() const
 	{
 		int numColumns;
-		/*if (InteractableShape::getPointCount() == 4) // for a rectangle
-		{
-			if (getPrimaryDim() > ButtonSizes::RECT_SM_W / 2.)
-			{
-				numColumns = 1;
-			}
-			else
-			{
-				numColumns = 2;
-			}
-		}
-		else // for a circle
-		{
-			if (getPrimaryDim() > ButtonSizes::CIRC_SM_R)
-			{
-				numColumns = 2;
-			}
-			else
-			{
-				numColumns = 3;
-			}
-		}*/
 
 		if (InteractableShape::bIsRegularPolygon())
 		{
@@ -129,5 +107,7 @@ namespace gui
 	void Button::setPositionInRow(const int num) { m_positionInRow = num; }
 
 }
+
+
 
 

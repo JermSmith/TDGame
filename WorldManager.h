@@ -8,7 +8,7 @@
 class WorldManager
 {
 public:
-	WorldManager();
+	WorldManager(const sf::RenderWindow& window);
 
 	void reset();
 

@@ -1,7 +1,7 @@
 #include "TowerManager.h"
 #include <iostream>
 
-// TODO: find somewhere in the code (probably create a new class or two) to manage the store, inventory and world.
+// TODO: find somewhere in the code (probably create a new class or two) to manage the store and inventory.
 // store is the available towers; inventory is towers that have been purchased/accumulated; world is what has been placed along the path.
 // towers go from store --> inventory --> world
 
@@ -10,7 +10,7 @@
 
 // TODO: implement sell tower, move tower, etc. buttons when tower is clicked on
 
-TowerManager::TowerManager()
+TowerManager::TowerManager(const sf::RenderWindow& window) : m_dummyTower(window)
 {
 
 }
@@ -83,7 +83,7 @@ void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, cons
 			{
 				//no interference found with new tower and path, so can place tower
 				
-				m_handleEvent_InsertDummyTowerIntoVectorOfTowers();
+				m_handleEvent_InsertDummyTowerIntoVectorOfTowers(window);
 				// Note that strongest towers are placed closer to front of vector, so they are updated first:
 				// root4 > sqrt > /13 > /2 > -2 > -1 > +1 > +2
 
@@ -161,7 +161,7 @@ void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 }
 
 // the dummy tower holds attack type and strength (and a few other properties) of the tower to be placed
-void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
+void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::RenderWindow& window)
 {
 	bool bTowerInsertedIntoVector = false;
 
@@ -171,7 +171,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 		{
 		case attackType::root:
 			m_towers.push_back(std::make_unique<TowerRoot>
-				( m_dummyTower.getAttackType()
+				( window
+				, m_dummyTower.getAttackType()
 				, m_dummyTower.getStrength()
 				, m_dummyTower.getPosition()
 				, m_dummyTower.getRadius()
@@ -179,7 +180,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 			break;
 		case attackType::divide:
 			m_towers.push_back(std::make_unique<TowerDiv>
-				( m_dummyTower.getAttackType()
+				( window
+				, m_dummyTower.getAttackType()
 				, m_dummyTower.getStrength()
 				, m_dummyTower.getPosition()
 				, m_dummyTower.getRadius()
@@ -187,7 +189,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 			break;
 		case attackType::subtract:
 			m_towers.push_back(std::make_unique<TowerSub>
-				( m_dummyTower.getAttackType()
+				( window
+				, m_dummyTower.getAttackType()
 				, m_dummyTower.getStrength()
 				, m_dummyTower.getPosition()
 				, m_dummyTower.getRadius()
@@ -206,7 +209,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 				// (and as a result, there must only be root towers in the vector)
 			{
 				m_towers.push_back(std::make_unique<TowerRoot>
-					( m_dummyTower.getAttackType()
+					( window
+					, m_dummyTower.getAttackType()
 					, m_dummyTower.getStrength()
 					, m_dummyTower.getPosition()
 					, m_dummyTower.getRadius()
@@ -226,7 +230,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					{
 						m_towers.insert(m_towers.begin() + i_wh,
 							std::make_unique<TowerRoot>
-								( m_dummyTower.getAttackType()
+								( window
+								, m_dummyTower.getAttackType()
 								, m_dummyTower.getStrength()
 								, m_dummyTower.getPosition()
 								, m_dummyTower.getRadius()
@@ -238,7 +243,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 				case attackType::divide:
 					m_towers.insert(m_towers.begin() + i_wh,
 						std::make_unique<TowerRoot>
-							( m_dummyTower.getAttackType()
+							( window
+							, m_dummyTower.getAttackType()
 							, m_dummyTower.getStrength()
 							, m_dummyTower.getPosition()
 							, m_dummyTower.getRadius()
@@ -249,7 +255,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + i_wh,
 						std::make_unique<TowerRoot>
-							( m_dummyTower.getAttackType()
+							( window
+							, m_dummyTower.getAttackType()
 							, m_dummyTower.getStrength()
 							, m_dummyTower.getPosition()
 							, m_dummyTower.getRadius()
@@ -269,7 +276,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 			if (m_towers.size() == j_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
 				m_towers.push_back(std::make_unique<TowerDiv>
-					( m_dummyTower.getAttackType()
+					( window
+					, m_dummyTower.getAttackType()
 					, m_dummyTower.getStrength()
 					, m_dummyTower.getPosition()
 					, m_dummyTower.getRadius()
@@ -293,7 +301,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					{
 						m_towers.insert(m_towers.begin() + j_wh,
 							std::make_unique<TowerDiv>
-								( m_dummyTower.getAttackType()
+								( window
+								, m_dummyTower.getAttackType()
 								, m_dummyTower.getStrength()
 								, m_dummyTower.getPosition()
 								, m_dummyTower.getRadius()
@@ -305,7 +314,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 				case attackType::subtract:
 					m_towers.insert(m_towers.begin() + j_wh,
 						std::make_unique<TowerDiv>
-							( m_dummyTower.getAttackType()
+							( window
+							, m_dummyTower.getAttackType()
 							, m_dummyTower.getStrength()
 							, m_dummyTower.getPosition()
 							, m_dummyTower.getRadius()
@@ -325,7 +335,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 			if (m_towers.size() == k_wh) // iterator has gone out of range (i.e. reached the end of the vector)
 			{
 				m_towers.push_back(std::make_unique<TowerSub>
-					( m_dummyTower.getAttackType()
+					( window
+					, m_dummyTower.getAttackType()
 					, m_dummyTower.getStrength()
 					, m_dummyTower.getPosition()
 					, m_dummyTower.getRadius()
@@ -353,7 +364,8 @@ void TowerManager::m_handleEvent_InsertDummyTowerIntoVectorOfTowers()
 					{
 						m_towers.insert(m_towers.begin() + k_wh,
 							std::make_unique<TowerSub>
-								( m_dummyTower.getAttackType()
+								( window
+								, m_dummyTower.getAttackType()
 								, m_dummyTower.getStrength()
 								, m_dummyTower.getPosition()
 								, m_dummyTower.getRadius()

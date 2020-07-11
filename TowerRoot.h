@@ -5,9 +5,15 @@
 class TowerRoot : public Tower
 {
 public:
-	TowerRoot(const attackType& type, const int& strength, const sf::Vector2f& position, const float& radius, const int& pointCount);
+	TowerRoot(const sf::RenderWindow& window, const attackType& type, int strength, const sf::Vector2f& position, float radius, int pointCount);
 
 	void updateAtakTimer_FindEnems_CreateProj(const std::vector<std::unique_ptr<Enemy>>& enemies) override;
+
+
+private:
+	void generateWidgets(const sf::RenderWindow&);
+	void populateHoverMenu();
+	void populateStatsMenu() override;
 
 };
 

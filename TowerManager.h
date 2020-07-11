@@ -9,7 +9,7 @@
 class TowerManager
 {
 public:
-	TowerManager();
+	TowerManager(const sf::RenderWindow& window);
 
 	void update(const sf::RenderWindow& window, const Path& path, std::vector<std::unique_ptr<Enemy>>& enemies);
 	void handleEvent(sf::Event e, const sf::RenderWindow& window, const Path& path);
@@ -31,7 +31,7 @@ private:
 	bool m_bTowerBeingPlaced = false;
 
 	void m_handleEvent_TowerSelection(const sf::Vector2f& clickPos);
-	void m_handleEvent_InsertDummyTowerIntoVectorOfTowers();
+	void m_handleEvent_InsertDummyTowerIntoVectorOfTowers(const sf::RenderWindow& window);
 };
 
 

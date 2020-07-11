@@ -20,17 +20,27 @@ public:
 	void render			(sf::RenderTarget& renderer) override;
 
 private:
+	bool m_bShouldPushMainMenu = false;
+	
 	WorldManager m_worldManager;
+
 	gui::StackMenu m_playingMenu;
 	gui::StackMenu m_towersMenu;
 
-	bool m_bShouldPushMainMenu = false;
-
-	void generateButtons(Game& game) override;
+	void generateWidgets(Game& game) override;
 	void m_populatePlayingMenu();
 	void m_populateTowersMenu();
 
+	// PLAYING MENU BUTTONS
+
 	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+
+	// TOWERS BUTTONS
+
 	gui::Button btnPlaceTower1 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 3);
 	gui::Button btnPlaceTower2 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 4);
 	gui::Button btnPlaceTower3 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 5);
@@ -40,19 +50,16 @@ private:
 	gui::Button btnPlaceTower7 = gui::makeButton(gui::ButtonSizes::CIRC_SM_R, 9);
 	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, 10);
 	gui::Button btnPlaceTower9 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
-	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	
-	gui::Banner bnrNumLives = gui::makeBanner();
+	gui::Banner bnrNumLives = gui::makeBanner((float)sizes::PLAYINGMENU_X, 48);
 
 	sf::Texture m_backgroundTexture;
 	sf::Sprite m_backgroundSpriteLeft;
 	sf::Sprite m_backgroundSpriteRight;
 
 
-
 };
+
+
 
 

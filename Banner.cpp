@@ -3,17 +3,12 @@
 
 namespace gui
 {
-	Banner::Banner()
+	Banner::Banner(float width, float height) 
+		: InteractableShape(width, height) // this line calls InteractableShape constructor
 	{
-		m_rect.setSize(sf::Vector2f((float)sizes::PLAYINGMENU_X, 48));
-		m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
-
-		m_rect.setOutlineThickness(-2);
-		m_rect.setOutlineColor(sf::Color::White);
-		m_rect.setFillColor(sf::Color::Transparent);
-		
-		m_text.setOutlineThickness(2);
-		m_text.setCharacterSize(30);
+		InteractableShape::setOutlineThickness(-2);
+		InteractableShape::setOutlineColour(sf::Color::White);
+		InteractableShape::setFillColour(sf::Color::Transparent);
 	}
 
 	void Banner::setText(const std::string& str) { m_text.setString(str); }
@@ -22,7 +17,7 @@ namespace gui
 
 	void Banner::render(sf::RenderTarget& renderer)
 	{
-		renderer.draw(m_rect);
+		InteractableShape::render(renderer);
 		renderer.draw(m_text);
 	}
 
@@ -34,14 +29,18 @@ namespace gui
 	void Banner::setPosition(const sf::Vector2f& pos)
 	{
 		m_position = pos;
-
-		m_rect.setPosition(m_position);
+		InteractableShape::setPosition(m_position);
 
 		m_text.setOrigin(m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 1.4f);
 		m_text.setPosition(m_position);
 	}
 
-	sf::Vector2f Banner::getSize() const { return m_rect.getSize(); }
+	sf::Vector2f Banner::getSize() const
+	{
+		//return m_rect.getSize();
+		return sf::Vector2f(InteractableShape::getGlobalBounds().width
+			, InteractableShape::getGlobalBounds().height);
+	}
 
 	int Banner::getMaxNumInRow() const { return 1; }
 

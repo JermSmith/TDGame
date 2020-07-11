@@ -4,7 +4,7 @@
 #include "Util\Random.h"
 #include <iostream>
 
-WorldManager::WorldManager()
+WorldManager::WorldManager(const sf::RenderWindow& window) : m_towerManager(window)
 {
 	m_enemyReleaseDelayTime = sf::milliseconds(500);
 	m_constructWaveGeneratingData();
@@ -140,6 +140,15 @@ void WorldManager::update(const sf::RenderWindow& window)
 									 //TODO: can allow for different sets of path vertices to be given to enemies
 	{
 		instantiateEnemies(&m_enemies, m_path.getVertices());
+	}
+
+	if (getbTowerBeingPlaced())
+	{
+		getDummyTower()->populateHoverMenu();
+	}
+	else
+	{
+		getDummyTower()->hideHoverMenu();
 	}
 }
 

@@ -9,17 +9,19 @@
 
 StatePlaying::StatePlaying(Game& game) : StateBase(game)
 	,
-	m_playingMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 400)
+	m_worldManager(game.getWindow())
+	,
+	m_playingMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 440)
 		, (float)sizes::PLAYINGMENU_X
-		, false)
+		, 2.f, 155)
 	,
 	m_towersMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 0)
 		, (float)sizes::PLAYINGMENU_X
-		, false)
+		, 2.f, 155)
 {
 	m_worldManager.reset();
 	m_worldManager.createRandomPath(0);
-	generateButtons(game);
+	generateWidgets(game);
 	m_populatePlayingMenu();
 	m_populateTowersMenu();
 
@@ -88,7 +90,7 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 	m_towersMenu.render(renderer);
 }
 
-void StatePlaying::generateButtons(Game& game)
+void StatePlaying::generateWidgets(Game& game)
 {
 	// TODO: figure out where wave stats, tower stats, shop, inventory, etc. will be displayed
 

@@ -6,23 +6,11 @@
 
 namespace gui
 {
-	namespace ButtonSizes
-	{
-		constexpr float RECT_LG_W = 256.f;
-		constexpr float RECT_LG_H = 48.f;
-		constexpr float RECT_SM_W = 150.f;
-		constexpr float RECT_SM_H = 48.f;
-
-		constexpr float CIRC_LG_R = 40.f;
-		constexpr float CIRC_SM_R = 32.f;
-		constexpr int CIRC_NUMPTS = 25;
-	}
-
 	class Button : public InteractableShape, public gui::Widget
 	{
 	public:
-		Button(const float& radius, const int& numPts);
-		Button(const float& width, const float& height);
+		Button(float radius, int numPts);
+		Button(float width, float height);
 
 		void setFunction(std::function<void(void)> func);
 		void setText(const std::string& str);
@@ -43,8 +31,8 @@ namespace gui
 		Text m_text;
 	};
 
-	inline Button makeButton(const float& radius, const int& numPts) { return Button(radius, numPts); }
-	inline Button makeButton(const float& width, const float& height) { return Button(width, height); }
+	inline Button makeButton(float radius, int numPts) { return Button(radius, numPts); }
+	inline Button makeButton(float width, float height) { return Button(width, height); }
 };
 
 	

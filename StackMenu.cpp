@@ -5,19 +5,17 @@
 namespace gui
 {
 	// 1) sf::Vector2f topCentrePoint, 2) float menuWidth, 3) bool bOutline
-	StackMenu::StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, bool bOutline)
+	StackMenu::StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness, sf::Uint8 backgroundTransparency)
 		: m_topCentrePoint(topCentrePoint)
 		, m_outerDim(menuWidth, 0)
-		, m_origBasePositionY(m_topCentrePoint.y)
+		, m_origBasePositionY(topCentrePoint.y)
 	{
-		m_background.setOutlineColor(sf::Color::Green);
-		m_background.setFillColor({ 100, 100, 100, 168 });
-		m_background.setSize(m_outerDim);
-		m_background.setPosition(m_topCentrePoint.x - m_outerDim.x / 2, m_topCentrePoint.y);
-		// background position is based on its top left corner
-
-		if (bOutline) { m_background.setOutlineThickness(2); }
-		else { m_background.setOutlineThickness(0); }
+			m_background.setOutlineColor(m_origOutlineColour);
+			m_background.setOutlineThickness(outlineThickness);
+			m_background.setFillColor({ 100, 100, 100, backgroundTransparency });
+			m_background.setSize(m_outerDim);
+			m_background.setPosition(m_topCentrePoint.x - m_outerDim.x / 2, m_topCentrePoint.y);
+			// background position is based on its top left corner
 	}
 
 
@@ -63,6 +61,16 @@ namespace gui
 	std::vector<Widget*> StackMenu::getWidgets() const
 	{
 		return m_widgets;
+	}
+
+	void StackMenu::hideOutline()
+	{
+		m_background.setOutlineColor(sf::Color::Transparent);
+	}
+
+	void StackMenu::showOutline()
+	{
+		m_background.setOutlineColor(m_origOutlineColour);
 	}
 
 	// TODO: update to adjust to the fact that the base size doesn't really need to adjust for the playing menu and options menu, only for
@@ -179,5 +187,6 @@ namespace gui
 		}
 	}
 }
+
 
 
