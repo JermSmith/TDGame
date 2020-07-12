@@ -4,10 +4,10 @@
 class InteractableShape
 {
 public:
-	InteractableShape(const float& radius, const int& pointCount);
-	InteractableShape(const float& width, const float& height);
-	void defineShape(const float& radius, const int& pointCount);
-	void defineShape(const float& width, const float& height);
+	InteractableShape(float radius, int pointCount);
+	InteractableShape(float width, float height);
+	void defineShape(float radius, int pointCount);
+	void defineShape(float width, float height);
 	int getPointCount() const;
 	bool isRolledOn(const sf::RenderWindow& window) const;
 	void render(sf::RenderTarget& renderer);
@@ -15,6 +15,7 @@ public:
 	float getPrimaryDim() const;
 	sf::FloatRect getGlobalBounds() const;
 	void setOrigin(const sf::Vector2f& origin);
+	sf::Vector2f getPosition() const;
 	void setPosition(const sf::Vector2f& position);
 	sf::Color getFillColour() const;
 	void setFillColour(const sf::Color& colour);

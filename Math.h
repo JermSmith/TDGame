@@ -14,7 +14,15 @@ namespace sizes
 
 	constexpr unsigned int PLAYINGMENU_X = 320; //height of playing menu is world_size_y
 
-	constexpr unsigned int HOVERMENU_X = 160;
+	constexpr unsigned int HOVERMENU_X = 140;
+}
+namespace graphics
+{
+	constexpr float HOVERMENU_OUTL_THK = 1.f;
+	constexpr sf::Int8 HOVERMENU_BCKTRANSPARENCY = 50;
+
+	constexpr float STATSMENU_OUTL_THK = 2.f;
+	constexpr sf::Int8 STATSMENU_BCKTRANSPARENCY = 110;
 }
 
 template <typename T>

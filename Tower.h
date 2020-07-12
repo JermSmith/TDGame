@@ -9,6 +9,7 @@
 #include "Util\AttackTypes.h"
 
 #include "GUI\StackMenu.h"
+#include "GUI\HoverMenu.h"
 #include "GUI\Button.h"
 #include "GUI\Banner.h"
 
@@ -25,7 +26,7 @@ public:
 
 	virtual void updateAtakTimer_FindEnems_CreateProj(const std::vector<std::unique_ptr<Enemy>>& enemies);
 	void updateProjectiles(std::vector<std::unique_ptr<Enemy>>& enemies);
-	void updateAppearance(const sf::RenderWindow& window);
+	void updateAppearanceAndMenus(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
@@ -48,8 +49,6 @@ public:
 protected:
 	// these are accessible by TowerSub/Div/Root and Cursor, but not others
 
-	void m_bUpdateAppearance(bool bIsClicked, bool bIsRolled);
-
 	sf::Vector2f m_position;
 	int m_strength = 1; // meaningless initialization
 	float m_range = 0; // meaningless initialization
@@ -64,7 +63,12 @@ protected:
 	sf::Time m_cooldownTime;
 	bool m_bShouldResetElapsedTime = false;
 
-	int m_numofAttacksInWave = 0;
+	int m_lastWaveNumProjFired = 0;
+	int m_lifetimeNumProjFired = 0;
+	int m_lastWaveDmg = 0;
+	int m_lifetimeDmg = 0;
+	int m_lastWaveKillcount = 0;
+	int m_lifetimeKillcount = 0;
 
 	enum class targetPriority
 	{
@@ -96,9 +100,14 @@ protected:
 
 	virtual void generateWidgets(const sf::RenderWindow&) = 0;
 
-	virtual void populateHoverMenu() = 0;
-	virtual void populateStatsMenu() = 0;
-	gui::StackMenu m_hoverMenu;
+	virtual void populateHoverMenu() = 0; // defined in subclasses
+	virtual void populateUpgradeMenu() = 0;
+	//virtual void populatePriorityMenu() = 0;
+	//virtual void populateStatsMenu() = 0;
+
+	gui::HoverMenu m_hoverMenu;
+	gui::StackMenu m_upgradeMenu;
+	gui::StackMenu m_priorityMenu;
 	gui::StackMenu m_statsMenu;
 
 	gui::Banner bnrCursorNote = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
@@ -111,18 +120,39 @@ protected:
 	gui::Banner bnrNumTargets = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
 	gui::Banner bnrPriority = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
 
-	// STATS MENU
+	// UPGRADE MENU
 
+	// TODO: possibly make the button sizes into vectors
 	gui::Button btnUpgrade1 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	gui::Button btnUpgrade2 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	gui::Button btnUpgrade3 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
 	gui::Button btnUpgrade4 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnSetPriority = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
 
+	// PRIORITY MENU
+
+	// TODO: make new button sizes for priority buttons
+	gui::Button btnPriClose = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriFirst = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriLast = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriStrong = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriWeak = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriLgPrime = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+
+	// STATS MENU
+
+	gui::Banner bnrLastWaveNumProj = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Banner bnrLifetimeNumProj = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Banner bnrLastWaveDmg = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Banner bnrLifetimeDmg = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Banner bnrLastWaveKills = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H); // only for sub tower
+	gui::Banner bnrLifetimeKills = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H); // only for sub tower
 
 private:
 	void m_hideHoverMenu();
+	void m_hideUpgradeMenu();
+	void m_hidePriorityMenu();
 	void m_hideStatsMenu();
-
 };
 
 

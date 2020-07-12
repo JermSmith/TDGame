@@ -50,7 +50,7 @@ void TowerSub::updateAtakTimer_FindEnems_CreateProj(const std::vector<std::uniqu
 
 			for (unsigned int i = 0; i < enemyIndicesToAttack.size(); i++)
 			{
-				m_numofAttacksInWave++; // for wave stats
+				m_lifetimeNumProjFired++; // for wave stats // TODO: add more stat collection here
 				m_projectileManager.createProjectile
 				(enemies.at(enemyIndicesToAttack.at(i))
 					, m_position
@@ -110,7 +110,7 @@ void TowerSub::generateWidgets(const sf::RenderWindow& window)
 		break;
 	}
 
-	// STATS MENU
+	// UPGRADE MENU
 
 	btnUpgrade1.setText("Upgrade 1");
 	btnUpgrade1.setFunction([&]()
@@ -135,6 +135,63 @@ void TowerSub::generateWidgets(const sf::RenderWindow& window)
 		{
 
 		});
+
+	btnSetPriority.setText("Set Target Priority");
+	btnSetPriority.setFunction([&]()
+		{
+			// reveal priority menu, hide stats menu
+		});
+
+	// PRIORITY MENU
+
+	btnPriClose.setText("Closest");
+	btnPriClose.setFunction([&]()
+		{
+			m_priority = targetPriority::close;
+		});
+
+	btnPriFirst.setText("First");
+	btnPriFirst.setFunction([&]()
+		{
+			m_priority = targetPriority::first;
+		});
+
+	btnPriLast.setText("Last");
+	btnPriLast.setFunction([&]()
+		{
+			m_priority = targetPriority::last;
+		});
+
+	btnPriStrong.setText("Strongest");
+	btnPriStrong.setFunction([&]()
+		{
+			m_priority = targetPriority::strong;
+		});
+
+	btnPriWeak.setText("Weakest");
+	btnPriWeak.setFunction([&]()
+		{
+			m_priority = targetPriority::weak;
+		});
+
+	btnPriLgPrime.setText("Largest Prime");
+	btnPriLgPrime.setFunction([&]()
+		{
+			m_priority = targetPriority::largestPrime;
+		});
+
+	// STATS MENU
+
+	bnrLastWaveNumProj.setText("# projectiles (last wave): " + std::to_string(m_lastWaveNumProjFired));
+	bnrLifetimeNumProj.setText("# projectiles (lifetime): " + std::to_string(m_lifetimeNumProjFired));
+
+	bnrLastWaveDmg.setText("# projectiles (last wave): " + std::to_string(m_lastWaveDmg));
+	bnrLifetimeDmg.setText("# projectiles (lifetime): " + std::to_string(m_lifetimeDmg));
+
+	bnrLastWaveKills.setText("# kills (last wave): " + std::to_string(m_lastWaveDmg));
+	bnrLifetimeKills.setText("# kills (lifetime): " + std::to_string(m_lifetimeDmg));
+
+
 }
 
 void TowerSub::populateHoverMenu()
@@ -148,14 +205,15 @@ void TowerSub::populateHoverMenu()
 	m_hoverMenu.showOutline();
 }
 
-void TowerSub::populateStatsMenu()
+void TowerSub::populateUpgradeMenu()
 {
-	m_statsMenu.addWidget(btnUpgrade1);
-	m_statsMenu.addWidget(btnUpgrade2);
-	m_statsMenu.addWidget(btnUpgrade3);
-	m_statsMenu.addWidget(btnUpgrade4);
+	m_upgradeMenu.addWidget(btnUpgrade1);
+	m_upgradeMenu.addWidget(btnUpgrade2);
+	m_upgradeMenu.addWidget(btnUpgrade3);
+	m_upgradeMenu.addWidget(btnUpgrade4);
+	m_upgradeMenu.addWidget(btnSetPriority);
 
-	m_statsMenu.showOutline();
+	m_upgradeMenu.showOutline();
 }
 
 

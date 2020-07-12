@@ -26,18 +26,8 @@ namespace gui
 
 	}
 
-	void Banner::setPosition(const sf::Vector2f& pos)
-	{
-		m_position = pos;
-		InteractableShape::setPosition(m_position);
-
-		m_text.setOrigin(m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 1.4f);
-		m_text.setPosition(m_position);
-	}
-
 	sf::Vector2f Banner::getSize() const
 	{
-		//return m_rect.getSize();
 		return sf::Vector2f(InteractableShape::getGlobalBounds().width
 			, InteractableShape::getGlobalBounds().height);
 	}

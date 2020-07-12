@@ -20,7 +20,7 @@ public:
 
 private:
 	void generateWidgets(const sf::RenderWindow&) override;
-	void populateStatsMenu() override;
+	void populateUpgradeMenu() override;
 
 	void updatePositive();
 	void updateNegative();

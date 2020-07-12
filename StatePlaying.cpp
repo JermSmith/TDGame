@@ -92,7 +92,7 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 
 void StatePlaying::generateWidgets(Game& game)
 {
-	// TODO: figure out where wave stats, tower stats, shop, inventory, etc. will be displayed
+	// TODO: figure out where shop, inventory, etc. will be displayed
 
 	btnStartWave.setText("Start Next Wave");
 	btnStartWave.setFunction([&]()
@@ -226,13 +226,19 @@ void StatePlaying::generateWidgets(Game& game)
 	btnOptions.setText("Options");
 	btnOptions.setFunction([&]()
 		{
-			// include here toggle music, colour scheme, ...
+			// TODO: generate list of options (music, colour scheme/graphics theme, game speed, etc.)
 		});
 
 	btnMainMenu.setText("Main Menu");
 	btnMainMenu.setFunction([&]()
 		{
 			game.pushState<StateMainMenu>(game);
+		});
+
+	btnSaveGame.setText("Save Game");
+	btnSaveGame.setFunction([&]()
+		{
+			// TODO: save game
 		});
 
 	btnRestartGame.setText("Reset game");
@@ -264,6 +270,7 @@ void StatePlaying::m_populatePlayingMenu()
 	m_playingMenu.addWidget(btnPrevWaveStats);
 	m_playingMenu.addWidget(btnOptions);
 	m_playingMenu.addWidget(btnMainMenu);
+	m_playingMenu.addWidget(btnSaveGame);
 	m_playingMenu.addWidget(btnRestartGame);
 	m_playingMenu.addWidget(bnrNumLives);
 }

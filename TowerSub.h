@@ -12,8 +12,9 @@ public:
 
 private:
 	void generateWidgets(const sf::RenderWindow&) override;
+
 	void populateHoverMenu() override;
-	void populateStatsMenu() override;
+	void populateUpgradeMenu() override;
 
 };
 

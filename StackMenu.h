@@ -17,14 +17,6 @@ namespace gui
 		//StackMenu(StackMenu&& other);
 		//StackMenu& operator =(StackMenu&& other);
 
-		~StackMenu() = default;
-
-		void clearWidgets();
-		bool bContainsWidgets();
-		void addWidget(Widget &w);
-
-		std::vector<Widget*> getWidgets() const;
-		
 		/*template<typename T, typename... Args> void addWidget(Args&&... args)
 		{
 			auto w = std::make_unique<T>(std::forward<Args>(args)...);
@@ -32,27 +24,38 @@ namespace gui
 			m_widgets.push_back(std::move(w));
 		}*/
 
+		~StackMenu() = default;
+
+		void clearWidgets();
+		bool bContainsWidgets();
+		void addWidget(Widget &w);
+
+		std::vector<Widget*> getWidgets() const;
+
 		void handleEvent(sf::Event e, const sf::RenderWindow& window);
 		void render(sf::RenderTarget& renderer);
 
 		void hideOutline();
 		void showOutline();
 
-		static const int WIDGET_SPACER = 15;
+
+	protected:
+		int m_widgetSpacer = 15;
+
+		sf::Vector2f m_topCentrePoint;
+
+		sf::RectangleShape m_background;
+		sf::Vector2f m_outerDim;
+
+		sf::Color m_origOutlineColour = sf::Color::Green;
 
 	private:
-		float m_origBasePositionY;
+		float m_drawingPos_y;
 
 		void initWidget(Widget &w);
 		bool m_bIsFirstWidgetInMenu = true;
 
 		std::vector<Widget*> m_widgets;
-		sf::RectangleShape m_background;
-
-		sf::Vector2f m_topCentrePoint;
-		sf::Vector2f m_outerDim;
-
-		sf::Color m_origOutlineColour = sf::Color::Green;
 	};
 }
 

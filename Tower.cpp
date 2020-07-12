@@ -8,13 +8,16 @@ Tower::Tower(const sf::RenderWindow& window) // for cursor
 	:
 	InteractableShape(0.f, 0)
 	,
-	m_hoverMenu(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))
+	m_hoverMenu(sf::Vector2f(
+		window.mapPixelToCoords(sf::Mouse::getPosition(window)).x + (float)sizes::HOVERMENU_X / 2.f,
+		window.mapPixelToCoords(sf::Mouse::getPosition(window)).y)
 		, (float)sizes::HOVERMENU_X
-		, 1.f, 50)
+		, graphics::HOVERMENU_OUTL_THK
+		, graphics::HOVERMENU_BCKTRANSPARENCY)
 	,
-	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
-		, (float)sizes::PLAYINGMENU_X
-		, 2.f, 155)
+	m_upgradeMenu(sf::Vector2f(0, 0), 0, 0, 0),
+	m_priorityMenu(sf::Vector2f(0, 0), 0, 0, 0),
+	m_statsMenu(sf::Vector2f(0, 0), 0, 0, 0)
 {}
 
 Tower::Tower(const sf::RenderWindow& window, const attackType& type, int strength, const sf::Vector2f& position
@@ -22,13 +25,27 @@ Tower::Tower(const sf::RenderWindow& window, const attackType& type, int strengt
 	:
 	InteractableShape(radius, pointCount)
 	,
-	m_hoverMenu(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)))
+	m_hoverMenu(sf::Vector2f(
+		window.mapPixelToCoords(sf::Mouse::getPosition(window)).x + (float)sizes::HOVERMENU_X / 2.f,
+		window.mapPixelToCoords(sf::Mouse::getPosition(window)).y)
 		, (float)sizes::HOVERMENU_X
-		, 1.f, 50)
+		, graphics::HOVERMENU_OUTL_THK
+		, graphics::HOVERMENU_BCKTRANSPARENCY)
 	,
-	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
+	m_upgradeMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
 		, (float)sizes::PLAYINGMENU_X
-		, 2.f, 155)
+		, graphics::STATSMENU_OUTL_THK
+		, graphics::STATSMENU_BCKTRANSPARENCY)
+	,
+	m_priorityMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 310)
+		, (float)sizes::PLAYINGMENU_X
+		, graphics::STATSMENU_OUTL_THK
+		, graphics::STATSMENU_BCKTRANSPARENCY)
+	,
+	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 310)
+		, (float)sizes::PLAYINGMENU_X
+		, graphics::STATSMENU_OUTL_THK
+		, graphics::STATSMENU_BCKTRANSPARENCY)
 {
 	setBasicProperties(type, strength, position, radius, pointCount);
 }
@@ -44,8 +61,8 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 	switch (m_attackType) // Cursor reads radius and range from this function when previewing tower placement
 	{
 	case attackType::subtract:
-		m_range = 333.33333f;
-		m_cooldownTime = sf::milliseconds(2121);
+		m_range = 300.f;
+		m_cooldownTime = sf::milliseconds(2000);
 		m_priority = targetPriority::close;
 		m_maxNumTargets = m_defaultMaxNumTargets;
 		m_projSpeed = m_defaultProjSpeed;
@@ -55,8 +72,8 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 		break;
 
 	case attackType::divide:
-		m_range = 512.345678f;
-		m_cooldownTime = sf::milliseconds(999);
+		m_range = 500.f;
+		m_cooldownTime = sf::milliseconds(1000);
 		m_priority = targetPriority::close;
 		m_maxNumTargets = m_defaultMaxNumTargets;
 		m_projSpeed = m_defaultProjSpeed;
@@ -65,11 +82,11 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 		break;
 
 	case attackType::root:
-		m_range = 223.45678f;
+		m_range = 350.f;
 		m_cooldownTime = sf::milliseconds(500);
 		m_priority = targetPriority::strong;
 		m_maxNumTargets = m_defaultMaxNumTargets;
-		m_projSpeed = 12.66666f;
+		m_projSpeed = 12.f;
 
 		if (m_strength == 2) { m_strengthString.setString("Sqrt"); }
 		else if (m_strength == 3) { m_strengthString.setString("Cbrt"); }
@@ -104,9 +121,43 @@ void Tower::updateProjectiles(std::vector<std::unique_ptr<Enemy>>& enemies)
 	m_projectileManager.update(enemies);
 }
 
-void Tower::updateAppearance(const sf::RenderWindow& window)
+void Tower::updateAppearanceAndMenus(const sf::RenderWindow& window)
 {
-	m_bUpdateAppearance(m_bIsClickedOn, InteractableShape::isRolledOn(window));
+	if (m_bIsClickedOn)
+	{
+		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
+		InteractableShape::setClickedAppearance();
+		if (!m_upgradeMenu.bContainsWidgets())
+		{
+			populateUpgradeMenu();
+		}
+	}
+	else
+	{
+		m_rangeCircle.setFillColor(sf::Color::Transparent);
+		InteractableShape::removeClickedAppearance();
+
+		m_hideUpgradeMenu();
+	}
+
+	if (InteractableShape::isRolledOn(window))
+	{
+		InteractableShape::setRolledAppearance();
+		if (!m_hoverMenu.bContainsWidgets())
+		{
+			populateHoverMenu();
+		}
+		m_hoverMenu.updatePosition(window);
+	}
+	else if (!m_bIsClickedOn) // enters here when NOT rolled and NOT clicked
+	{
+		InteractableShape::removeRolledAppearance();
+	}
+
+	if (!InteractableShape::isRolledOn(window))
+	{
+		m_hideHoverMenu();
+	}
 }
 
 void Tower::render(sf::RenderTarget& renderer)
@@ -118,7 +169,7 @@ void Tower::render(sf::RenderTarget& renderer)
 	m_projectileManager.render(renderer);
 
 	m_hoverMenu.render(renderer);
-	m_statsMenu.render(renderer);
+	m_upgradeMenu.render(renderer);
 }
 
 const sf::Vector2f& Tower::getPosition() const { return m_position; }
@@ -138,53 +189,22 @@ void Tower::setStrength(const int strength) { m_strength = strength; }
 bool Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Tower::setbIsClickedOn(const bool tf) { m_bIsClickedOn = tf; }
 
-void Tower::m_bUpdateAppearance(bool bIsClicked, bool bIsRolled)
-{
-	if (bIsClicked)
-	{
-		m_rangeCircle.setFillColor(sf::Color(255, 255, 255, 63));
-		InteractableShape::setClickedAppearance();
-		if (!m_statsMenu.bContainsWidgets())
-		{
-			populateStatsMenu();
-		}
-		
-		// TODO: add line here for displaying tower stats/options-upgrade menu, e.g. m_infoAndUpdgradesMenu.display();
-		// m_infoAndUpgradesMenu can contain banners that show lifetime damage dealt, last round damage dealt, 
-		// (for sub towers lifetime/last round kills), stats such as type, strength, range, cooldown, num targets,
-		// as well as upgrade buttons and priority buttons
-	}
-	else
-	{
-		m_rangeCircle.setFillColor(sf::Color::Transparent);
-		InteractableShape::removeClickedAppearance();
-
-		m_hideStatsMenu();
-	}
-
-	if (bIsRolled)
-	{
-		InteractableShape::setRolledAppearance();
-		if (!m_hoverMenu.bContainsWidgets())
-		{
-			populateHoverMenu();
-		}
-	}
-	else if (!bIsClicked) // enters here when NOT rolled and NOT clicked
-	{
-		InteractableShape::removeRolledAppearance();
-	}
-	
-	if (!bIsRolled)
-	{
-		m_hideHoverMenu();
-	}
-}
-
 void Tower::m_hideHoverMenu()
 {
 	m_hoverMenu.clearWidgets();
 	m_hoverMenu.hideOutline();
+}
+
+void Tower::m_hideUpgradeMenu()
+{
+	m_upgradeMenu.clearWidgets();
+	m_upgradeMenu.hideOutline();
+}
+
+void Tower::m_hidePriorityMenu()
+{
+	m_priorityMenu.clearWidgets();
+	m_priorityMenu.hideOutline();
 }
 
 void Tower::m_hideStatsMenu()

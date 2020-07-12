@@ -3,10 +3,12 @@
 #include <SFML\Graphics.hpp>
 #include <memory>
 #include "ResourceManager\ResourceHolder.h"
+#include "InteractableShape.h"
+#include "Util\Math.h"
 
 namespace gui
 {
-	class Widget
+	class Widget : virtual public InteractableShape
 	{
 	public:
 		void setText(const std::string& str);
@@ -17,7 +19,9 @@ namespace gui
 		
 		virtual void update(const sf::RenderWindow& window) = 0;
 
-		virtual void setPosition(const sf::Vector2f& pos) = 0;
+		sf::Vector2f getPosition() const;
+		
+		void setPosition(const sf::Vector2f& pos);
 
 		virtual sf::Vector2f getSize() const = 0;
 
@@ -34,11 +38,10 @@ namespace gui
 			Text();
 		};
 
-		// class Circle... public convex shape?
-
 	protected:
 		Text m_text;
-		
+		sf::Vector2f m_position; // centre of shape for both rectangles and circles
+
 		int m_positionInRow = 0;
 		int m_positionInMenu = 0;
 	};
@@ -46,7 +49,7 @@ namespace gui
 
 	namespace ButtonSizes
 	{
-		constexpr float HOVER_W = 128.f;
+		constexpr float HOVER_W = (float)sizes::HOVERMENU_X - 12.f;
 		constexpr float HOVER_H = 24.f;
 
 		constexpr float RECT_LG_W = 256.f;

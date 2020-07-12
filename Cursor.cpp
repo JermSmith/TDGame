@@ -203,7 +203,7 @@ void Cursor::populateHoverMenu()
 	m_hoverMenu.showOutline();
 }
 
-void Cursor::populateStatsMenu()
+void Cursor::populateUpgradeMenu()
 {
 
 }

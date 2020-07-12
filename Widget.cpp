@@ -1,9 +1,7 @@
 #include "Widget.h"
-#include "Util\Math.h"
 
 namespace gui
 {
-	//Text
 	Widget::Text::Text()
 	{
 		setCharacterSize(15);
@@ -14,25 +12,17 @@ namespace gui
 
 	void Widget::setText(const std::string& str) { m_text.setString(str); }
 
-	//bool Widget::Rectangle::isRolledOn(const sf::RenderWindow& window) const
-	/*bool Widget::isRolledOn(const sf::RenderWindow& window) const
-	{
-		auto pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		
-		return getGlobalBounds().contains((float)pos.x, (float)pos.y);
-	}*/
+	sf::Vector2f Widget::getPosition() const { return m_position; }
 
-	//bool Widget::Rectangle::isClicked(sf::Event e, const sf::RenderWindow& window)
-	/*bool Widget::isClicked(sf::Event e, const sf::RenderWindow& window)
+	void Widget::setPosition(const sf::Vector2f& pos)
 	{
-		if (isRolledOn(window))
-		{
-			if (e.type == sf::Event::MouseButtonPressed)
-			{
-				return e.mouseButton.button == sf::Mouse::Left; // returns true if mouse button is left click
-			}
-		}
-		return false;
-	}*/
+		m_position = pos;
+		InteractableShape::setPosition(m_position);
+
+		m_text.setOrigin(m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 1.4f);
+		m_text.setPosition(m_position);
+	}
 }
+
+
 

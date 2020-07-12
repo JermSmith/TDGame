@@ -64,16 +64,6 @@ namespace gui
 		renderer.draw(m_text);
 	}
 
-	void Button::setPosition(const sf::Vector2f& pos)
-	{
-		m_position = pos;
-
-		InteractableShape::setPosition(m_position);
-
-		m_text.setOrigin(m_text.getGlobalBounds().width / 2, m_text.getGlobalBounds().height / 1.25f);
-		m_text.setPosition(m_position);
-	}
-
 	sf::Vector2f Button::getSize() const // TODO: make this function return closer fit for other polygons
 	{
 		return sf::Vector2f(InteractableShape::getGlobalBounds().width

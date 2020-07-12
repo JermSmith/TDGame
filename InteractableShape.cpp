@@ -1,17 +1,17 @@
 #include "InteractableShape.h"
 #include "Util\Math.h"
 
-InteractableShape::InteractableShape(const float& radius, const int& pointCount)
+InteractableShape::InteractableShape(float radius, int pointCount)
 {
 	defineShape(radius, pointCount);
 }
 
-InteractableShape::InteractableShape(const float& width, const float& height)
+InteractableShape::InteractableShape(float width, float height)
 {
 	defineShape(width, height);
 }
 
-void InteractableShape::defineShape(const float& radius, const int& pointCount)
+void InteractableShape::defineShape(float radius, int pointCount)
 {
 	m_shape.setPointCount(pointCount);
 	float theta;
@@ -38,7 +38,7 @@ void InteractableShape::defineShape(const float& radius, const int& pointCount)
 	}
 }
 
-void InteractableShape::defineShape(const float& width, const float& height)
+void InteractableShape::defineShape(float width, float height)
 {
 	m_shape.setPointCount(4);
 	m_shape.setPoint(0, sf::Vector2f(width / 2.f, -height / 2.f)); // top right
@@ -95,6 +95,11 @@ sf::FloatRect InteractableShape::getGlobalBounds() const
 void InteractableShape::setOrigin(const sf::Vector2f& origin)
 {
 	m_shape.setOrigin(origin);
+}
+
+sf::Vector2f InteractableShape::getPosition() const
+{
+	return m_shape.getPosition();
 }
 
 void InteractableShape::setPosition(const sf::Vector2f& position)

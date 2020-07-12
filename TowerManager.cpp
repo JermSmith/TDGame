@@ -62,7 +62,7 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 		}
 
 		tower->updateProjectiles(enemies);
-		tower->updateAppearance(window);
+		tower->updateAppearanceAndMenus(window);
 	}
 }
 
