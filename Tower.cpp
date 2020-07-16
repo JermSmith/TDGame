@@ -13,11 +13,12 @@ Tower::Tower(const sf::RenderWindow& window) // for cursor
 		window.mapPixelToCoords(sf::Mouse::getPosition(window)).y)
 		, (float)sizes::HOVERMENU_X
 		, graphics::HOVERMENU_OUTL_THK
-		, graphics::HOVERMENU_BCKTRANSPARENCY)
+		, graphics::HOVERMENU_BCKTRANSPARENCY
+		, graphics::HOVERMENU_SPACER)
 	,
-	m_upgradeMenu(sf::Vector2f(0, 0), 0, 0, 0),
-	m_priorityMenu(sf::Vector2f(0, 0), 0, 0, 0),
-	m_statsMenu(sf::Vector2f(0, 0), 0, 0, 0)
+	m_upgradeMenu(sf::Vector2f(0, 0), 0, 0, 0, 0),
+	m_priorityMenu(sf::Vector2f(0, 0), 0, 0, 0, 0),
+	m_statsMenu(sf::Vector2f(0, 0), 0, 0, 0, 0)
 {}
 
 Tower::Tower(const sf::RenderWindow& window, const attackType& type, int strength, const sf::Vector2f& position
@@ -30,24 +31,29 @@ Tower::Tower(const sf::RenderWindow& window, const attackType& type, int strengt
 		window.mapPixelToCoords(sf::Mouse::getPosition(window)).y)
 		, (float)sizes::HOVERMENU_X
 		, graphics::HOVERMENU_OUTL_THK
-		, graphics::HOVERMENU_BCKTRANSPARENCY)
+		, graphics::HOVERMENU_BCKTRANSPARENCY
+		, graphics::HOVERMENU_SPACER)
 	,
-	m_upgradeMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 250)
+	m_upgradeMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 217)
 		, (float)sizes::PLAYINGMENU_X
 		, graphics::STATSMENU_OUTL_THK
-		, graphics::STATSMENU_BCKTRANSPARENCY)
+		, graphics::STATSMENU_BCKTRANSPARENCY
+		, graphics::DEFAULTMENU_SPACER)
 	,
-	m_priorityMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 310)
+	m_priorityMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 370)
 		, (float)sizes::PLAYINGMENU_X
 		, graphics::STATSMENU_OUTL_THK
-		, graphics::STATSMENU_BCKTRANSPARENCY)
+		, graphics::STATSMENU_BCKTRANSPARENCY
+		, 1)
 	,
-	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 310)
+	m_statsMenu(sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 370)
 		, (float)sizes::PLAYINGMENU_X
 		, graphics::STATSMENU_OUTL_THK
-		, graphics::STATSMENU_BCKTRANSPARENCY)
+		, graphics::STATSMENU_BCKTRANSPARENCY
+		, graphics::THINMENU_SPACER)
 {
 	setBasicProperties(type, strength, position, radius, pointCount);
+	m_priorityMenu.hide();
 }
 
 void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f position, float radius, int pointCount)
@@ -111,7 +117,8 @@ void Tower::setBasicProperties(attackType type, int strength, sf::Vector2f posit
 
 void Tower::handleEvent(sf::Event e, const sf::RenderWindow& window)
 {
-	
+	m_upgradeMenu.handleEvent(e, window);
+	m_priorityMenu.handleEvent(e, window);
 }
 
 void Tower::updateAtakTimer_FindEnems_CreateProj(const std::vector<std::unique_ptr<Enemy>>& enemies) {}
@@ -129,7 +136,8 @@ void Tower::updateAppearanceAndMenus(const sf::RenderWindow& window)
 		InteractableShape::setClickedAppearance();
 		if (!m_upgradeMenu.bContainsWidgets())
 		{
-			populateUpgradeMenu();
+			populateUpgradeMenu(); 
+			populateStatsMenu();
 		}
 	}
 	else
@@ -137,10 +145,12 @@ void Tower::updateAppearanceAndMenus(const sf::RenderWindow& window)
 		m_rangeCircle.setFillColor(sf::Color::Transparent);
 		InteractableShape::removeClickedAppearance();
 
-		m_hideUpgradeMenu();
+		m_upgradeMenu.hide();
+		m_statsMenu.hide();
+		m_priorityMenu.hide();
 	}
 
-	if (InteractableShape::isRolledOn(window))
+	if (InteractableShape::isRolledOn(window)) // if tower is rolled on
 	{
 		InteractableShape::setRolledAppearance();
 		if (!m_hoverMenu.bContainsWidgets())
@@ -156,8 +166,12 @@ void Tower::updateAppearanceAndMenus(const sf::RenderWindow& window)
 
 	if (!InteractableShape::isRolledOn(window))
 	{
-		m_hideHoverMenu();
+		m_hoverMenu.hide();
 	}
+
+	m_upgradeMenu.update(window);
+	m_priorityMenu.update(window);
+	m_statsMenu.update(window);
 }
 
 void Tower::render(sf::RenderTarget& renderer)
@@ -167,9 +181,14 @@ void Tower::render(sf::RenderTarget& renderer)
 	renderer.draw(m_strengthString);
 
 	m_projectileManager.render(renderer);
+}
 
+void Tower::renderMenus(sf::RenderTarget& renderer)
+{
 	m_hoverMenu.render(renderer);
 	m_upgradeMenu.render(renderer);
+	m_priorityMenu.render(renderer);
+	m_statsMenu.render(renderer);
 }
 
 const sf::Vector2f& Tower::getPosition() const { return m_position; }
@@ -189,35 +208,18 @@ void Tower::setStrength(const int strength) { m_strength = strength; }
 bool Tower::getbIsClickedOn() const { return m_bIsClickedOn; }
 void Tower::setbIsClickedOn(const bool tf) { m_bIsClickedOn = tf; }
 
-void Tower::m_hideHoverMenu()
+bool Tower::bClickedOnUpgradeMenu(const sf::Vector2f& clickPos) const
 {
-	m_hoverMenu.clearWidgets();
-	m_hoverMenu.hideOutline();
-}
-
-void Tower::m_hideUpgradeMenu()
-{
-	m_upgradeMenu.clearWidgets();
-	m_upgradeMenu.hideOutline();
-}
-
-void Tower::m_hidePriorityMenu()
-{
-	m_priorityMenu.clearWidgets();
-	m_priorityMenu.hideOutline();
-}
-
-void Tower::m_hideStatsMenu()
-{
-	m_statsMenu.clearWidgets();
-	m_statsMenu.hideOutline();
+	return (m_upgradeMenu.bClickedInMenu(clickPos) 
+		|| m_priorityMenu.bClickedInMenu(clickPos)
+		|| m_statsMenu.bClickedInMenu(clickPos));
 }
 
 /* Before this function is called, the enemy in "enemies" at the index "enemyIndex" must be known to be in range of
 the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"
 vector at the proper position to maintain the sorting of most prioritized towers to least prioritized towers in the vector,
 or else it does not change "enemyIndices" if the enemy does not exceed priority criteria. Returns vector of enemy indices. */
-std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int a_enemyIndex, std::vector<int> a_enemyIndicesToAttack)
+std::vector<int> Tower::m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int a_enemyIndex, const std::vector<int>& a_enemyIndicesToAttack)
 {
 	int i_e = a_enemyIndex;
 	std::vector<int> enemyIndicesToAttack = a_enemyIndicesToAttack;

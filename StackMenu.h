@@ -12,7 +12,8 @@ namespace gui
 	class StackMenu : public NonCopyable
 	{
 	public:
-		StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness, sf::Uint8 backgroundTransparency);
+		StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness
+			, sf::Uint8 backgroundTransparency, int widgetSpacing);
 
 		//StackMenu(StackMenu&& other);
 		//StackMenu& operator =(StackMenu&& other);
@@ -27,20 +28,22 @@ namespace gui
 		~StackMenu() = default;
 
 		void clearWidgets();
-		bool bContainsWidgets();
+		bool bContainsWidgets() const;
+		bool bClickedInMenu(const sf::Vector2f& clickPos) const;
 		void addWidget(Widget &w);
 
 		std::vector<Widget*> getWidgets() const;
 
 		void handleEvent(sf::Event e, const sf::RenderWindow& window);
+		void update(const sf::RenderWindow& window);
 		void render(sf::RenderTarget& renderer);
 
-		void hideOutline();
+		void hide();
 		void showOutline();
 
 
 	protected:
-		int m_widgetSpacer = 15;
+		int m_widgetSpacer;
 
 		sf::Vector2f m_topCentrePoint;
 

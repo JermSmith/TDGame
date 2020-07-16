@@ -28,6 +28,7 @@ public:
 	void updateProjectiles(std::vector<std::unique_ptr<Enemy>>& enemies);
 	void updateAppearanceAndMenus(const sf::RenderWindow& window);
 	void render(sf::RenderTarget& renderer);
+	void renderMenus(sf::RenderTarget& renderer);
 
 	const sf::Vector2f& getPosition() const;
 	void setPosition(sf::Vector2f& position);
@@ -45,6 +46,8 @@ public:
 
 	bool getbIsClickedOn() const;
 	void setbIsClickedOn(const bool);
+
+	bool bClickedOnUpgradeMenu(const sf::Vector2f& clickPos) const;
 
 protected:
 	// these are accessible by TowerSub/Div/Root and Cursor, but not others
@@ -90,7 +93,7 @@ protected:
 	the tower and attackable by the attack type. Then the function either slots "enemyIndex" into the "enemyIndicesToAttack"
 	vector at the proper position to maintain the sorting of most prioritized towers to least prioritized towers in the vector,
 	or else it does not change "enemyIndices" if the enemy does not exceed priority criteria. Returns vector of enemy indices. */
-	std::vector<int> m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int enemyIndex, std::vector<int> enemyIndicesToAttack);
+	std::vector<int> m_possiblyAddEnemyIndexToVectorAndSort(const std::vector<std::unique_ptr<Enemy>>& enemies, int enemyIndex, const std::vector<int>& enemyIndicesToAttack);
 
 	ProjectileManager m_projectileManager;
 
@@ -98,12 +101,15 @@ protected:
 
 	// vv MENUS vv
 
-	virtual void generateWidgets(const sf::RenderWindow&) = 0;
+	virtual void generateHoverWidgets(const sf::RenderWindow&) = 0;
+	virtual void generateUpgradeWidgets(const sf::RenderWindow&) = 0;
+	virtual void generatePriorityWidgets(const sf::RenderWindow&) = 0;
+	virtual void generateStatsWidgets(const sf::RenderWindow&) = 0;
 
 	virtual void populateHoverMenu() = 0; // defined in subclasses
 	virtual void populateUpgradeMenu() = 0;
-	//virtual void populatePriorityMenu() = 0;
-	//virtual void populateStatsMenu() = 0;
+	virtual void populatePriorityMenu() = 0;
+	virtual void populateStatsMenu() = 0;
 
 	gui::HoverMenu m_hoverMenu;
 	gui::StackMenu m_upgradeMenu;
@@ -114,45 +120,41 @@ protected:
 
 	// HOVER MENU
 
-	gui::Banner bnrRange = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
-	gui::Banner bnrCooldown = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
-	gui::Banner bnrProjSpeed = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
-	gui::Banner bnrNumTargets = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
-	gui::Banner bnrPriority = gui::makeBanner(gui::ButtonSizes::HOVER_W, gui::ButtonSizes::HOVER_H);
+	gui::Banner bnrRange = gui::makeBanner(gui::ButtonSizes::HOVER);
+	gui::Banner bnrCooldown = gui::makeBanner(gui::ButtonSizes::HOVER);
+	gui::Banner bnrProjSpeed = gui::makeBanner(gui::ButtonSizes::HOVER);
+	gui::Banner bnrNumTargets = gui::makeBanner(gui::ButtonSizes::HOVER);
+	gui::Banner bnrPriority = gui::makeBanner(gui::ButtonSizes::HOVER);
 
 	// UPGRADE MENU
 
 	// TODO: possibly make the button sizes into vectors
-	gui::Button btnUpgrade1 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnUpgrade2 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnUpgrade3 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnUpgrade4 = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnSetPriority = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnUpgrade1 = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnUpgrade2 = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnUpgrade3 = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnUpgrade4 = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnSetPriority = gui::makeButton(gui::ButtonSizes::RECT_LG);
 
 	// PRIORITY MENU
 
 	// TODO: make new button sizes for priority buttons
-	gui::Button btnPriClose = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnPriFirst = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnPriLast = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnPriStrong = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnPriWeak = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnPriLgPrime = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnPriClose = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnPriFirst = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnPriLast = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnPriStrong = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnPriWeak = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnPriLgPrime = gui::makeButton(gui::ButtonSizes::RECT_SM); // sub tower only
 
 	// STATS MENU
 
-	gui::Banner bnrLastWaveNumProj = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Banner bnrLifetimeNumProj = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Banner bnrLastWaveDmg = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Banner bnrLifetimeDmg = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Banner bnrLastWaveKills = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H); // only for sub tower
-	gui::Banner bnrLifetimeKills = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H); // only for sub tower
+	gui::Banner bnrLastWaveNumProj = gui::makeBanner(gui::ButtonSizes::RECT_THIN);
+	gui::Banner bnrLifetimeNumProj = gui::makeBanner(gui::ButtonSizes::RECT_THIN);
+	gui::Banner bnrLastWaveDmg = gui::makeBanner(gui::ButtonSizes::RECT_THIN);
+	gui::Banner bnrLifetimeDmg = gui::makeBanner(gui::ButtonSizes::RECT_THIN);
+	gui::Banner bnrLastWaveKills = gui::makeBanner(gui::ButtonSizes::RECT_THIN); // sub tower only
+	gui::Banner bnrLifetimeKills = gui::makeBanner(gui::ButtonSizes::RECT_THIN); // sub tower only
 
-private:
-	void m_hideHoverMenu();
-	void m_hideUpgradeMenu();
-	void m_hidePriorityMenu();
-	void m_hideStatsMenu();
 };
+
 
 

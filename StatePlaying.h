@@ -27,18 +27,27 @@ private:
 	gui::StackMenu m_playingMenu;
 	gui::StackMenu m_towersMenu;
 
+	gui::StackMenu m_optionsMenu;
+	gui::StackMenu m_confirmExitMenu;
+	gui::StackMenu m_confirmResetGameMenu;
+	gui::StackMenu m_prevWaveStatsMenu;
+
 	void generateWidgets(Game& game) override;
 	void m_populatePlayingMenu();
 	void m_populateTowersMenu();
+	void m_populateOptionsMenu();
+	void m_populateConfirmExitMenu();
+	void m_populateConfirmResetGameMenu();
+	void m_populatePrevWaveStatsMenu();
 
 	// PLAYING MENU BUTTONS
 
-	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnSaveGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
-	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM_W, gui::ButtonSizes::RECT_SM_H);
+	gui::Button btnStartWave = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnPrevWaveStats = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnSaveGame = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnRestartGame = gui::makeButton(gui::ButtonSizes::RECT_SM);
 
 	// TOWERS BUTTONS
 
@@ -52,11 +61,34 @@ private:
 	gui::Button btnPlaceTower8 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, 10);
 	gui::Button btnPlaceTower9 = gui::makeButton(gui::ButtonSizes::CIRC_LG_R, gui::ButtonSizes::CIRC_NUMPTS);
 	
-	gui::Banner bnrNumLives = gui::makeBanner((float)sizes::PLAYINGMENU_X, 48);
+	gui::Banner bnrNumLives = gui::makeBanner((float)sizes::PLAYINGMENU_X, gui::ButtonSizes::RECT_BANNER_H);
 
 	sf::Texture m_backgroundTexture;
 	sf::Sprite m_backgroundSpriteLeft;
 	sf::Sprite m_backgroundSpriteRight;
+
+	// OPTIONS MENU BUTTONS
+
+	gui::Button btnToggleMusic = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnToggleColourScheme = gui::makeButton(gui::ButtonSizes::RECT_LG);
+
+	// EXIT TO MENU CONFIRM BUTTONS
+
+	gui::Banner bnrExitPrompt = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_BANNER_H);
+	gui::Button btnYesExit = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnNoDontExit = gui::makeButton(gui::ButtonSizes::RECT_SM);
+
+	// RESET GAME CONFIRM BUTTONS
+
+	gui::Banner bnrResetPrompt = gui::makeBanner(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_BANNER_H);
+	gui::Button btnYesReset = gui::makeButton(gui::ButtonSizes::RECT_SM);
+	gui::Button btnNoDontReset = gui::makeButton(gui::ButtonSizes::RECT_SM);
+
+	// PREV WAVE STATS
+
+	gui::Banner bnrPrevWaveStat1 = gui::makeBanner(gui::ButtonSizes::RECT_LG);
+	gui::Banner bnrPrevWaveStat2 = gui::makeBanner(gui::ButtonSizes::RECT_LG);
+	gui::Banner bnrPrevWaveStat3 = gui::makeBanner(gui::ButtonSizes::RECT_LG);
 
 
 };

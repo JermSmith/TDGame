@@ -24,16 +24,16 @@ private:
 	void m_populateMainMenu();
 	void m_populateOptionsMenu();
 
-	gui::Button btnNewGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnLoadGame = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnHowToPlay = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnHighScores = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnExit = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnNewGame = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnLoadGame = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnOptions = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnHowToPlay = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnHighScores = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnExit = gui::makeButton(gui::ButtonSizes::RECT_LG);
 
-	gui::Button btnToggleMusic = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnColourScheme = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
-	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_LG_W, gui::ButtonSizes::RECT_LG_H);
+	gui::Button btnToggleMusic = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnColourScheme = gui::makeButton(gui::ButtonSizes::RECT_LG);
+	gui::Button btnMainMenu = gui::makeButton(gui::ButtonSizes::RECT_LG);
 
 };
 

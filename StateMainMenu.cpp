@@ -8,12 +8,12 @@ StateMainMenu::StateMainMenu(Game& game)
 	, m_mainMenu(
 		sf::Vector2f((float)sizes::WORLD_SIZE_X/ 2.0f, 100)
 		, (float)sizes::MAINMENU_SIZE_X
-		, 4.f, 255)
+		, 4.f, 255, graphics::DEFAULTMENU_SPACER)
 	,
 	m_optionsMenu(
 		sf::Vector2f((float)sizes::WORLD_SIZE_X - (float)sizes::PLAYINGMENU_X / 2.0f, 0)
 		, (float)sizes::PLAYINGMENU_X
-		, 2.f, 255)
+		, 2.f, 255, graphics::DEFAULTMENU_SPACER)
 {
 	m_musicFilenames = { "Kai_Engel_-_04_-_Moonlight_Reprise", "Lee_Rosevere_-_09_-_Compassion_keys_version" ,
 	"Chad_Crouch_-_Algorithms" , "Koona_-_02_-_Starkey" , "Chan_Wai_Fat_-_05_-_Dream_instrumental" ,
@@ -38,14 +38,8 @@ void StateMainMenu::handleInput()
 
 void StateMainMenu::update(const sf::RenderWindow& window)
 {
-	for (auto& b : m_mainMenu.getWidgets())
-	{
-		b->update(window);
-	}
-	for (auto& b : m_optionsMenu.getWidgets())
-	{
-		b->update(window);
-	}
+	m_mainMenu.update(window);
+	m_optionsMenu.update(window);
 }
 
 void StateMainMenu::render(sf::RenderTarget& renderer)

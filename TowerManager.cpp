@@ -68,6 +68,11 @@ void TowerManager::update(const sf::RenderWindow& window, const Path& path, std:
 
 void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, const Path& path)
 {
+	for (auto& t : m_towers)
+	{
+		t->handleEvent(e, window);
+	}
+
 	if (e.type == sf::Event::EventType::MouseButtonReleased)
 	{
 		sf::Vector2f clickPos = sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
@@ -95,9 +100,14 @@ void TowerManager::handleEvent(sf::Event e, const sf::RenderWindow& window, cons
 
 void TowerManager::render(sf::RenderTarget& renderer)
 {
-	for (const auto& obj : m_towers)
+	for (const auto& tower : m_towers)
 	{
-		obj->render(renderer);
+		tower->render(renderer);
+	}
+	
+	for (const auto& tower : m_towers) // render menus after towers so hover menu displays on top of other towers
+	{
+		tower->renderMenus(renderer);
 	}
 
 	m_dummyTower.render(renderer);
@@ -124,14 +134,14 @@ void TowerManager::setbTowerBeingPlaced(bool tf)
 // clicked on, and modifies the "isClickedOn" property of all towers accordingly.
 void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 {
-	bool bClickedOffOfTower = true; // will remain true unless a tower is found that was clicked on
+	bool bClickedOnTower = false; // will remain false unless a tower is found that was clicked on
 
 	for (unsigned int i = 0; i < m_towers.size(); i++)
 	{
 		if (distanceBetweenPoints(m_towers.at(i)->getPosition(), clickPos) < m_towers.at(i)->getRadius())
 			// then the tower at position i is the tower that has been clicked on
 		{
-			bClickedOffOfTower = false; // false, because we have seen that the click was ON a tower
+			bClickedOnTower = true; // true, because we have seen that the click was ON a tower
 
 			if (m_towers.at(i)->getbIsClickedOn()) // tower that was selected has been clicked on again
 			{
@@ -151,11 +161,14 @@ void TowerManager::m_handleEvent_TowerSelection(const sf::Vector2f& clickPos)
 		}
 	}
 
-	if (bClickedOffOfTower)
+	if (!bClickedOnTower) // deselect all towers, except for the tower that had its upgrade menu selected (if there is such a tower)
 	{
 		for (unsigned int k = 0; k < m_towers.size(); k++)
 		{
-			m_towers.at(k)->setbIsClickedOn(false);
+			if (!m_towers.at(k)->bClickedOnUpgradeMenu(clickPos))
+			{
+				m_towers.at(k)->setbIsClickedOn(false);
+			}
 		}
 	}
 }

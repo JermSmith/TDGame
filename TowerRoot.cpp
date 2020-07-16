@@ -16,7 +16,10 @@ TowerRoot::TowerRoot(const sf::RenderWindow& window, const attackType& type, int
 	:
 	Tower(window, type, strength, position, radius, pointCount)
 {
-	generateWidgets(window);
+	generateHoverWidgets(window);
+	generateUpgradeWidgets(window);
+	generatePriorityWidgets(window);
+	generateStatsWidgets(window);
 }
 	// this constructor gets called when tower is actually placed in m_towers in TowerManager.cpp
 
@@ -73,7 +76,7 @@ void TowerRoot::updateAtakTimer_FindEnems_CreateProj(const std::vector<std::uniq
 	}
 }
 
-void TowerRoot::generateWidgets(const sf::RenderWindow& window)
+void TowerRoot::generateHoverWidgets(const sf::RenderWindow& window)
 {
 	// HOVER MENU
 
@@ -104,14 +107,17 @@ void TowerRoot::generateWidgets(const sf::RenderWindow& window)
 		break;
 
 	case targetPriority::largestPrime:
-		bnrPriority.setText("Priority: Largest Prime");
+		bnrPriority.setText("Error: Priority Largest Prime"); // should never happen for root or div tower
 		break;
 
 	default:
 		bnrPriority.setText("Priority: Error");
 		break;
 	}
+}
 
+void TowerRoot::generateUpgradeWidgets(const sf::RenderWindow& window)
+{
 	// UPGRADE MENU
 
 	btnUpgrade1.setText("Upgrade 1");
@@ -141,47 +147,73 @@ void TowerRoot::generateWidgets(const sf::RenderWindow& window)
 	btnSetPriority.setText("Set Target Priority");
 	btnSetPriority.setFunction([&]()
 		{
-			// reveal priority menu, hide stats menu
+			if (m_statsMenu.bContainsWidgets())
+			{
+				m_statsMenu.hide();
+				populatePriorityMenu();
+			}
+			else
+			{
+				m_priorityMenu.hide();
+				populateStatsMenu();
+			}
 		});
+}
 
+void TowerRoot::generatePriorityWidgets(const sf::RenderWindow& window)
+{
 	// PRIORITY MENU
 
 	btnPriClose.setText("Closest");
 	btnPriClose.setFunction([&]()
 		{
 			m_priority = targetPriority::close;
+			generateHoverWidgets(window);
+			m_priorityMenu.hide();
+			populateStatsMenu();
 		});
 
 	btnPriFirst.setText("First");
 	btnPriFirst.setFunction([&]()
 		{
 			m_priority = targetPriority::first;
+			generateHoverWidgets(window);
+			m_priorityMenu.hide();
+			populateStatsMenu();
 		});
 
 	btnPriLast.setText("Last");
 	btnPriLast.setFunction([&]()
 		{
 			m_priority = targetPriority::last;
+			generateHoverWidgets(window);
+			m_priorityMenu.hide();
+			populateStatsMenu();
 		});
 
 	btnPriStrong.setText("Strongest");
 	btnPriStrong.setFunction([&]()
 		{
 			m_priority = targetPriority::strong;
+			generateHoverWidgets(window);
+			m_priorityMenu.hide();
+			populateStatsMenu();
 		});
 
 	btnPriWeak.setText("Weakest");
 	btnPriWeak.setFunction([&]()
 		{
 			m_priority = targetPriority::weak;
+			generateHoverWidgets(window);
+			m_priorityMenu.hide();
+			populateStatsMenu();
 		});
 
-	btnPriLgPrime.setText("Largest Prime");
-	btnPriLgPrime.setFunction([&]()
-		{
-			m_priority = targetPriority::largestPrime;
-		});
+	// largest prime priority only for sub tower
+}
 
+void TowerRoot::generateStatsWidgets(const sf::RenderWindow& window)
+{
 	// STATS MENU
 
 	bnrLastWaveNumProj.setText("# projectiles (last wave): " + std::to_string(m_lastWaveNumProjFired));
@@ -189,7 +221,6 @@ void TowerRoot::generateWidgets(const sf::RenderWindow& window)
 
 	bnrLastWaveDmg.setText("# projectiles (last wave): " + std::to_string(m_lastWaveDmg));
 	bnrLifetimeDmg.setText("# projectiles (lifetime): " + std::to_string(m_lifetimeDmg));
-
 }
 
 void TowerRoot::populateHoverMenu()
@@ -213,6 +244,29 @@ void TowerRoot::populateUpgradeMenu()
 
 	m_upgradeMenu.showOutline();
 }
+
+void TowerRoot::populatePriorityMenu()
+{
+	m_priorityMenu.addWidget(btnPriClose);
+	m_priorityMenu.addWidget(btnPriFirst);
+	m_priorityMenu.addWidget(btnPriLast);
+	m_priorityMenu.addWidget(btnPriStrong);
+	m_priorityMenu.addWidget(btnPriWeak);
+
+	m_priorityMenu.showOutline();
+}
+
+void TowerRoot::populateStatsMenu()
+{
+	m_statsMenu.addWidget(bnrLastWaveNumProj);
+	m_statsMenu.addWidget(bnrLifetimeNumProj);
+
+	m_statsMenu.addWidget(bnrLastWaveDmg);
+	m_statsMenu.addWidget(bnrLifetimeDmg);
+
+	m_statsMenu.showOutline();
+}
+
 
 
 

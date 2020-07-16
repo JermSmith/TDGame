@@ -34,6 +34,7 @@ namespace gui
 
 	inline Button makeButton(float radius, int numPts) { return Button(radius, numPts); }
 	inline Button makeButton(float width, float height) { return Button(width, height); }
+	inline Button makeButton(sf::Vector2f rectangleDim) { return Button(rectangleDim.x, rectangleDim.y); }
 };
 
 	

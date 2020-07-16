@@ -5,10 +5,12 @@
 namespace gui
 {
 	// 1) sf::Vector2f topCentrePoint, 2) float menuWidth, 3) bool bOutline
-	StackMenu::StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness, sf::Uint8 backgroundTransparency)
+	StackMenu::StackMenu(const sf::Vector2f& topCentrePoint, float menuWidth, float outlineThickness
+		, sf::Uint8 backgroundTransparency, int widgetSpacing)
 		: m_topCentrePoint(topCentrePoint)
 		, m_outerDim(menuWidth, 0)
 		, m_drawingPos_y(topCentrePoint.y)
+		, m_widgetSpacer(widgetSpacing)
 	{
 			m_background.setOutlineColor(m_origOutlineColour);
 			m_background.setOutlineThickness(outlineThickness);
@@ -39,19 +41,23 @@ namespace gui
 	void StackMenu::clearWidgets()
 	{
 		m_widgets.clear();
-		//m_topCentrePoint.y = m_origBasePositionY;
 		m_drawingPos_y = m_topCentrePoint.y;
 		m_outerDim.y = 0;
 		m_background.setSize(m_outerDim);
 		m_bIsFirstWidgetInMenu = true;
 	}
 
-	bool StackMenu::bContainsWidgets()
+	bool StackMenu::bContainsWidgets() const
 	{
 		bool bContains;
 		if (m_widgets.size() == 0) { bContains = false; }
 		else { bContains = true; }
 		return bContains;
+	}
+
+	bool StackMenu::bClickedInMenu(const sf::Vector2f& clickPos) const
+	{
+		return (m_background.getGlobalBounds().contains(clickPos));
 	}
 
 	void StackMenu::addWidget(Widget& w)
@@ -65,17 +71,40 @@ namespace gui
 		return m_widgets;
 	}
 
-	void StackMenu::hideOutline()
+	void StackMenu::hide()
 	{
+		clearWidgets();
 		m_background.setOutlineColor(sf::Color::Transparent);
 	}
 
 	void StackMenu::showOutline()
 	{
 		m_background.setOutlineColor(m_origOutlineColour);
-		//m_background.setOutlineThickness(1);
-		//m_background.setPosition(m_topCentrePoint);// .x - m_outerDim.x / 2, m_topCentrePoint.y);
-		
+	}
+
+	void StackMenu::handleEvent(sf::Event e, const sf::RenderWindow& window)
+	{
+		for (unsigned int i = 0; i < m_widgets.size(); i++)
+		{
+			m_widgets.at(i)->handleEvent(e, window);
+		}
+	}
+
+	void StackMenu::update(const sf::RenderWindow& window)
+	{
+		for (unsigned int i = 0; i < m_widgets.size(); i++)
+		{
+			m_widgets.at(i)->update(window);
+		}
+	}
+
+	void StackMenu::render(sf::RenderTarget& renderer)
+	{
+		renderer.draw(m_background);
+		for (unsigned int i = 0; i < m_widgets.size(); i++)
+		{
+			m_widgets.at(i)->render(renderer);
+		}
 	}
 
 	// TODO: update to adjust to the fact that the base size doesn't really need to adjust for the playing menu and options menu, only for
@@ -92,6 +121,7 @@ namespace gui
 		// for 3 circles/row: [whole row width = a + 2*rad + a*n + 2*rad + a*n + 2*rad + a]
 
 		float drawingPos_x = 0; //this initialization value is meaningless
+		float drawingPos_y = m_topCentrePoint.y;
 		float n_ = 0.8f;
 		float a_ = (m_outerDim.x - widget.getMaxNumInRow() * widget.getSize().x) / (2.f + (float)(widget.getMaxNumInRow() - 1) * n_);
 
@@ -172,23 +202,6 @@ namespace gui
 				break;
 			}
 			widget.setPosition({ drawingPos_x, m_drawingPos_y + widget.getSize().y / 2 });
-		}
-	}
-
-	void StackMenu::handleEvent(sf::Event e, const sf::RenderWindow& window)
-	{
-		for (unsigned int i = 0; i < m_widgets.size(); i++)
-		{
-			m_widgets.at(i)->handleEvent(e, window);
-		}
-	}
-
-	void StackMenu::render(sf::RenderTarget& renderer)
-	{
-		renderer.draw(m_background);
-		for (unsigned int i = 0; i < m_widgets.size(); i++)
-		{
-			m_widgets.at(i)->render(renderer);
 		}
 	}
 }

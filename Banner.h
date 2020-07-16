@@ -28,6 +28,7 @@ namespace gui
 	};
 
 	inline Banner makeBanner(float width, float height) { return Banner(width, height); }
+	inline Banner makeBanner(sf::Vector2f rectangleDim) { return Banner(rectangleDim.x, rectangleDim.y); }
 }
 
 
