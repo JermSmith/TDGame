@@ -20,9 +20,13 @@ namespace graphics
 {
 	constexpr float HOVERMENU_OUTL_THK = 1.f;
 	constexpr sf::Int8 HOVERMENU_BCKTRANSPARENCY = 50;
+	constexpr int HOVERMENU_SPACER = 5;
 
-	constexpr float STATSMENU_OUTL_THK = 2.f;
+	constexpr float STATSMENU_OUTL_THK = -2.f;
 	constexpr sf::Int8 STATSMENU_BCKTRANSPARENCY = 110;
+
+	constexpr int DEFAULTMENU_SPACER = 10;
+	constexpr int THINMENU_SPACER = 7;
 }
 
 template <typename T>
@@ -91,6 +95,5 @@ bool bIsPrime(T input)
 	
 	return bResult;
 }
-
 
 

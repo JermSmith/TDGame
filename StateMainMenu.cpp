@@ -1,7 +1,9 @@
 #include "StateMainMenu.h"
 #include "StatePlaying.h"
-
 #include "Game.h"
+
+#include "Util\Matrix.h"
+#include <iostream>
 
 StateMainMenu::StateMainMenu(Game& game)
 	: StateBase(game)
@@ -23,6 +25,43 @@ StateMainMenu::StateMainMenu(Game& game)
 
 	generateWidgets(game);
 	m_populateMainMenu();
+
+	// MATRIX TESTING AREA
+
+	Matrix matrix1(2, 3);
+	Matrix matrix2(2, 3);
+	Matrix matrix3(3, 1);
+
+	matrix1(1, 1) = 1;
+	matrix1(1, 2) = 2;
+	matrix1(1, 3) = 3;
+	matrix1(2, 1) = 4;
+	matrix1(2, 2) = 5;
+	matrix1(2, 3) = 6;
+
+	matrix2(1, 1) = 1;
+	matrix2(1, 2) = -2;
+	matrix2(1, 3) = PI;
+	matrix2(2, 1) = 4;
+	matrix2(2, 2) = 5;
+	matrix2(2, 3) = 0;
+
+	matrix3(1, 1) = 0;
+	matrix3(2, 1) = 1;
+	matrix3(3, 1) = 4.6f;
+
+	Matrix matrix4 = matrix1 + matrix2;
+	Matrix matrix5 = matrix2 * matrix3;
+
+	std::cout << std::to_string(matrix4(1, 1)) << ", ";
+	std::cout << std::to_string(matrix4(1, 2)) << ", ";
+	std::cout << std::to_string(matrix4(1, 3)) << std::endl;
+	std::cout << std::to_string(matrix4(2, 1)) << ", ";
+	std::cout << std::to_string(matrix4(2, 2)) << ", ";
+	std::cout << std::to_string(matrix4(2, 3)) << std::endl << std::endl;
+
+	std::cout << std::to_string(matrix5(1, 1)) << std::endl;
+	std::cout << std::to_string(matrix5(2, 1)) << ", ";
 }
 
 void StateMainMenu::handleEvent(sf::Event e)

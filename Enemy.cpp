@@ -3,7 +3,7 @@
 #include <iostream>
 #include "ResourceManager\ResourceHolder.h"
 
-Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed, int staticIndex) : InteractableShape(16.f, 20)
+Enemy::Enemy(std::vector<sf::Vector2f> vertices, int health, float speed, int staticIndex) : InteractableShape(32.f, 32.f)
 {
 	m_staticIndex = staticIndex;
 
