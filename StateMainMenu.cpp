@@ -28,40 +28,90 @@ StateMainMenu::StateMainMenu(Game& game)
 
 	// MATRIX TESTING AREA
 
-	Matrix matrix1(2, 3);
-	Matrix matrix2(2, 3);
-	Matrix matrix3(3, 1);
+	Matrix matrix1({ { 1.5f, 10.7f, 22.68f, -40}, {1, 11, -1, 9.7}, {-1, -2, -3, -4}, {4.5f, -1, 1.1f, 5.2f} });
+	std::cout << "matrix 1: " << std::endl;
+	std::cout << std::to_string(matrix1(1, 1)) << ", ";
+	std::cout << std::to_string(matrix1(1, 2)) << ", ";
+	std::cout << std::to_string(matrix1(1, 3)) << ", ";
+	std::cout << std::to_string(matrix1(1, 4)) << std::endl;
+	std::cout << std::to_string(matrix1(2, 1)) << ", ";
+	std::cout << std::to_string(matrix1(2, 2)) << ", ";
+	std::cout << std::to_string(matrix1(2, 3)) << ", ";
+	std::cout << std::to_string(matrix1(2, 4)) << std::endl;
+	std::cout << std::to_string(matrix1(3, 1)) << ", ";
+	std::cout << std::to_string(matrix1(3, 2)) << ", ";
+	std::cout << std::to_string(matrix1(3, 3)) << ", ";
+	std::cout << std::to_string(matrix1(3, 4)) << std::endl;
+	std::cout << std::to_string(matrix1(4, 1)) << ", ";
+	std::cout << std::to_string(matrix1(4, 2)) << ", ";
+	std::cout << std::to_string(matrix1(4, 3)) << ", ";
+	std::cout << std::to_string(matrix1(4, 4)) << std::endl << std::endl;
 
-	matrix1(1, 1) = 1;
-	matrix1(1, 2) = 2;
-	matrix1(1, 3) = 3;
-	matrix1(2, 1) = 4;
-	matrix1(2, 2) = 5;
-	matrix1(2, 3) = 6;
+	std::cout << " matrix 1 determinant = " << std::to_string(matrix1.determinant()) << std::endl;
 
-	matrix2(1, 1) = 1;
-	matrix2(1, 2) = -2;
-	matrix2(1, 3) = PI;
-	matrix2(2, 1) = 4;
-	matrix2(2, 2) = 5;
-	matrix2(2, 3) = 0;
+	/*
+	Matrix matrix4({ { -5 }, { -0.5 } , { 0 } });
+	std::cout << "matrix 4: " << std::endl;
+	std::cout << std::to_string(matrix4(1, 1)) << std::endl;
+	std::cout << std::to_string(matrix4(2, 1)) << std::endl;
+	std::cout << std::to_string(matrix4(3, 1)) << std::endl << std::endl;
 
-	matrix3(1, 1) = 0;
-	matrix3(2, 1) = 1;
-	matrix3(3, 1) = 4.6f;
+	Matrix matrix2({ { cosf(0.01), sinf(0.01), 0 }, { -1 * sinf(0.01), cosf(0.01), 0 }, { 0, 0, 1 } });
 
-	Matrix matrix4 = matrix1 + matrix2;
-	Matrix matrix5 = matrix2 * matrix3;
+	Matrix matrix2Inverse = matrix2.inverse();
 
-	std::cout << std::to_string(matrix4(1, 1)) << ", ";
-	std::cout << std::to_string(matrix4(1, 2)) << ", ";
-	std::cout << std::to_string(matrix4(1, 3)) << std::endl;
-	std::cout << std::to_string(matrix4(2, 1)) << ", ";
-	std::cout << std::to_string(matrix4(2, 2)) << ", ";
-	std::cout << std::to_string(matrix4(2, 3)) << std::endl << std::endl;
+	std::cout << "matrix 2: " << std::endl;
+	std::cout << std::to_string(matrix2(1, 1)) << ", ";
+	std::cout << std::to_string(matrix2(1, 2)) << ", ";
+	std::cout << std::to_string(matrix2(1, 3)) << std::endl;
+	std::cout << std::to_string(matrix2(2, 1)) << ", ";
+	std::cout << std::to_string(matrix2(2, 2)) << ", ";
+	std::cout << std::to_string(matrix2(2, 3)) << std::endl;
+	std::cout << std::to_string(matrix2(3, 1)) << ", ";
+	std::cout << std::to_string(matrix2(3, 2)) << ", ";
+	std::cout << std::to_string(matrix2(3, 3)) << std::endl << std::endl;
 
-	std::cout << std::to_string(matrix5(1, 1)) << std::endl;
-	std::cout << std::to_string(matrix5(2, 1)) << ", ";
+	std::cout << "matrix 2 determinant: " << std::to_string(matrix2.determinant()) << std::endl << std::endl;
+
+	std::cout << std::to_string(matrix2Inverse(1, 1)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(1, 2)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(1, 3)) << std::endl;
+	std::cout << std::to_string(matrix2Inverse(2, 1)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(2, 2)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(2, 3)) << std::endl;
+	std::cout << std::to_string(matrix2Inverse(3, 1)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(3, 2)) << ", ";
+	std::cout << std::to_string(matrix2Inverse(3, 3)) << std::endl << std::endl;
+	*/
+	/*
+	Matrix matrix3({ {0, 1}, {4.6f, -5} });
+
+	Matrix matrix3Trans = matrix3.transpose();
+	Matrix matrix3Inverse = matrix3.inverse();
+
+	std::cout << "matrix 3: " << std::endl;
+
+	std::cout << std::to_string(matrix3(1, 1)) << ", ";
+	std::cout << std::to_string(matrix3(1, 2)) << std::endl;
+	std::cout << std::to_string(matrix3(2, 1)) << ", ";
+	std::cout << std::to_string(matrix3(2, 2)) << std::endl << std::endl;
+
+	std::cout << "matrix 3 determinant: " << std::to_string(matrix3.determinant()) << std::endl << std::endl;
+
+	std::cout << "matrix 3 transpose: " << std::endl;
+
+	std::cout << std::to_string(matrix3Trans(1, 1)) << ", ";
+	std::cout << std::to_string(matrix3Trans(1, 2)) << std::endl;
+	std::cout << std::to_string(matrix3Trans(2, 1)) << ", ";
+	std::cout << std::to_string(matrix3Trans(2, 2)) << std::endl << std::endl;
+
+	std::cout << "matrix 3 inverse: " << std::endl;
+
+	std::cout << std::to_string(matrix3Inverse(1, 1)) << ", ";
+	std::cout << std::to_string(matrix3Inverse(1, 2)) << std::endl;
+	std::cout << std::to_string(matrix3Inverse(2, 1)) << ", ";
+	std::cout << std::to_string(matrix3Inverse(2, 2)) << std::endl << std::endl;*/
+
 }
 
 void StateMainMenu::handleEvent(sf::Event e)
